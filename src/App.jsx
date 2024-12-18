@@ -11,6 +11,7 @@ import Clients from "./pages/admin/clients/Clients"
 import Tools from "./pages/admin/tools/Tools"
 import Rents from "./pages/admin/rents/Rents"
 import Statistics from "./pages/admin/statistics/Statistics"
+import Protected from "./components/Protected"
 
 
 function App() {
@@ -23,12 +24,12 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Login />} />
-            <Route path="/inicial" element={<Home />} />
-            <Route path="/alugar" element={<CreateRent />} />
-            <Route path="/clientes" element={<Clients />} />
-            <Route path="/ferramentas" element={<Tools />} />
-            <Route path="/alugueis" element={<Rents />} />
-            <Route path="/relatorios" element={<Statistics />} />
+            <Route path="/inicial" element={ <Protected> <Home/> </Protected> } />
+            <Route path="/alugar" element={ <Protected> <CreateRent/> </Protected> } />
+            <Route path="/clientes" element={ <Protected> <Clients/> </Protected> } />
+            <Route path="/ferramentas" element={ <Protected> <Tools/> </Protected> } />
+            <Route path="/alugueis" element={ <Protected> <Rents/> </Protected> } />
+            <Route path="/relatorios" element={ <Protected><Statistics /></Protected> } />
           </Routes>
         </Router>
       </AuthProvider>

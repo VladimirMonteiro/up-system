@@ -25,9 +25,6 @@ const Navbar = () => {
 
             </div>
             <nav className={styles.navContainer}>
-
- 
-
                 <ul>
                     <li><NavLink to="/inicial" className={({ isActive }) =>
                         isActive ? styles.active : ""
@@ -50,6 +47,7 @@ const Navbar = () => {
                 </ul>
             </nav>
         </header>
+    
 
 
     )
