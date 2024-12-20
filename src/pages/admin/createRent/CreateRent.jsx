@@ -13,12 +13,14 @@ import TableTools from '../../../components/tableTools/TableTools'
 const CreateRent = () => {
 
     const [client, setClient] = useState("")
-    const [tool, setTool] = useState("")
+    const [tool, setTool] = useState({})
     const [initialDate, setInitalDate] = useState("")
     const [deliveryDate, setDeliveryDate] = useState("")
     const [price, setPrice] = useState(0)
+    const [quantity, setQuantity] = useState("")
     const [listItems, setListItems] = useState([])
-    const [clientsData, setClientsData] = useState([]);
+
+  
 
 
     const [isClientModalOpen, setClientModalOpen] = useState(false); // Estado para o modal de cliente
@@ -62,8 +64,10 @@ const CreateRent = () => {
         const parsedPrice = parseFloat(price)
 
         const item = {
-            tool,
+            tool: tool.name,
+            quantity,
             price: parsedPrice
+
         }
 
         setListItems([...listItems, item])
@@ -80,7 +84,7 @@ const CreateRent = () => {
       }
 
       const handleSelectTool = (tool) => {
-        setTool(tool.name)
+        setTool(tool)
         console.log(tool)
         closeToolModal()
         return tool
@@ -117,10 +121,19 @@ const CreateRent = () => {
                             <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client} />
                             <button onClick={openClients}>Selecionar</button>
                         </div>
+
                         <div className={styles.inputContainer}>
                             <label htmlFor="tool">Selecione a ferramenta</label>
-                            <input type="text" name="tool" id="tool" onChange={e => setTool(e.target.value)} value={tool} />
+                            <input type="text" name="tool" id="tool" onChange={e => setTool(e.target.value)} value={tool.name || ""} />
                             <button onClick={openTools}>Selecionar</button>
+                        </div>
+                        <div className={styles.inputContainer2}>
+                            <label htmlFor="price">Valor da Locação</label>
+                            <input type="text" name="price" id="price" onChange={e => setPrice(e.target.value)} value={price} />
+                        </div>
+                        <div className={styles.inputContainer2}>
+                            <label htmlFor="quantity">Quantidade</label>
+                            <input type="text" name="quantity" id="quantity" onChange={e => setQuantity(e.target.value)} value={quantity} />
                         </div>
                         <div className={styles.dateInputContainer}>
                             <label htmlFor="initialDate">Data inicial: </label>
@@ -130,10 +143,7 @@ const CreateRent = () => {
                             <label htmlFor="deliveryDate">Data Final: </label>
                             <input type="date" name="deliveryDate" id="deliveryDate" onChange={e => setDeliveryDate(e.target.value)} value={deliveryDate}/>
                         </div>
-                        <div className={styles.inputContainer2}>
-                            <label htmlFor="price">Valor da Locação</label>
-                            <input type="text" name="price" id="price" onChange={e => setPrice(e.target.value)} value={price} />
-                        </div>
+                       
                         <div className={styles.inputContainer2}>
                             <button onClick={addItems}>Adicionar</button>
                         </div>
