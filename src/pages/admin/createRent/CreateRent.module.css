@@ -121,7 +121,7 @@
 }
 
 /* Estilo para inputs de texto e número */
-.inputContainer2 input[type="number"],
+.inputContainer2 input[type="text"],
 .inputContainer2 input[type="submit"],
 .inputContainer2 button {
     padding: 10px 12px;
@@ -135,14 +135,14 @@
 }
 
 /* Efeito hover para inputs */
-.inputContainer2 input[type="number"]:hover,
+.inputContainer2 input[type="text"]:hover,
 .inputContainer2 input[type="submit"]:hover,
 .inputContainer2 button:hover {
     border-color: #80bdff;
 }
 
 /* Efeito foco para inputs */
-.inputContainer2 input[type="number"]:focus,
+.inputContainer2 input[type="text"]:focus,
 .inputContainer2 input[type="submit"]:focus,
 .inputContainer2 button:focus {
     border-color: #4d90fe;

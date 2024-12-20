@@ -4,6 +4,8 @@ import styles from './CreateRent.module.css'
 
 import Modal
  from '../../../components/modal/Modal'
+import Table from '../../../components/tableClients/Table'
+import TableTools from '../../../components/tableTools/TableTools'
 
 
 
@@ -12,8 +14,11 @@ const CreateRent = () => {
 
     const [client, setClient] = useState("")
     const [tool, setTool] = useState("")
+    const [initialDate, setInitalDate] = useState("")
+    const [deliveryDate, setDeliveryDate] = useState("")
     const [price, setPrice] = useState(0)
     const [listItems, setListItems] = useState([])
+    const [clientsData, setClientsData] = useState([]);
 
 
     const [isClientModalOpen, setClientModalOpen] = useState(false); // Estado para o modal de cliente
@@ -22,7 +27,7 @@ const CreateRent = () => {
 
     useEffect(() => {
         console.log("A lista foi atualizada:", listItems);
-
+       
     }, [listItems])
 
 
@@ -49,6 +54,11 @@ const CreateRent = () => {
     const addItems = (e) => {
         e.preventDefault()
 
+        if(!tool) {
+            alert("Selecione um equipamento para a locação!")
+            return
+        }
+
         const parsedPrice = parseFloat(price)
 
         const item = {
@@ -57,14 +67,40 @@ const CreateRent = () => {
         }
 
         setListItems([...listItems, item])
-        console.log("adicionado")
-        console.log(listItems)
+        setTool("")
+        setPrice("")
 
     }
 
+    const handleSelectClient = (client) => {
+        setClient(client.name)
+        console.log(client)
+        closeClientModal()
+        return client
+      }
+
+      const handleSelectTool = (tool) => {
+        setTool(tool.name)
+        console.log(tool)
+        closeToolModal()
+        return tool
+      }
 
 
+      const finishRent = (e) => {
+        e.preventDefault()
 
+        const newRent = {
+            client,
+            listItems,
+            price: listItems.reduce((total, item) => total + item.price, 0).toFixed(2),
+            initialDate,
+            deliveryDate
+            
+        }
+
+        console.log(newRent)
+      }
 
     return (
 
@@ -74,7 +110,7 @@ const CreateRent = () => {
             <section className={styles.sectionContainer}>
                 <h1>Alugar</h1>
                 <div className={styles.center}>
-                    <form className={styles.formContainer}>
+                    <form className={styles.formContainer} onSubmit={finishRent}>
 
                         <div className={styles.inputContainer}>
                             <label htmlFor="client">Selecione o cliente</label>
@@ -88,15 +124,15 @@ const CreateRent = () => {
                         </div>
                         <div className={styles.dateInputContainer}>
                             <label htmlFor="initialDate">Data inicial: </label>
-                            <input type="date" name="initialDate" id="initialDate" />
+                            <input type="date" name="initialDate" id="initialDate" onChange={e => setInitalDate(e.target.value)} value={initialDate} />
                         </div>
                         <div className={styles.dateInputContainer}>
                             <label htmlFor="deliveryDate">Data Final: </label>
-                            <input type="date" name="deliveryDate" id="deliveryDate" />
+                            <input type="date" name="deliveryDate" id="deliveryDate" onChange={e => setDeliveryDate(e.target.value)} value={deliveryDate}/>
                         </div>
                         <div className={styles.inputContainer2}>
                             <label htmlFor="price">Valor da Locação</label>
-                            <input type="number" name="price" id="price" onChange={e => setPrice(e.target.value)} value={price} />
+                            <input type="text" name="price" id="price" onChange={e => setPrice(e.target.value)} value={price} />
                         </div>
                         <div className={styles.inputContainer2}>
                             <button onClick={addItems}>Adicionar</button>
@@ -127,6 +163,7 @@ const CreateRent = () => {
             <Modal isOpen={isClientModalOpen} onClose={closeClientModal}>
                 <h2>Selecione um Cliente</h2>
                 {/* Aqui você pode adicionar os componentes ou listagens para clientes */}
+                <Table selected={handleSelectClient}/>
                 <button onClick={closeClientModal}>Fechar</button>
             </Modal>
 
@@ -134,6 +171,7 @@ const CreateRent = () => {
             <Modal isOpen={isToolModalOpen} onClose={closeToolModal}>
                 <h2>Selecione uma Ferramenta</h2>
                 {/* Aqui você pode adicionar os componentes ou listagens para ferramentas */}
+                <TableTools selected={handleSelectTool}/>
                 <button onClick={closeToolModal}>Fechar</button>
             </Modal>
 
