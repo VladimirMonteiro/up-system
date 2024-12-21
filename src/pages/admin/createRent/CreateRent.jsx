@@ -6,17 +6,18 @@ import Modal
  from '../../../components/modal/Modal'
 import Table from '../../../components/tableClients/Table'
 import TableTools from '../../../components/tableTools/TableTools'
+import api from '../../../utils/api'
 
 
 
 
 const CreateRent = () => {
 
-    const [client, setClient] = useState("")
-    const [tool, setTool] = useState({})
+    const [client, setClient] = useState({})
+    const [tool, setTool] = useState("")
     const [initialDate, setInitalDate] = useState("")
     const [deliveryDate, setDeliveryDate] = useState("")
-    const [price, setPrice] = useState(0)
+    const [price, setPrice] = useState("")
     const [quantity, setQuantity] = useState("")
     const [listItems, setListItems] = useState([])
 
@@ -56,16 +57,28 @@ const CreateRent = () => {
     const addItems = (e) => {
         e.preventDefault()
 
+
         if(!tool) {
             alert("Selecione um equipamento para a locação!")
             return
         }
 
-        const parsedPrice = parseFloat(price)
+        if(!price) {
+            alert("Informe o valor da locação!")
+            return
+        }
+        if(!quantity) {
+            alert("Informe a quantidade da ferramenta!")
+            return
+        }
+
+        const parsedPrice = parseFloat(price.replace(/\./g, '').replace(',', '.'));
+        const parsedQuantity = parseFloat(quantity)
 
         const item = {
+            toolId: tool.id,
             tool: tool.name,
-            quantity,
+            quantity: parsedQuantity,
             price: parsedPrice
 
         }
@@ -73,11 +86,13 @@ const CreateRent = () => {
         setListItems([...listItems, item])
         setTool("")
         setPrice("")
+        setQuantity("")
+        
 
     }
 
     const handleSelectClient = (client) => {
-        setClient(client.name)
+        setClient(client)
         console.log(client)
         closeClientModal()
         return client
@@ -91,20 +106,90 @@ const CreateRent = () => {
       }
 
 
-      const finishRent = (e) => {
+      const finishRent = async(e) => {
         e.preventDefault()
+
+        if(!client) {
+            alert("Selecione o cliente!")
+            return
+        }
+
+        if(listItems.length == 0) {
+            alert("Adicione pelo menos um item à locação!")
+            return
+        }
+
+        if(initialDate == "") {
+            alert("Informe a data inicial da locação!")
+            return
+        }
+
+        if(listItems.length == 0) {
+            alert("Informe a data final da locação!")
+            return
+        }
+
+        const updatedListItems = listItems.map(item => {
+            // eslint-disable-next-line no-unused-vars
+            const { tool, ...rest } = item;  // Desestrutura para remover 'tool'
+            return rest;  // Retorna o objeto sem a chave 'tool'
+          });
+
 
         const newRent = {
             client,
-            listItems,
+            items: updatedListItems,
             price: listItems.reduce((total, item) => total + item.price, 0).toFixed(2),
             initialDate,
             deliveryDate
             
         }
 
+        try {
+
+            const request = await api.post("http://localhost:8080/rent/create", newRent)
+            console.log(request.data)
+
+            setClient("")
+            setTool("")
+            setPrice("")
+            setQuantity("")
+            setInitalDate("")
+            setDeliveryDate("")
+
+        } catch (error) {
+            console.log(error)
+            
+        }
+
         console.log(newRent)
       }
+
+     // Função para formatar a entrada com vírgula
+  const handlePriceChange = (e) => {
+    let value = e.target.value;
+
+    // Remove qualquer caractere não numérico (exceto vírgulas)
+    value = value.replace(/\D/g, '');
+
+    // Adiciona a vírgula para separar os centavos
+    if (value.length > 2) {
+      const decimalPart = value.slice(-2); // Últimos 2 dígitos são os centavos
+      const integerPart = value.slice(0, -2); // O restante são os milhares
+
+      // Formata o número inteiro com pontos para separar os milhares
+      const formattedInteger = integerPart.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
+      
+      // Combina a parte inteira com a parte decimal
+      value = formattedInteger + ',' + decimalPart;
+    } else {
+      // Se o valor for menor ou igual a 2 caracteres, não formata
+      // eslint-disable-next-line no-self-assign
+      value = value;
+    }
+
+    setPrice(value);
+  };
 
     return (
 
@@ -118,7 +203,7 @@ const CreateRent = () => {
 
                         <div className={styles.inputContainer}>
                             <label htmlFor="client">Selecione o cliente</label>
-                            <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client} />
+                            <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client.name || ""} />
                             <button onClick={openClients}>Selecionar</button>
                         </div>
 
@@ -129,7 +214,7 @@ const CreateRent = () => {
                         </div>
                         <div className={styles.inputContainer2}>
                             <label htmlFor="price">Valor da Locação</label>
-                            <input type="text" name="price" id="price" onChange={e => setPrice(e.target.value)} value={price} />
+                            <input type="text" name="price" id="price" onChange={handlePriceChange} value={price} />
                         </div>
                         <div className={styles.inputContainer2}>
                             <label htmlFor="quantity">Quantidade</label>
@@ -158,11 +243,11 @@ const CreateRent = () => {
                             <h2>Items da locação</h2>
                             <ul>
                                 {listItems.length > 0 && listItems.map((item, index) => (
-                                    <li key={index}><div>{item.tool}</div> - <div>R${item.price}</div></li>
+                                    <li key={index}><div>{item.tool}</div> <div>{item.quantity}un</div>  <div>R${item.price}</div></li>
                                 ))}
                             </ul>
                             <p className={styles.total}>
-                            TOTAL: R${listItems.reduce((total, item) => total + item.price, 0).toFixed(2)}
+                            TOTAL: R${listItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}
                             </p>
                         </div>
                     </div>
