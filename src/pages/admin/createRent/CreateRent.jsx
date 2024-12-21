@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../../../components/navbar/Navbar'
 import styles from './CreateRent.module.css'
 
-import Modal
- from '../../../components/modal/Modal'
+import Modal from '../../../components/modal/Modal'
 import Table from '../../../components/tableClients/Table'
 import TableTools from '../../../components/tableTools/TableTools'
 import api from '../../../utils/api'
-
 
 
 
@@ -20,9 +19,7 @@ const CreateRent = () => {
     const [price, setPrice] = useState("")
     const [quantity, setQuantity] = useState("")
     const [listItems, setListItems] = useState([])
-
-  
-
+    const navigate = useNavigate()
 
     const [isClientModalOpen, setClientModalOpen] = useState(false); // Estado para o modal de cliente
     const [isToolModalOpen, setToolModalOpen] = useState(false); // Estado para o modal de ferramenta
@@ -105,7 +102,6 @@ const CreateRent = () => {
         return tool
       }
 
-
       const finishRent = async(e) => {
         e.preventDefault()
 
@@ -135,11 +131,20 @@ const CreateRent = () => {
             return rest;  // Retorna o objeto sem a chave 'tool'
           });
 
+        const dataRentToPdf = {
+            client,
+            items: listItems,
+            price: listItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2),
+            initialDate,
+            deliveryDate
+
+          }
+
 
         const newRent = {
             client,
             items: updatedListItems,
-            price: listItems.reduce((total, item) => total + item.price, 0).toFixed(2),
+            price: listItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2),
             initialDate,
             deliveryDate
             
@@ -156,6 +161,8 @@ const CreateRent = () => {
             setQuantity("")
             setInitalDate("")
             setDeliveryDate("")
+
+            navigate("/pdf", {state: dataRentToPdf})
 
         } catch (error) {
             console.log(error)
@@ -195,21 +202,20 @@ const CreateRent = () => {
 
         <>
             <Navbar />
-
             <section className={styles.sectionContainer}>
                 <h1>Alugar</h1>
                 <div className={styles.center}>
                     <form className={styles.formContainer} onSubmit={finishRent}>
 
-                        <div className={styles.inputContainer}>
+                        <div className={[styles.inputContainer]}>
                             <label htmlFor="client">Selecione o cliente</label>
-                            <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client.name || ""} />
+                            <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client.name || ""} i disabled/>
                             <button onClick={openClients}>Selecionar</button>
                         </div>
 
                         <div className={styles.inputContainer}>
                             <label htmlFor="tool">Selecione a ferramenta</label>
-                            <input type="text" name="tool" id="tool" onChange={e => setTool(e.target.value)} value={tool.name || ""} />
+                            <input type="text" name="tool" id="tool" onChange={e => setTool(e.target.value)} value={tool.name || ""} disabled />
                             <button onClick={openTools}>Selecionar</button>
                         </div>
                         <div className={styles.inputContainer2}>
@@ -234,10 +240,10 @@ const CreateRent = () => {
                         </div>
 
                         <div className={styles.inputContainer2}>
-                            <input type="submit" value="Alugar" />
+                            <input type="submit" value="Alugar" />    
                         </div>
-
                     </form>
+                    
                     <div className={styles.listContainer}>
                         <div className={styles.list}>
                             <h2>Items da locação</h2>

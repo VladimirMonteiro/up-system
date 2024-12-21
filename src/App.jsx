@@ -12,6 +12,7 @@ import Tools from "./pages/admin/tools/Tools"
 import Rents from "./pages/admin/rents/Rents"
 import Statistics from "./pages/admin/statistics/Statistics"
 import Protected from "./components/Protected"
+import PdfPage from "./components/pdf/Pdf"
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
             <Route path="/ferramentas" element={ <Protected> <Tools/> </Protected> } />
             <Route path="/alugueis" element={ <Protected> <Rents/> </Protected> } />
             <Route path="/relatorios" element={ <Protected><Statistics /></Protected> } />
+            <Route path="/pdf" element={ <Protected> <PdfPage/> </Protected> } />
           </Routes>
         </Router>
       </AuthProvider>

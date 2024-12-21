@@ -51,6 +51,13 @@
     
 }
 
+.inputContainer input[name= "client"]:disabled {
+    cursor: not-allowed;
+  }
+  .inputContainer input[name= "tool"]:disabled {
+    cursor: not-allowed;
+  }
+
 /* Estilo geral do contêiner */
 .dateInputContainer {
     width: 50%;
