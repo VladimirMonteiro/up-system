@@ -19,7 +19,7 @@ const TableTools = ({selected}) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredTools, setFilteredTools] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const rowsPerPage = 5;
+    const rowsPerPage = 10;
     const location = useLocation().pathname
 
 
