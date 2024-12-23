@@ -1,0 +1,27 @@
+.containerSection {
+    margin-top: 100px;
+    width: 100%;
+}
+
+.containerSection h1 {
+    text-align: center;
+    margin: 50px 0;
+}
+
+.containerBtn{
+    text-align: center;
+    margin-top: 40px;
+}
+
+.containerBtn button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007BFF;
+    color: #fff;
+    cursor: pointer;
+}
+
+.containerBtn button:hover {
+    background-color: #0056b3;
+}

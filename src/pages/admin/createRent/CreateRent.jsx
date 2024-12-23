@@ -209,7 +209,7 @@ const CreateRent = () => {
 
                         <div className={[styles.inputContainer]}>
                             <label htmlFor="client">Selecione o cliente</label>
-                            <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client.name || ""} i disabled/>
+                            <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client.name || ""}  disabled/>
                             <button onClick={openClients}>Selecionar</button>
                         </div>
 
