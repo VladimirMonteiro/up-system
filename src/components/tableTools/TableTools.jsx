@@ -10,6 +10,7 @@ import { FaPen } from "react-icons/fa";
 
 
 
+
 const TableTools = ({selected}) => {
 
 
@@ -24,6 +25,7 @@ const TableTools = ({selected}) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            console.log("renderizou")
 
             try {
 
@@ -77,7 +79,6 @@ const TableTools = ({selected}) => {
        
     }
 
-
     return (
      
         <div className={styles.tableContainer}>
@@ -107,7 +108,8 @@ const TableTools = ({selected}) => {
                 </thead>
                 <tbody>
                     {currentData.map((row) => (
-                        <tr key={row.id}  onClick={location == "/alugar" ? () => selected(row) : undefined}>
+                        <tr key={row.id}  onClick={location == "/alugar" ? () => selected(row) : undefined}
+                        style={row.quantity === 0 ? { backgroundColor: '#ffcccc' } : {}}>
                             <td>{row.id}</td>
                             <td>{row.name}</td>
                             <td>{row.quantity}un</td>
@@ -115,7 +117,7 @@ const TableTools = ({selected}) => {
                             <td>R${row.week}</td>
                             <td>R${row.priceMonth}</td>
                             {location == "/ferramentas" && (
-                                <td><MdDelete style={{color: "red"}} onClick={() => handleDeleteTool(row.id)}/> <FaPen /></td>
+                                <td><MdDelete style={{color: "red"}} onClick={() => handleDeleteTool(row.id)}/> <FaPen onClick={(e) => selected(e, row.id)} /></td>
                             )}
                            
                         </tr>

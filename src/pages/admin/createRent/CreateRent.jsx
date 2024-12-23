@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import Navbar from '../../../components/navbar/Navbar'
-import styles from './CreateRent.module.css'
+import { handlePriceChange } from '../../../utils/handlePriceChange'
 
+
+import Navbar from '../../../components/navbar/Navbar'
 import Modal from '../../../components/modal/Modal'
 import Table from '../../../components/tableClients/Table'
 import TableTools from '../../../components/tableTools/TableTools'
 import api from '../../../utils/api'
+
+import styles from './CreateRent.module.css'
 
 
 
@@ -172,32 +175,6 @@ const CreateRent = () => {
         console.log(newRent)
       }
 
-     // Função para formatar a entrada com vírgula
-  const handlePriceChange = (e) => {
-    let value = e.target.value;
-
-    // Remove qualquer caractere não numérico (exceto vírgulas)
-    value = value.replace(/\D/g, '');
-
-    // Adiciona a vírgula para separar os centavos
-    if (value.length > 2) {
-      const decimalPart = value.slice(-2); // Últimos 2 dígitos são os centavos
-      const integerPart = value.slice(0, -2); // O restante são os milhares
-
-      // Formata o número inteiro com pontos para separar os milhares
-      const formattedInteger = integerPart.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.');
-      
-      // Combina a parte inteira com a parte decimal
-      value = formattedInteger + ',' + decimalPart;
-    } else {
-      // Se o valor for menor ou igual a 2 caracteres, não formata
-      // eslint-disable-next-line no-self-assign
-      value = value;
-    }
-
-    setPrice(value);
-  };
-
     return (
 
         <>
@@ -220,7 +197,7 @@ const CreateRent = () => {
                         </div>
                         <div className={styles.inputContainer2}>
                             <label htmlFor="price">Valor da Locação</label>
-                            <input type="text" name="price" id="price" onChange={handlePriceChange} value={price} />
+                            <input type="text" name="price" id="price" onChange={(e) => handlePriceChange(e, setPrice)} value={price} />
                         </div>
                         <div className={styles.inputContainer2}>
                             <label htmlFor="quantity">Quantidade</label>
