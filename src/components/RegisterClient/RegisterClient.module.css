@@ -1,0 +1,114 @@
+.form {
+    padding: 5px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.formContainer {
+    width: 100%;
+
+}
+.formContainer {
+    width: 100%;
+
+}
+
+.inputContainer {
+    width: 22%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    /* Espaçamento entre o label e o input */
+    margin: 5px 0;
+    /* Margem externa */
+    font-family: Arial, sans-serif;
+    margin: 8px;
+}
+
+/* Estilo do label */
+.inputContainer2 label {
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Estilo para inputs de texto e número */
+.inputContainer input[type="text"],
+.inputContainer input[type="submit"],
+.inputContainer button {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Efeito hover para inputs */
+.inputContainer input[type="text"]:hover,
+.inputContainer input[type="submit"]:hover,
+.inputContainer button:hover {
+    border-color: #80bdff;
+}
+
+/* Efeito foco para inputs */
+.inputContainer input[type="text"]:focus,
+.inputContainer input[type="submit"]:focus,
+.inputContainer button:focus {
+    border-color: #4d90fe;
+    box-shadow: 0 0 5px rgba(77, 144, 254, 0.5);
+}
+
+/* Estilo do botão */
+.inputContainer button {
+    background-color: #4d90fe;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+/* Efeito hover no botão */
+.inputContainer button:hover {
+    background-color: #357ae8;
+    transform: translateY(-2px);
+}
+
+/* Efeito ativo no botão */
+.inputContainer button:active {
+    background-color: #2a65c0;
+    transform: translateY(0);
+}
+
+/* Estilo do botão submit */
+.inputContainer input[type="submit"] {
+    
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+
+}
+
+/* Efeito hover no botão submit */
+.inputContainer input[type="submit"]:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+}
+
+/* Efeito ativo no botão submit */
+.inputContainer input[type="submit"]:active {
+    background-color: #1e7e34;
+    transform: translateY(0);
+}
+
+.containerBtn {
+    display: flex;
+    justify-content: center;
+}

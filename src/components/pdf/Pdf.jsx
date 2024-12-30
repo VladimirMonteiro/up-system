@@ -40,7 +40,7 @@ const PdfPage = () => {
 
         <div className={styles.clientInfo}>
           <p><strong>Cliente:</strong> {client?.name}</p>
-          <p><strong>CPF:</strong> {client?.cpf}</p>
+          <p><strong>CPF/CNPJ:</strong> {client.cpf ? client.cpf : client.cnpj}</p>
         </div>
 
         <div className={styles.itemsSection}>

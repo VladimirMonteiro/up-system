@@ -41,6 +41,7 @@ const RegisterTool = () => {
             setDaily("")
             setWeek("")
             setPriceMonth("")
+            setErrors(null)
             
             return response.data
 
