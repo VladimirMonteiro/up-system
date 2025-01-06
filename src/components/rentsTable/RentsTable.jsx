@@ -84,19 +84,24 @@ const RentsTable = ({ selected }) => {
   
   const openPdf = (rent) => {
 
-    const rentListItem = rent.rentItems.map(item => item.tool)
+
+    const transformedRentItems = rent.rentItems.map(item => ({
+      ...item,
+      name: item.tool.name, // Inclui todas as propriedades de `tool` no mesmo nível
+      tool: undefined, 
+    }));
+
+  
     
     const rentData = {
         client: rent.client,
-        items: rent.rentItems,
+        items: transformedRentItems,
         price: rent.price,
         initialDate: rent.initialDate,
         deliveryDate: rent.deliveryDate
     }
-    console.log(rentData)
-    console.log("test> " + rent.rentItems)
-
     navigate("/pdf", {state: rentData})
+    console.log(rentData)
     
   }
 
