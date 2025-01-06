@@ -84,7 +84,7 @@ const UpdateRent = ({ rent }) => {
                             listItems.map((item, index) => (
                                 <li key={index} className={styles.rentItem}>
                                     <div className={styles.inputGroup}>
-                                        <label htmlFor={`item-name-${index}`} className={styles.itemLabel}>Nome</label>
+                                        <label htmlFor={`name`} className={styles.itemLabel}>Nome</label>
                                         <input
                                             id={`item-name-${index}`}
                                             type="text"
