@@ -57,7 +57,7 @@ const PdfPage = () => {
             <tbody>
               {items && items.map((item, index) => (
                 <tr key={index}>
-                  <td>{item.tool}</td>
+                  <td>{item.tool|| item.name}</td>
                   <td>{item.quantity}</td>
                   <td>R${item.price}</td>
                   <td>R${(item.price * item.quantity).toFixed(2)}</td>

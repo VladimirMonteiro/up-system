@@ -7,13 +7,7 @@ import { useLocation } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 
-
-
-
-
 const TableTools = ({selected}) => {
-
-
 
     const [data, setData] = useState([])
     const [searchTerm, setSearchTerm] = useState('');
@@ -68,16 +62,13 @@ const TableTools = ({selected}) => {
         try {
             const response = await api.delete(`http://localhost:8080/tools/delete/${id}`)
             console.log(response.data)
-         
-
+        
             setData(prevData => prevData.filter(tool => tool.id !== id));
             
         } catch (error) {
             console.log(error)
-            
         }
-       
-    }
+     }
 
     return (
      
