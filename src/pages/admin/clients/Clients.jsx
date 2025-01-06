@@ -19,9 +19,7 @@ const Clients = () => {
     const [client, setClient] = useState({})
     const [modalUpdateClients, setModalUpdateClients] = useState(false)
     const [modalUpdateClientsPj, setModalUpdateClientsPj] = useState(false)
-
-
-    
+   
   const openModalClient = (e) => {
     e.preventDefault()
     setModalClients(true)

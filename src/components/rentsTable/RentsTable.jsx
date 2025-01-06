@@ -34,8 +34,8 @@ const RentsTable = ({ selected }) => {
   }, []);
 
   const handleSearch = (searchTerm) => {
-    const filteredData = data.filter((tool) =>
-      Object.values(tool).some(
+    const filteredData = data.filter((rent) =>
+      Object.values(rent.client).some(
         (value) =>
           value &&
           value.toString().toLowerCase().includes(searchTerm.toLowerCase())
@@ -56,14 +56,14 @@ const RentsTable = ({ selected }) => {
   const handleNext = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
-  const handleDeleteTool = async (id) => {
+  const handleDeleteRent = async (id) => {
     try {
       const response = await api.delete(
         `http://localhost:8080/rent/delete/${id}`
       );
       console.log(response.data);
 
-      setData((prevData) => prevData.filter((tool) => tool.id !== id));
+      setData((prevData) => prevData.filter((rent) => rent.id !== id));
     } catch (error) {
       console.log(error);
     }
@@ -84,15 +84,12 @@ const RentsTable = ({ selected }) => {
   
   const openPdf = (rent) => {
 
-
     const transformedRentItems = rent.rentItems.map(item => ({
       ...item,
       name: item.tool.name, // Inclui todas as propriedades de `tool` no mesmo nível
       tool: undefined, 
     }));
 
-  
-    
     const rentData = {
         client: rent.client,
         items: transformedRentItems,
@@ -106,6 +103,8 @@ const RentsTable = ({ selected }) => {
   }
 
   console.log(data)
+
+
 
   return (
     <div className={styles.tableContainer}>
@@ -153,7 +152,7 @@ const RentsTable = ({ selected }) => {
               {location == "/alugueis" && (
                 <td style={{display: "flex", justifyContent: "space-around"}}>
                   <MdDelete color="red"
-                    onClick={() => handleDeleteTool(row.id)}
+                    onClick={() => handleDeleteRent(row.id)}
                   />{" "}
                   <FaPen onClick={(e) => selected(e, row.id)} /> <FaPaste onClick={() => openPdf(row)} /> <MdOutlineDoneOutline color="green" onClick={() => completeRent(row.id)} />
                 </td>

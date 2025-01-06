@@ -197,11 +197,11 @@ const CreateRent = () => {
                         </div>
                         <div className={styles.inputContainer2}>
                             <label htmlFor="price">Valor da Locação</label>
-                            <input type="text" name="price" id="price" onChange={(e) => handlePriceChange(e, setPrice)} value={price} />
+                            <input type="text" name="price" id="price" onChange={(e) => handlePriceChange(e, setPrice)} value={price} autoComplete='off' />
                         </div>
                         <div className={styles.inputContainer2}>
                             <label htmlFor="quantity">Quantidade</label>
-                            <input type="text" name="quantity" id="quantity" onChange={e => setQuantity(e.target.value)} value={quantity} />
+                            <input type="text" name="quantity" id="quantity" onChange={e => setQuantity(e.target.value)} value={quantity} autoComplete='off' />
                         </div>
                         <div className={styles.dateInputContainer}>
                             <label htmlFor="initialDate">Data inicial: </label>

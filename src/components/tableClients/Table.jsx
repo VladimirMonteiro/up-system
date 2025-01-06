@@ -6,6 +6,7 @@ import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 
 import { useLocation } from 'react-router-dom';
+import Loading from '../loading/Loading';
 
 const Table = ({ selected }) => {
 
@@ -25,6 +26,7 @@ const Table = ({ selected }) => {
 
         const response = await api.get("http://localhost:8080/clients")
         setData(response.data)
+        setLoading(false)
 
       } catch (error) {
         console.log(error)
@@ -77,6 +79,7 @@ const Table = ({ selected }) => {
 
 
   return (
+
     <div className={styles.tableContainer}>
       <div className={styles.searchContainer}>
         <label htmlFor="search">Pesquisar</label>
