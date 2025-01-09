@@ -20,7 +20,8 @@ const CreateRent = () => {
     const [initialDate, setInitalDate] = useState("")
     const [deliveryDate, setDeliveryDate] = useState("")
     const [price, setPrice] = useState("")
-    const [quantity, setQuantity] = useState("")
+    const [quantity, setQuantity] = useState(null)
+    const [meters, setMeters] = useState("")
     const [listItems, setListItems] = useState([])
     const navigate = useNavigate()
 
@@ -30,7 +31,7 @@ const CreateRent = () => {
 
     useEffect(() => {
         console.log("A lista foi atualizada:", listItems);
-       
+
     }, [listItems])
 
 
@@ -58,16 +59,16 @@ const CreateRent = () => {
         e.preventDefault()
 
 
-        if(!tool) {
+        if (!tool) {
             alert("Selecione um equipamento para a locação!")
             return
         }
 
-        if(!price) {
+        if (!price) {
             alert("Informe o valor da locação!")
             return
         }
-        if(!quantity) {
+        if (!quantity) {
             alert("Informe a quantidade da ferramenta!")
             return
         }
@@ -87,7 +88,7 @@ const CreateRent = () => {
         setTool("")
         setPrice("")
         setQuantity("")
-        
+
 
     }
 
@@ -96,35 +97,37 @@ const CreateRent = () => {
         console.log(client)
         closeClientModal()
         return client
-      }
+    }
 
-      const handleSelectTool = (tool) => {
+    const handleSelectTool = (tool) => {
         setTool(tool)
         console.log(tool)
         closeToolModal()
         return tool
-      }
+    }
 
-      const finishRent = async(e) => {
+    const finishRent = async (e) => {
         e.preventDefault()
 
-        if(!client) {
-            alert("Selecione o cliente!")
-            return
-        }
+       
 
-        if(listItems.length == 0) {
+        if (listItems.length == 0) {
             alert("Adicione pelo menos um item à locação!")
             return
         }
 
-        if(initialDate == "") {
+        if (initialDate == "") {
             alert("Informe a data inicial da locação!")
             return
         }
 
-        if(listItems.length == 0) {
+        if (listItems.length == 0) {
             alert("Informe a data final da locação!")
+            return
+        }
+
+        if (!client.name) {
+            alert("Selecione o cliente!")
             return
         }
 
@@ -132,7 +135,7 @@ const CreateRent = () => {
             // eslint-disable-next-line no-unused-vars
             const { tool, ...rest } = item;  // Desestrutura para remover 'tool'
             return rest;  // Retorna o objeto sem a chave 'tool'
-          });
+        });
 
         const dataRentToPdf = {
             client,
@@ -141,7 +144,7 @@ const CreateRent = () => {
             initialDate,
             deliveryDate
 
-          }
+        }
 
 
         const newRent = {
@@ -150,7 +153,7 @@ const CreateRent = () => {
             price: listItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2),
             initialDate,
             deliveryDate
-            
+
         }
 
         try {
@@ -165,15 +168,39 @@ const CreateRent = () => {
             setInitalDate("")
             setDeliveryDate("")
 
-            navigate("/pdf", {state: dataRentToPdf})
+            navigate("/pdf", { state: dataRentToPdf })
 
         } catch (error) {
-            console.log(error)
-            
+            alert(error.response.data.errors[0])
+
         }
 
         console.log(newRent)
-      }
+    }
+
+    const calculateQuantityOfAndaime = (e) => {
+
+        setMeters(parseFloat((e.target.value)))
+
+        switch (tool.name) {
+            case 'andaime 1,5m':
+                setQuantity(Math.ceil((meters / 1.5) * 2));
+                break;
+            case 'andaime 2m':
+                setQuantity((meters / 2) * 2);
+                break;
+            case 'andaime 1m':
+                setQuantity(meters * 2);
+                break;
+            default:
+                alert('Tool name not recognized:', tool.name);
+        }
+    }
+
+    const handleRemoveItem = (index) => {
+        const updatedList = listItems.filter((_, i) => i !== index);
+        setListItems(updatedList);
+    };
 
     return (
 
@@ -186,7 +213,7 @@ const CreateRent = () => {
 
                         <div className={[styles.inputContainer]}>
                             <label htmlFor="client">Selecione o cliente</label>
-                            <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client.name || ""}  disabled/>
+                            <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client.name || ""} disabled />
                             <button onClick={openClients}>Selecionar</button>
                         </div>
 
@@ -195,13 +222,24 @@ const CreateRent = () => {
                             <input type="text" name="tool" id="tool" onChange={e => setTool(e.target.value)} value={tool.name || ""} disabled />
                             <button onClick={openTools}>Selecionar</button>
                         </div>
-                        <div className={styles.inputContainer2}>
-                            <label htmlFor="price">Valor da Locação</label>
-                            <input type="text" name="price" id="price" onChange={(e) => handlePriceChange(e, setPrice)} value={price} autoComplete='off' />
-                        </div>
-                        <div className={styles.inputContainer2}>
-                            <label htmlFor="quantity">Quantidade</label>
-                            <input type="text" name="quantity" id="quantity" onChange={e => setQuantity(e.target.value)} value={quantity} autoComplete='off' />
+                        <div className={styles.containerTwoInput}>
+                            <div className={styles.inputContainer2}>
+                                <label htmlFor="price">Valor da Locação</label>
+                                <input type="text" name="price" id="price" onChange={(e) => handlePriceChange(e, setPrice)} value={price} autoComplete='off' placeholder='R$' />
+                            </div>
+                              {tool.name && tool.name.toLowerCase().includes("andaime") && (
+                                <div>
+                                    <div className={styles.inputContainer2}>
+                                        <label htmlFor="quantity">Metros (m)</label>
+                                        <input type="text" name="meters" id="meters" onChange={e => setMeters(e.target.value)} value={meters || ""} autoComplete='off' placeholder='Opcional'/>
+                                    </div>
+                                    <p className={styles.pCalculate} onClick={calculateQuantityOfAndaime}>Calcular</p>
+                                </div>
+                            )}
+                            <div className={styles.inputContainer2}>
+                                <label htmlFor="quantity">Quantidade</label>
+                                <input type="text" name="quantity" id="quantity" onChange={e => setQuantity(e.target.value)} value={quantity || ""} autoComplete='off' />
+                            </div>
                         </div>
                         <div className={styles.dateInputContainer}>
                             <label htmlFor="initialDate">Data inicial: </label>
@@ -209,28 +247,37 @@ const CreateRent = () => {
                         </div>
                         <div className={styles.dateInputContainer}>
                             <label htmlFor="deliveryDate">Data Final: </label>
-                            <input type="date" name="deliveryDate" id="deliveryDate" onChange={e => setDeliveryDate(e.target.value)} value={deliveryDate}/>
+                            <input type="date" name="deliveryDate" id="deliveryDate" onChange={e => setDeliveryDate(e.target.value)} value={deliveryDate} />
                         </div>
-                       
+
                         <div className={styles.inputContainer2}>
                             <button onClick={addItems}>Adicionar</button>
                         </div>
 
                         <div className={styles.inputContainer2}>
-                            <input type="submit" value="Alugar" />    
+                            <input type="submit" value="Alugar" />
                         </div>
                     </form>
-                    
+
                     <div className={styles.listContainer}>
                         <div className={styles.list}>
                             <h2>Items da locação</h2>
                             <ul>
                                 {listItems.length > 0 && listItems.map((item, index) => (
-                                    <li key={index}><div>{item.tool}</div> <div>{item.quantity}un</div>  <div>R${item.price}</div></li>
+                                    <li key={index}><div>{item.tool}</div> <div>{item.quantity}un</div>  <div>R${item.price}</div>
+                                        <button
+                                            className={styles.removeButton}
+                                            onClick={() => handleRemoveItem(index)}
+                                        >
+                                            Remover
+                                        </button>
+
+
+                                    </li>
                                 ))}
                             </ul>
                             <p className={styles.total}>
-                            TOTAL: R${listItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}
+                                TOTAL: R${listItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}
                             </p>
                         </div>
                     </div>
@@ -241,7 +288,7 @@ const CreateRent = () => {
             <Modal isOpen={isClientModalOpen} onClose={closeClientModal}>
                 <h2>Selecione um Cliente</h2>
                 {/* Aqui você pode adicionar os componentes ou listagens para clientes */}
-                <Table selected={handleSelectClient}/>
+                <Table selected={handleSelectClient} />
                 <button onClick={closeClientModal}>Fechar</button>
             </Modal>
 
@@ -249,7 +296,7 @@ const CreateRent = () => {
             <Modal isOpen={isToolModalOpen} onClose={closeToolModal}>
                 <h2>Selecione uma Ferramenta</h2>
                 {/* Aqui você pode adicionar os componentes ou listagens para ferramentas */}
-                <TableTools selected={handleSelectTool}/>
+                <TableTools selected={handleSelectTool} />
                 <button onClick={closeToolModal}>Fechar</button>
             </Modal>
 

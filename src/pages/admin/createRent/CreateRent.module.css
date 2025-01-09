@@ -36,6 +36,12 @@
     height: 27px;
 }
 
+
+.containerTwoInput div input {
+    width: 70%;
+    height: 37px;
+}
+
 .inputContainer button {
     background-color: #115293;
     color: white;
@@ -44,6 +50,21 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.pCalculate {
+    padding: 10px;
+    background-color: #4d90fe;
+    width: 140px;
+   
+    color: white;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.pCalculate:hover {
+    background-color: cornflowerblue;
 }
 
 .inputContainer button:hover {
@@ -204,39 +225,73 @@
 /*LIST OF THE ITEMS*/
 
 .listContainer {
-    width: 40%;
+    width: 50%;
     min-height: 550px;
-    background-color: #f0f0f0be;
-    border-radius: 10px;
-    position: relative;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .list h2 {
     text-align: center;
-    margin: 20px 0;
+    margin: 10px 0 20px 0;
+    font-size: 1.8rem;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
 }
 
 .list ul {
     list-style: none;
-    padding: 20px;
-  
-
-
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    max-height: 350px;
 }
 
 .list ul li {
     color: #333;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fafafa;
+    transition: background-color 0.3s ease;
+}
+
+.list ul li:hover {
+    background-color: #f0f0f0;
+}
+
+.removeButton {
+    padding: 5px 10px;
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.removeButton:hover {
+    background-color: #e60000;
 }
 
 .total {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    padding: 50px;
+    text-align: center;
+    font-size: 1.5rem;
     font-weight: bold;
-
+    color: #4CAF50;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 2px solid #ddd;
 }
-
