@@ -59,7 +59,7 @@ const UpdateTool = ({ tool }) => {
                             <p style={{ color: "red" }}>{errors.find(error => error.toLowerCase().includes("nome"))}</p>
                         )}
                     </div>
-                    <div className={styles.inputContainerx}>
+                    <div className={styles.inputContainer}>
                         <label htmlFor="quantity">Quantidade</label>
                         <input type="text" name="quantity" id="quantity" onChange={(e) => setQuantity(e.target.value)} value={quantity} />
                         {errors && errors.length > 0 && (

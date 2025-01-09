@@ -14,10 +14,17 @@ const UpdateRent = ({ rent }) => {
             setListItems(rent.rentItems || []);
             setIsCompleted(rent.stateRent === 'PAID');
         }
-
     }, [rent]);
 
     const handleUpdateItem = (index, updatedItem) => {
+        // Garante que a quantidade e o preço sejam tratados como números
+        const updatedQuantity = parseInt(updatedItem.quantity, 10); // ou parseFloat se você espera decimais
+        const updatedPrice = parseFloat(updatedItem.price); // Garante que o preço seja tratado como número
+    
+        // Garante que a conversão não resulte em NaN
+        if (!isNaN(updatedQuantity)) updatedItem.quantity = updatedQuantity;
+        if (!isNaN(updatedPrice)) updatedItem.price = updatedPrice;
+    
         const updatedList = [...listItems];
         updatedList[index] = updatedItem;
         setListItems(updatedList);
@@ -32,26 +39,30 @@ const UpdateRent = ({ rent }) => {
         setIsCompleted(!isCompleted); // Alterna entre finalizado e não finalizado
     };
 
-    const handleUpdateRent = async(e) => {
-        e.preventDefault()
+    const handleUpdateRent = async (e) => {
+        e.preventDefault();
 
+        // Atualiza o objeto da locação com os itens e o estado
         const updatedRent = {
-            id: rent.id,
-            items: listItems,
-            stateRent: isCompleted ? 'PAID' : 'PENDENT'
-        }
+            rentId: rent.id, // Aluguel ID
+            items: listItems.map(item => ({
+                toolId: item.tool.id, // Inclui o toolId
+                quantity: item.quantity,
+                price: item.price
+            })),
+            price:listItems.map(item => item.quantity * item.price).reduce((acc, current) => acc + current, 0),
+            stateRent: isCompleted ? 'PAID' : 'PENDENT' // Atualiza o estado da locação
+        };
 
         try {
-            const response = await api.put(`/rent/update/${rent.id}`, updatedRent)
-            console.log(response.data)
-            
+            const response = await api.put(`/rent/update/${rent.id}`, updatedRent);
+            console.log(response.data);
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
 
-        console.log(updatedRent)
-
-    }
+        console.log(updatedRent); // Verifique se o objeto está correto antes de enviar
+    };
 
     return (
         <section className={styles.updateRentSection}>
@@ -72,10 +83,7 @@ const UpdateRent = ({ rent }) => {
                         />
                         <label htmlFor="completed" className={styles.checkboxLabel}>Finalizado</label>
                     </div>
-
-
                 </div>
-
 
                 <div className={styles.formGroup}>
                     <label htmlFor="rentItems" className={styles.formLabel}>Itens da Locação</label>
@@ -144,7 +152,6 @@ const UpdateRent = ({ rent }) => {
                 <div style={{ margin: "0 auto" }}>
                     <input type="submit" value="Atualizar" className={styles.btnSubmit} />
                 </div>
-
             </form>
         </section>
     );
