@@ -7,6 +7,7 @@ import { FaPen } from "react-icons/fa";
 
 import { useLocation } from 'react-router-dom';
 import Loading from '../loading/Loading';
+import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
 
 const Table = ({ selected }) => {
 
@@ -14,6 +15,9 @@ const Table = ({ selected }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredClients, setFilteredClients] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [openModal, setOpenModal] = useState(false)
+  const [ClientToDelete, setClientToDelete] = useState(null);  // Para armazenar o ID da ferramenta
+  const [clientName, setClientName] = useState('');  // Para armazenar o nome da ferramenta
   const rowsPerPage = 10
 
   const location = useLocation().pathname;
@@ -26,7 +30,6 @@ const Table = ({ selected }) => {
 
         const response = await api.get("http://localhost:8080/clients")
         setData(response.data)
-        setLoading(false)
 
       } catch (error) {
         console.log(error)
@@ -68,6 +71,7 @@ const Table = ({ selected }) => {
       console.log(response.data)
 
       setData(prevData => prevData.filter(data => data.id !== id))
+      setOpenModal(false)
       
 
     } catch (error) {
@@ -76,6 +80,14 @@ const Table = ({ selected }) => {
     }
 
   }
+
+  
+  const openModalClient = (e, id, name) => {
+    e.preventDefault();
+    setClientToDelete(id);  // Salva o ID da ferramenta que será deletada
+    setClientName(name);  // Salva o nome da ferramenta
+    setOpenModal(true) // Abre o modal de confirmação
+  };
 
 
   return (
@@ -118,12 +130,13 @@ const Table = ({ selected }) => {
               <td>{row.addresses[0].neighborhood}</td>
               <td>{row.addresses[0].cep}</td>
               {location == "/clientes" && (
-                <td><MdDelete style={{ color: "red" }} onClick={() => handleDelete(row.id)} /> <FaPen onClick={(e) => selected(e, row.id)} /></td>
+                <td><MdDelete style={{ color: "red" }} onClick={(e) => openModalClient(e, row.id, row.name)} /> <FaPen onClick={(e) => selected(e, row.id)} /></td>
               )}
             </tr>
           ))}
         </tbody>
       </table>
+      <ConfirmDeleteModal open={openModal} itemName={clientName} onClose={()=> setOpenModal(false)} onConfirm={()=> handleDelete(ClientToDelete)} />
       <div className={styles.pagination}>
         <button onClick={handlePrevious} disabled={currentPage === 1}>
           Anterior
