@@ -7,6 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 import { FaPaste } from "react-icons/fa";
 import { MdOutlineDoneOutline } from "react-icons/md";
+import ConfirmDeleteModal from "../modalConfirmDelete/ConfirmDeleteModal";
 
 
 const RentsTable = ({ selected }) => {
@@ -14,6 +15,9 @@ const RentsTable = ({ selected }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredTools, setFilteredTools] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [openModal, setOpenModal] = useState(false)
+  const [rentToDeleteId, setRentToDeleteId] = useState("")
+  const [clientName, setClientName] = useState("") 
   const rowsPerPage = 10;
   const location = useLocation().pathname;
   const navigate = useNavigate()
@@ -61,7 +65,7 @@ const RentsTable = ({ selected }) => {
       const response = await api.delete(
         `http://localhost:8080/rent/delete/${id}`
       );
-      console.log(response.data);
+      setOpenModal(false)
 
       setData((prevData) => prevData.filter((rent) => rent.id !== id));
     } catch (error) {
@@ -102,7 +106,13 @@ const RentsTable = ({ selected }) => {
     
   }
 
-  console.log(data)
+
+  const openModalClient = (e, id, name) => {
+    e.preventDefault();
+    setRentToDeleteId(id);  // Salva o ID da ferramenta que será deletada
+    setClientName(name);  // Salva o nome da ferramenta
+    setOpenModal(true) // Abre o modal de confirmação
+  };
 
 
 
@@ -152,7 +162,7 @@ const RentsTable = ({ selected }) => {
               {location == "/alugueis" && (
                 <td style={{display: "flex", justifyContent: "space-around"}}>
                   <MdDelete color="red"
-                    onClick={() => handleDeleteRent(row.id)}
+                    onClick={(e) => openModalClient(e, row.id, row.client.name)}
                   />{" "}
                   <FaPen onClick={(e) => selected(e, row.id)} /> <FaPaste onClick={() => openPdf(row)} /> <MdOutlineDoneOutline color="green" onClick={() => completeRent(row.id)} />
                 </td>
@@ -161,6 +171,7 @@ const RentsTable = ({ selected }) => {
           ))}
         </tbody>
       </table>
+      <ConfirmDeleteModal open={openModal} itemName={clientName} onClose={()=> setOpenModal(false)} onConfirm={() => handleDeleteRent(rentToDeleteId)}/>
       <div className={styles.pagination}>
         <button onClick={handlePrevious} disabled={currentPage === 1}>
           Anterior
