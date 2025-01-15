@@ -10,9 +10,10 @@ import CreateRent from "./pages/admin/createRent/CreateRent"
 import Clients from "./pages/admin/clients/Clients"
 import Tools from "./pages/admin/tools/Tools"
 import Rents from "./pages/admin/rents/Rents"
-import Statistics from "./pages/admin/statistics/Statistics"
 import Protected from "./components/Protected"
 import PdfPage from "./components/pdf/Pdf"
+import Earnings from "./pages/admin/earnings/Earninigs"
+import Expenses from "./pages/admin/expenses/Expenses"
 
 
 function App() {
@@ -30,7 +31,8 @@ function App() {
             <Route path="/clientes" element={ <Protected> <Clients/> </Protected> } />
             <Route path="/ferramentas" element={ <Protected> <Tools/> </Protected> } />
             <Route path="/alugueis" element={ <Protected> <Rents/> </Protected> } />
-            <Route path="/relatorios" element={ <Protected><Statistics /></Protected> } />
+            <Route path="/faturamentos" element={ <Protected> <Earnings /> </Protected> } />
+            <Route path="/gastos" element={ <Protected> <Expenses /> </Protected> } />
             <Route path="/pdf" element={ <Protected> <PdfPage/> </Protected> } />
           </Routes>
         </Router>

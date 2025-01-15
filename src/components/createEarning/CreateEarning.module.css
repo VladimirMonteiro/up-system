@@ -1,0 +1,72 @@
+/* CreateEarning.module.css */
+
+.mainContainer {
+    display: flex;
+    height: 500px;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid cornflowerblue;
+    border-radius: 8px;
+    width: 50%;
+   
+}
+
+.mainContainer h2 {
+    margin: 30px 0;
+
+}
+
+.containerForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+
+.containerForm div {
+    margin: 10px auto;
+}
+
+.containerInput {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.containerInput label {
+    margin-bottom: 5px; 
+}
+
+.containerForm select, .containerForm
+input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.containerForm select {
+    cursor: pointer;
+}
+
+.containerForm label {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.containerForm input[type="submit"] {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 7px;
+    border-radius: 4px;
+    width: 300px;
+    margin: 30px auto;
+}
+
+.containerForm input[type="submit"]:hover {
+    background-color: #218838;
+}

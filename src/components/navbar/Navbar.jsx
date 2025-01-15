@@ -41,9 +41,12 @@ const Navbar = () => {
                     <li><NavLink to="/alugueis" className={({ isActive }) =>
                         isActive ? styles.active : ""
                     }>Aluguéis</NavLink></li>
-                    <li><NavLink to="/relatorios" className={({ isActive }) =>
+                    <li><NavLink to="/faturamentos" className={({ isActive }) =>
                         isActive ? styles.active : ""
-                    }>Relatórios</NavLink></li>
+                    }>Faturamentos</NavLink></li>
+                        <li><NavLink to="/gastos" className={({ isActive }) =>
+                        isActive ? styles.active : ""
+                    }>Gastos</NavLink></li>
                 </ul>
             </nav>
         </header>

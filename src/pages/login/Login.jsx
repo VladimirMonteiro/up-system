@@ -46,7 +46,7 @@ const Login = () => {
                 <form onSubmit={handleSubmit}>
                     <div className={styles.inputContainer}>
                         <label htmlFor="login">usename</label>
-                        <input type="text" name="login" id="login" onChange={e => setLogin(e.target.value)} value={login} />
+                        <input type="text" name="login" id="login" onChange={e => setLogin(e.target.value)} value={login} autoComplete={'off'} />
                         {errors.length > 0 && (
                             <p style={{ color: "red" }}>{errors.filter(error => error.includes("login"))}</p>
                         )}
