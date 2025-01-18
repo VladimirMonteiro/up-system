@@ -5,6 +5,7 @@ import api from '../../utils/api'
 
 const UpdateTool = ({ tool }) => {
     const [name, setName] = useState("");
+    const [totalQuantity, setTotalQuantity] = useState("")
     const [quantity, setQuantity] = useState("");
     const [daily, setDaily] = useState("");
     const [week, setWeek] = useState("");
@@ -16,6 +17,7 @@ const UpdateTool = ({ tool }) => {
     useEffect(() => {
         if (tool) {
             setName(tool.name || "");
+            setTotalQuantity(tool.totalQuantity || "")
             setQuantity(tool.quantity || "");
             setDaily(tool.daily || "");
             setWeek(tool.week || "");
@@ -28,6 +30,7 @@ const UpdateTool = ({ tool }) => {
     
         const updateTool = {
             name,
+            totalQuantity: parseFloat(totalQuantity),
             quantity: parseFloat(quantity),
             daily: parseFloat(String(daily).replace(/\./g, '').replace(',', '.')),
             week: parseFloat(String(week).replace(/\./g, '').replace(',', '.')),
@@ -38,6 +41,7 @@ const UpdateTool = ({ tool }) => {
             const response = await api.put(`http://localhost:8080/tools/update/${tool.id}`, updateTool);
             console.log(response.data)
             setSuccess(response.data.message);
+            setErrors(null)
             setTimeout(() => setSuccess(null), 3000);
         } catch (error) {
             console.error(error);
@@ -60,10 +64,17 @@ const UpdateTool = ({ tool }) => {
                         )}
                     </div>
                     <div className={styles.inputContainer}>
-                        <label htmlFor="quantity">Quantidade</label>
+                        <label htmlFor="totalQuantity">Quantidade total</label>
+                        <input type="text" name="totalQuantity" id="totalQuantity" onChange={(e) => setTotalQuantity(e.target.value)} value={totalQuantity} />
+                        {errors && errors.length > 0 && (
+                            <p style={{ color: "red" }}>{errors.find(error => error.toLowerCase().includes("quantidade total"))}</p>
+                        )}
+                    </div>
+                    <div className={styles.inputContainer}>
+                        <label htmlFor="quantity">Quantidade disponível</label>
                         <input type="text" name="quantity" id="quantity" onChange={(e) => setQuantity(e.target.value)} value={quantity} />
                         {errors && errors.length > 0 && (
-                            <p style={{ color: "red" }}>{errors.find(error => error.toLowerCase().includes("quantidade"))}</p>
+                            <p style={{ color: "red" }}>{errors.find(error => error.toLowerCase().includes("a quantidade é"))}</p>
                         )}
                     </div>
                     <div className={styles.inputContainer}>

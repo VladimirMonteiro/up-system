@@ -88,7 +88,8 @@ const TableTools = ({ selected }) => {
           <tr>
             <th>ID</th>
             <th>Nome</th>
-            <th>Quantidade</th>
+            <th>Quantidade total</th>
+            <th>Quantidade disponível</th>
             <th>Diária</th>
             <th>Semanal</th>
             <th>Mensal</th>
@@ -104,6 +105,7 @@ const TableTools = ({ selected }) => {
             >
               <td>{row.id}</td>
               <td>{row.name}</td>
+              <td>{row.totalQuantity}un</td>
               <td>{row.quantity}un</td>
               <td>R${row.daily}</td>
               <td>R${row.week}</td>

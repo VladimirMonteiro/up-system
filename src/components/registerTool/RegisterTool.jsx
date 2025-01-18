@@ -8,6 +8,7 @@ const RegisterTool = () => {
 
     const [name, setName] = useState("")
     const [quantity, setQuantity] = useState("")
+    const [totalQuantity, setTotalQuantity] = useState("")
     const [daily, setDaily] = useState("")
     const [week, setWeek] = useState("")
     const [priceMonth, setPriceMonth] = useState("")
@@ -19,6 +20,7 @@ const RegisterTool = () => {
 
         const newTool = {
             name,
+            totalQuantity: parseFloat(totalQuantity),
             quantity: parseFloat(quantity),
             daily: parseFloat(daily.replace(/\./g, '').replace(',', '.')),
             week: parseFloat(week.replace(/\./g, '').replace(',', '.')),
@@ -37,6 +39,7 @@ const RegisterTool = () => {
             }, 3000)
 
             setName("")
+            setTotalQuantity("")
             setQuantity("")
             setDaily("")
             setWeek("")
@@ -70,10 +73,17 @@ const RegisterTool = () => {
                         )}
                     </div>
                     <div className={styles.inputContainer}>
-                        <label htmlFor="quantity">Quantidade</label>
+                        <label htmlFor="totalQuantity">Quantidade total</label>
+                        <input type="text" name='totalQuantity' id='totalQuantity' onChange={e => setTotalQuantity(e.target.value)} value={totalQuantity} />
+                        {errors && errors.length > 0 && (
+                            <p style={{ color: "red" }}>{errors.filter(error => error.includes("A quantidade total é obrigatório"))}</p>
+                        )}
+                    </div>
+                    <div className={styles.inputContainer}>
+                        <label htmlFor="quantity">Quantidade disponível</label>
                         <input type="text" name='quantity' id='quantity' onChange={e => setQuantity(e.target.value)} value={quantity} />
                         {errors && errors.length > 0 && (
-                            <p style={{ color: "red" }}>{errors.filter(error => error.includes("quantidade"))}</p>
+                            <p style={{ color: "red" }}>{errors.filter(error => error.includes("A quantidade é obrigatória"))}</p>
                         )}
                     </div>
                     <div className={styles.inputContainer}>

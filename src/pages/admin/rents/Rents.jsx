@@ -32,13 +32,8 @@ const Rents = () => {
     } catch (error) {
       console.log(error)
       
-    }
-
-   
-
+    } 
   }
-
-  
   return (
     <>
       <Navbar />
