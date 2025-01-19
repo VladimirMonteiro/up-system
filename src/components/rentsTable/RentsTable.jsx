@@ -9,27 +9,23 @@ import { FaPaste } from "react-icons/fa";
 import { MdOutlineDoneOutline } from "react-icons/md";
 import ConfirmDeleteModal from "../modalConfirmDelete/ConfirmDeleteModal";
 
-
 const RentsTable = ({ selected }) => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredTools, setFilteredTools] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [openModal, setOpenModal] = useState(false)
-  const [rentToDeleteId, setRentToDeleteId] = useState("")
-  const [clientName, setClientName] = useState("") 
+  const [openModal, setOpenModal] = useState(false);
+  const [rentToDeleteId, setRentToDeleteId] = useState("");
+  const [clientName, setClientName] = useState("");
   const rowsPerPage = 10;
   const location = useLocation().pathname;
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("renderizou");
-
       try {
         const response = await api.get("http://localhost:8080/rent");
         setData(response.data);
-        console.log(data);
       } catch (error) {
         console.log(error);
       }
@@ -65,7 +61,7 @@ const RentsTable = ({ selected }) => {
       const response = await api.delete(
         `http://localhost:8080/rent/delete/${id}`
       );
-      setOpenModal(false)
+      setOpenModal(false);
 
       setData((prevData) => prevData.filter((rent) => rent.id !== id));
     } catch (error) {
@@ -73,45 +69,64 @@ const RentsTable = ({ selected }) => {
     }
   };
 
-  const completeRent = async(id) => {
+  const completeRent = async (id) => {
     try {
-        const response = await api.put(`/rent/completed/${id}`)
-        console.log(response.data)
-        setData(prevData => prevData.map(rent => 
-            rent.id === id ? { ...rent, stateRent: 'PAID' } : rent
-        ));
-        
+      const response = await api.put(`/rent/completed/${id}`);
+      setData((prevData) =>
+        prevData.map((rent) =>
+          rent.id === id ? { ...rent, stateRent: "PAID" } : rent
+        )
+      );
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
-  }
-  
-  const openPdf = (rent) => {
+  };
 
-    const transformedRentItems = rent.rentItems.map(item => ({
+  const openPdf = (rent) => {
+    const transformedRentItems = rent.rentItems.map((item) => ({
       ...item,
       name: item.tool.name, // Inclui todas as propriedades de `tool` no mesmo nível
-      tool: undefined, 
+      tool: undefined,
     }));
 
     const rentData = {
-        client: rent.client,
-        items: transformedRentItems,
-        price: rent.price,
-        initialDate: rent.initialDate,
-        deliveryDate: rent.deliveryDate
-    }
-    navigate("/pdf", {state: rentData})
-    console.log(rentData)
-    
-  }
-
+      client: rent.client,
+      items: transformedRentItems,
+      price: rent.price,
+      initialDate: rent.initialDate,
+      deliveryDate: rent.deliveryDate,
+    };
+    navigate("/pdf", { state: rentData });
+  };
 
   const openModalClient = (e, id, name) => {
     e.preventDefault();
-    setRentToDeleteId(id);  // Salva o ID da ferramenta que será deletada
-    setClientName(name);  // Salva o nome da ferramenta
-    setOpenModal(true) // Abre o modal de confirmação
+    setRentToDeleteId(id); // Salva o ID da ferramenta que será deletada
+    setClientName(name); // Salva o nome da ferramenta
+    setOpenModal(true); // Abre o modal de confirmação
+  };
+
+  // Função para converter a data dd/MM/yyyy para um objeto Date
+  const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split("/"); // Separa a string em dia, mês e ano
+    return new Date(year, month - 1, day); // Retorna uma data no formato Date
+  };
+
+  // Função para calcular a diferença em dias entre a data de entrega e a data atual
+  const getDeliveryStatus = (deliveryDate) => {
+    const currentDate = new Date();
+    const delivery = parseDate(deliveryDate); // Converte a deliveryDate para um objeto Date
+    const timeDiff = delivery - currentDate; // Diferença em milissegundos
+    const dayDiff = timeDiff / (1000 * 3600 * 24); // Convertendo para dias
+
+    if (dayDiff < 0) {
+      // Se a data já passou
+      return "overdue";
+    } else if (dayDiff <= 2) {
+      // Se a data está próxima (menos de 2 dias)
+      return "near";
+    }
+    return "onTime"; // Se a data ainda está distante
   };
 
 
@@ -120,16 +135,23 @@ const RentsTable = ({ selected }) => {
     <div className={styles.tableContainer}>
       <div className={styles.searchContainer}>
         <label htmlFor="search">Pesquisar</label>
-        <input
-          type="text"
-          id="search"
-          placeholder="Digite para buscar..."
-          value={searchTerm}
-          onChange={(e) => {
+        <input type="text" id="search"  placeholder="Digite para buscar..." value={searchTerm} onChange={(e) => {
             setSearchTerm(e.target.value);
             handleSearch(e.target.value);
           }}
         />
+        <div>
+          <label htmlFor="PAID">Pago</label>
+          <input type="checkbox" name="PAID" id="PAID" />
+        </div>
+        <div>
+          <label htmlFor="Winning">Vencendo</label>
+          <input type="checkbox" name="Winning" id="Winning" />
+        </div>
+        <div>
+          <label htmlFor="at">Atrasado</label>
+          <input type="checkbox" name="at" id="at" />
+        </div>
         <input type="submit" value="Pesquisar" />
       </div>
       <table className={styles.table}>
@@ -150,7 +172,16 @@ const RentsTable = ({ selected }) => {
             <tr
               key={row.id}
               onClick={location == "/alugar" ? () => selected(row) : undefined}
-              style={row.stateRent === 'PAID' ? { backgroundColor: "#2ecc71" } : {}}
+              style={{
+                backgroundColor:
+                  row.stateRent === "PAID"
+                    ? "#2ecc70bd"
+                    : getDeliveryStatus(row.deliveryDate) === "near"
+                    ? "#f1c40fca" // Amarelo para datas próximas (menos de 2 dias)
+                    : getDeliveryStatus(row.deliveryDate) === "overdue"
+                    ? "#ff190084" // Vermelho para datas passadas
+                    : "",
+              }}
             >
               <td>{row.id}</td>
               <td>{row.client.name}</td>
@@ -160,18 +191,26 @@ const RentsTable = ({ selected }) => {
               <td>R${row.price}</td>
               <td>{row.stateRent}</td>
               {location == "/alugueis" && (
-                <td style={{display: "flex", justifyContent: "space-around"}}>
-                  <MdDelete color="red"
+                <td style={{ display: "flex", justifyContent: "space-around" }}>
+                  <MdDelete
+                    color="red"
                     onClick={(e) => openModalClient(e, row.id, row.client.name)}
                   />{" "}
-                  <FaPen onClick={(e) => selected(e, row.id)} /> <FaPaste onClick={() => openPdf(row)} /> <MdOutlineDoneOutline color="green" onClick={() => completeRent(row.id)} />
+                  <FaPen onClick={(e) => selected(e, row.id)} />{" "}
+                  <FaPaste onClick={() => openPdf(row)} />{" "}
+                  <MdOutlineDoneOutline color="green" onClick={() => completeRent(row.id)} />
                 </td>
               )}
             </tr>
           ))}
         </tbody>
       </table>
-      <ConfirmDeleteModal open={openModal} itemName={clientName} onClose={()=> setOpenModal(false)} onConfirm={() => handleDeleteRent(rentToDeleteId)}/>
+      <ConfirmDeleteModal
+        open={openModal}
+        itemName={clientName}
+        onClose={() => setOpenModal(false)}
+        onConfirm={() => handleDeleteRent(rentToDeleteId)}
+      />
       <div className={styles.pagination}>
         <button onClick={handlePrevious} disabled={currentPage === 1}>
           Anterior

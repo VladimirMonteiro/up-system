@@ -26,7 +26,7 @@ const options = {
 
 const PdfPage = () => {
   const location = useLocation();
-  const { client, items, price, initialDate, deliveryDate } = location.state || {};
+  const { client, items, price, freight, obs, initialDate, deliveryDate } = location.state || {};
 
   const getTargetElement = () => document.getElementById('content-id');
 
@@ -69,6 +69,8 @@ const PdfPage = () => {
 
         <div className={styles.summary}>
           <h3>Total de Locação: R${price}</h3>
+          <p>Frete: R${freight}</p>
+          <p>Observação: {obs}</p>
           <p><strong>Data Inicial:</strong> {initialDate}</p>
           <p><strong>Data de Entrega:</strong> {deliveryDate}</p>
         </div>

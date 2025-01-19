@@ -295,3 +295,19 @@
     padding-top: 10px;
     border-top: 2px solid #ddd;
 }
+
+/* styles.module.css */
+.textareaContainer {
+    margin: 10px auto;
+    width: 100%; /* Para garantir que o textarea tenha 100% da largura do contêiner */
+  }
+  
+  .textareaInput {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: vertical; /* Permite ao usuário redimensionar o textarea verticalmente */
+  }
+  

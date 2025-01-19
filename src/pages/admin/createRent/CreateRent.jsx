@@ -7,34 +7,27 @@ import Navbar from '../../../components/navbar/Navbar'
 import Modal from '../../../components/modal/Modal'
 import Table from '../../../components/tableClients/Table'
 import TableTools from '../../../components/tableTools/TableTools'
-import api from '../../../utils/api'
 
 import styles from './CreateRent.module.css'
-
-
+import CompleteRent from '../../../components/completeRent/CompleteRent'
 
 const CreateRent = () => {
 
     const [client, setClient] = useState({})
     const [tool, setTool] = useState("")
-    const [initialDate, setInitalDate] = useState("")
-    const [deliveryDate, setDeliveryDate] = useState("")
     const [price, setPrice] = useState("")
     const [quantity, setQuantity] = useState(null)
     const [meters, setMeters] = useState("")
     const [listItems, setListItems] = useState([])
-    const navigate = useNavigate()
 
     const [isClientModalOpen, setClientModalOpen] = useState(false); // Estado para o modal de cliente
     const [isToolModalOpen, setToolModalOpen] = useState(false); // Estado para o modal de ferramenta
-
+    const [isFinishRentOpen, setFinishRentOpen] = useState(false)
 
     useEffect(() => {
         console.log("A lista foi atualizada:", listItems);
 
     }, [listItems])
-
-
 
     const openClients = (e) => {
         e.preventDefault();
@@ -45,6 +38,31 @@ const CreateRent = () => {
         e.preventDefault();
         setToolModalOpen(true); // Abre o modal de ferramentas
     };
+
+    const modalFinishRent = (e) => {
+        e.preventDefault()
+        
+
+        if (listItems.length == 0) {
+            alert("Adicione pelo menos um item à locação!")
+            return
+        }
+
+        if (listItems.length == 0) {
+            alert("Informe a data final da locação!")
+            return
+        }
+
+        if (!client.name) {
+            alert("Selecione o cliente!")
+            return
+        }
+        setFinishRentOpen(true)
+    }
+
+    const modalFinishRentClose = () => {
+        setFinishRentOpen(false)
+    }
 
     const closeClientModal = () => {
         setClientModalOpen(false); // Fecha o modal de clientes
@@ -80,7 +98,7 @@ const CreateRent = () => {
             toolId: tool.id,
             tool: tool.name,
             quantity: parsedQuantity,
-            price: parsedPrice
+            price: tool.name.startsWith('Andaime') ? (parsedPrice * parsedQuantity * parseFloat(meters)) : parsedPrice
 
         }
 
@@ -88,8 +106,6 @@ const CreateRent = () => {
         setTool("")
         setPrice("")
         setQuantity("")
-
-
     }
 
     const handleSelectClient = (client) => {
@@ -106,80 +122,9 @@ const CreateRent = () => {
         return tool
     }
 
-    const finishRent = async (e) => {
-        e.preventDefault()
-
-       
-
-        if (listItems.length == 0) {
-            alert("Adicione pelo menos um item à locação!")
-            return
-        }
-
-        if (initialDate == "") {
-            alert("Informe a data inicial da locação!")
-            return
-        }
-
-        if (listItems.length == 0) {
-            alert("Informe a data final da locação!")
-            return
-        }
-
-        if (!client.name) {
-            alert("Selecione o cliente!")
-            return
-        }
-
-        const updatedListItems = listItems.map(item => {
-            // eslint-disable-next-line no-unused-vars
-            const { tool, ...rest } = item;  // Desestrutura para remover 'tool'
-            return rest;  // Retorna o objeto sem a chave 'tool'
-        });
-
-        const dataRentToPdf = {
-            client,
-            items: listItems,
-            price: listItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2),
-            initialDate,
-            deliveryDate
-
-        }
-
-
-        const newRent = {
-            client,
-            items: updatedListItems,
-            price: listItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2),
-            initialDate,
-            deliveryDate
-
-        }
-
-        try {
-
-            const request = await api.post("http://localhost:8080/rent/create", newRent)
-            console.log(request.data)
-
-            setClient("")
-            setTool("")
-            setPrice("")
-            setQuantity("")
-            setInitalDate("")
-            setDeliveryDate("")
-
-            navigate("/pdf", { state: dataRentToPdf })
-
-        } catch (error) {
-            alert(error.response.data.errors[0])
-
-        }
-
-        console.log(newRent)
-    }
 
     const calculateQuantityOfAndaime = (e) => {
-
+        e.preventDefault()
         setMeters(parseFloat((e.target.value)))
 
         switch (tool.name) {
@@ -209,23 +154,34 @@ const CreateRent = () => {
             <section className={styles.sectionContainer}>
                 <h1>Alugar</h1>
                 <div className={styles.center}>
-                    <form className={styles.formContainer} onSubmit={finishRent}>
-
-                        <div className={[styles.inputContainer]}>
-                            <label htmlFor="client">Selecione o cliente</label>
-                            <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client.name || ""} disabled />
-                            <button onClick={openClients}>Selecionar</button>
-                        </div>
-
-                        <div className={styles.inputContainer}>
-                            <label htmlFor="tool">Selecione a ferramenta</label>
-                            <input type="text" name="tool" id="tool" onChange={e => setTool(e.target.value)} value={tool.name || ""} disabled />
-                            <button onClick={openTools}>Selecionar</button>
-                        </div>
+                    <form className={styles.formContainer} onSubmit={modalFinishRent}>
+        <div style={{display: "flex", padding: "20px"}}>
+            
+                            <div className={[styles.inputContainer2]} style={{margin: '10px'}}>
+                                <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client.name || ""} disabled placeholder='Selecione um cliente'/>
+                                <button onClick={openClients}>Selecionar</button>
+                            </div>
+                            <div className={styles.inputContainer2} style={{margin: '10px'}}>
+                                <input type="text" name="tool" id="tool" onChange={e => setTool(e.target.value)} value={tool.name || ""} disabled placeholder='Selecione uma ferramenta' />
+                                <button onClick={openTools}>Selecionar</button>
+                            </div>
+        </div>
                         <div className={styles.containerTwoInput}>
-                            <div className={styles.inputContainer2}>
+                            <div className={styles.inputContainer2} style={{display: "flex", flexDirection: "row", width:'90%'}}>
                                 <label htmlFor="price">Valor da Locação</label>
                                 <input type="text" name="price" id="price" onChange={(e) => handlePriceChange(e, setPrice)} value={price} autoComplete='off' placeholder='R$' />
+                                <input type="text" name="quantity" id="quantity" onChange={e => setQuantity(e.target.value)} value={quantity || ""} autoComplete='off' placeholder='Quantidade' />
+                                <select name="select" id="select" onChange={e => setPrice(e.target.value)}>
+                                    <option value="">Selecione uma opção</option>
+                                    {tool && (
+                                         <>
+                                         <option value={tool.daily}>Diária (1 dia)</option>
+                                         <option value={tool.week}>Semana (7 dias)</option>
+                                         <option value={tool.priceMonth}>Mensal (30 dias)</option>
+                                         </>  
+                                       
+                                    )}
+                                </select>
                             </div>
                               {tool.name && tool.name.toLowerCase().includes("andaime") && (
                                 <div>
@@ -236,25 +192,17 @@ const CreateRent = () => {
                                     <p className={styles.pCalculate} onClick={calculateQuantityOfAndaime}>Calcular</p>
                                 </div>
                             )}
-                            <div className={styles.inputContainer2}>
-                                <label htmlFor="quantity">Quantidade</label>
-                                <input type="text" name="quantity" id="quantity" onChange={e => setQuantity(e.target.value)} value={quantity || ""} autoComplete='off' />
+                            <div className={styles.inputContainer2} style={{display: "flex", flexDirection: "row", width: "70%"}}>
+                               
                             </div>
                         </div>
-                        <div className={styles.dateInputContainer}>
-                            <label htmlFor="initialDate">Data inicial: </label>
-                            <input type="date" name="initialDate" id="initialDate" onChange={e => setInitalDate(e.target.value)} value={initialDate} />
-                        </div>
-                        <div className={styles.dateInputContainer}>
-                            <label htmlFor="deliveryDate">Data Final: </label>
-                            <input type="date" name="deliveryDate" id="deliveryDate" onChange={e => setDeliveryDate(e.target.value)} value={deliveryDate} />
-                        </div>
+                      
 
-                        <div className={styles.inputContainer2}>
+                        <div className={styles.inputContainer2} style={{margin: '20px auto'}}>
                             <button onClick={addItems}>Adicionar</button>
                         </div>
 
-                        <div className={styles.inputContainer2}>
+                        <div className={styles.inputContainer2} style={{margin: '0 auto'}}>
                             <input type="submit" value="Alugar" />
                         </div>
                     </form>
@@ -283,6 +231,11 @@ const CreateRent = () => {
                     </div>
                 </div>
             </section>
+
+            <Modal isOpen={isFinishRentOpen} onClose={modalFinishRentClose} width={'500px'} height={'auto'}>
+                <CompleteRent client={client} tool={tool} price={price} quantity={quantity} listItems={listItems}/>
+
+            </Modal>
 
             {/* Modal para Cliente */}
             <Modal isOpen={isClientModalOpen} onClose={closeClientModal}>
