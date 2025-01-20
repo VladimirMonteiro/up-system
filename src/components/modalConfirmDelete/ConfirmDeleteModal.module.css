@@ -63,4 +63,18 @@
   .confirmButton:hover {
     background: #d32f2f;
   }
+
+  .completeRentBtn {
+    background-color: #218838;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+
+  }
   
+  .completeRentBtn:hover {
+    background-color: #1e7e34;
+  }

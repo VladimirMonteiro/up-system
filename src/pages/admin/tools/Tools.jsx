@@ -58,7 +58,7 @@ const Tools = () => {
           <button onClick={openModalTool} >Cadastrar Ferramenta</button>
         </div>
         <Modal isOpen={modalTool} onClose={closeModalTool}>
-          <RegisterTool/>
+          <RegisterTool />
 
         </Modal>
         <Modal isOpen={modalToolUpdate} onClose={closeModalToolUpdate}>

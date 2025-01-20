@@ -136,7 +136,7 @@ const Table = ({ selected }) => {
           ))}
         </tbody>
       </table>
-      <ConfirmDeleteModal open={openModal} itemName={clientName} onClose={()=> setOpenModal(false)} onConfirm={()=> handleDelete(ClientToDelete)} />
+      <ConfirmDeleteModal open={openModal} itemName={clientName} onClose={()=> setOpenModal(false)} onConfirm={()=> handleDelete(ClientToDelete)} remove={true} />
       <div className={styles.pagination}>
         <button onClick={handlePrevious} disabled={currentPage === 1}>
           Anterior

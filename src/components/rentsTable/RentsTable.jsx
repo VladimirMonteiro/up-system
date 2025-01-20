@@ -13,9 +13,12 @@ const RentsTable = ({ selected }) => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredTools, setFilteredTools] = useState([]);
+  const [selectedFilter, setSelectedFiter] = useState('')
   const [currentPage, setCurrentPage] = useState(1);
   const [openModal, setOpenModal] = useState(false);
+  const [openModalCompleteRent, setOpenModalCompleteRent] = useState(false);
   const [rentToDeleteId, setRentToDeleteId] = useState("");
+  const [rentToCompleteId, setRentToComplteId] = useState("");
   const [clientName, setClientName] = useState("");
   const rowsPerPage = 10;
   const location = useLocation().pathname;
@@ -42,7 +45,10 @@ const RentsTable = ({ selected }) => {
       )
     );
     setFilteredTools(filteredData);
-    setCurrentPage(1); // Reinicia para a primeira página
+    setCurrentPage(1); 
+
+    console.log(selectedFilter)
+    // Reinicia para a primeira página
   };
 
   const totalPages = Math.ceil(data.length / rowsPerPage);
@@ -71,7 +77,9 @@ const RentsTable = ({ selected }) => {
 
   const completeRent = async (id) => {
     try {
-      const response = await api.put(`/rent/completed/${id}`);
+      await api.put(`/rent/completed/${id}`);
+      setOpenModalCompleteRent(false);
+
       setData((prevData) =>
         prevData.map((rent) =>
           rent.id === id ? { ...rent, stateRent: "PAID" } : rent
@@ -106,6 +114,13 @@ const RentsTable = ({ selected }) => {
     setOpenModal(true); // Abre o modal de confirmação
   };
 
+  const openModalFinishRnet = (e, id, name) => {
+    e.preventDefault();
+    setClientName(name);
+    setOpenModalCompleteRent(true);
+    setRentToComplteId(id);
+  };
+
   // Função para converter a data dd/MM/yyyy para um objeto Date
   const parseDate = (dateString) => {
     const [day, month, year] = dateString.split("/"); // Separa a string em dia, mês e ano
@@ -133,27 +148,26 @@ const RentsTable = ({ selected }) => {
 
   return (
     <div className={styles.tableContainer}>
-      <div className={styles.searchContainer}>
+      <form className={styles.searchContainer}>
         <label htmlFor="search">Pesquisar</label>
-        <input type="text" id="search"  placeholder="Digite para buscar..." value={searchTerm} onChange={(e) => {
+        <input
+          type="text"
+          id="search"
+          placeholder="Digite para buscar..."
+          value={searchTerm}
+          onChange={(e) => {
             setSearchTerm(e.target.value);
             handleSearch(e.target.value);
           }}
         />
-        <div>
-          <label htmlFor="PAID">Pago</label>
-          <input type="checkbox" name="PAID" id="PAID" />
-        </div>
-        <div>
-          <label htmlFor="Winning">Vencendo</label>
-          <input type="checkbox" name="Winning" id="Winning" />
-        </div>
-        <div>
-          <label htmlFor="at">Atrasado</label>
-          <input type="checkbox" name="at" id="at" />
-        </div>
+       <select name="filter" id="filter" onChange={e => setSelectedFiter(e.target.value)} value={selectedFilter}>
+        <option value="">Filtro</option>
+        <option value="finalizado">Finalizado</option>
+        <option value="vencendo">Vencendo</option>
+        <option value="atrasado">Atrasado</option>
+       </select>
         <input type="submit" value="Pesquisar" />
-      </div>
+      </form>
       <table className={styles.table}>
         <thead>
           <tr>
@@ -198,7 +212,14 @@ const RentsTable = ({ selected }) => {
                   />{" "}
                   <FaPen onClick={(e) => selected(e, row.id)} />{" "}
                   <FaPaste onClick={() => openPdf(row)} />{" "}
-                  <MdOutlineDoneOutline color="green" onClick={() => completeRent(row.id)} />
+                  <MdOutlineDoneOutline
+                    color="green"
+                    onClick={
+                      row.stateRent === "PENDENT"
+                        ? (e) => openModalFinishRnet(e, row.id, row.client.name)
+                        : null
+                    }
+                  />
                 </td>
               )}
             </tr>
@@ -210,6 +231,14 @@ const RentsTable = ({ selected }) => {
         itemName={clientName}
         onClose={() => setOpenModal(false)}
         onConfirm={() => handleDeleteRent(rentToDeleteId)}
+        remove={true}
+      />
+      <ConfirmDeleteModal
+        open={openModalCompleteRent}
+        itemName={clientName}
+        onClose={() => setOpenModalCompleteRent(false)}
+        onConfirm={() => completeRent(rentToCompleteId)}
+        completeRent={true}
       />
       <div className={styles.pagination}>
         <button onClick={handlePrevious} disabled={currentPage === 1}>

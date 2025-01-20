@@ -177,7 +177,7 @@ const EarningTable = ({ selected }) => {
                 </table>
             )}
 
-            <ConfirmDeleteModal open={openModalDelete} onClose={() => setOpenModalDelete(false)} itemName={toolName} onConfirm={() => handleDeleteTool(toolToDelete)} />
+            <ConfirmDeleteModal open={openModalDelete} onClose={() => setOpenModalDelete(false)} itemName={toolName} onConfirm={() => handleDeleteTool(toolToDelete)} remove={true} />
 
             <div className={styles.pagination}>
                 <button onClick={handlePrevious} disabled={currentPage === 1}>
@@ -198,7 +198,7 @@ const EarningTable = ({ selected }) => {
                             Faturamento total: R${" "}
                             <span style={{ color: "#28a745" }}>
                                 {filteredTools.reduce((accumulator, currentItem) => {
-                                    return accumulator + currentItem.price;
+                                    return (accumulator + currentItem.price);
                                 }, 0)}
                             </span>
                         </p>

@@ -9,7 +9,7 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
   const [initialDate, setInitalDate] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [obs, setObs] = useState('')
-  const [freight, setFreight] = useState('')
+  const [freight, setFreight] = useState(0 || null)
   const navigate = useNavigate();
 
   const finishRent = async (e) => {

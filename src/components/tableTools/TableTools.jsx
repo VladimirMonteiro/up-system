@@ -107,9 +107,9 @@ const TableTools = ({ selected }) => {
               <td>{row.name}</td>
               <td>{row.totalQuantity}un</td>
               <td>{row.quantity}un</td>
-              <td>R${row.daily}</td>
-              <td>R${row.week}</td>
-              <td>R${row.priceMonth}</td>
+              <td>R${row.daily.toFixed(2)}</td>
+              <td>R${row.week.toFixed(2)}</td>
+              <td>R${row.priceMonth.toFixed(2)}</td>
               {location === "/ferramentas" && (
                 <td>
                   <MdDelete
@@ -128,6 +128,7 @@ const TableTools = ({ selected }) => {
         onClose={() => setOpenModalDelete(false)}
         itemName={toolName}  // Passa o nome da ferramenta para o modal
         onConfirm={() => handleDeleteTool(toolToDelete)}  // Chama a função de deletar com o ID
+        remove={true}
       />
       <div className={styles.pagination}>
         <button onClick={handlePrevious} disabled={currentPage === 1}>
