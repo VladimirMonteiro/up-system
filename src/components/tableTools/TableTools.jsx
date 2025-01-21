@@ -6,11 +6,14 @@ import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
 import { formateNumber } from '../../utils/formatNumber';
+import ComponentMessage from '../componentMessage/ComponentMessage';
 
-const TableTools = ({ selected }) => {
-  const [data, setData] = useState([]);
+
+const TableTools = ({ selected, tools }) => {
+  const [data, setData] = useState(tools);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredTools, setFilteredTools] = useState([]);
+  const [success, setSuccess] = useState(null)
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
   const location = useLocation().pathname;
@@ -28,7 +31,7 @@ const TableTools = ({ selected }) => {
       }
     };
     fetchData();
-  }, []);
+  }, [tools]);
 
   const openModal = (e, id, name) => {
     e.preventDefault();
@@ -63,6 +66,7 @@ const TableTools = ({ selected }) => {
       console.log(response.data);
       setData((prevData) => prevData.filter((tool) => tool.id !== id));
       setOpenModalDelete(false);  // Fecha o modal após a deleção
+      setSuccess(response.data.message)
     } catch (error) {
       console.log(error);
     }
@@ -70,6 +74,7 @@ const TableTools = ({ selected }) => {
 
   return (
     <div className={styles.tableContainer}>
+        {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
       <div className={styles.searchContainer}>
         <label htmlFor="search">Pesquisar</label>
         <input

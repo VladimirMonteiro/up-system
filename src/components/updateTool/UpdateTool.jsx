@@ -1,17 +1,15 @@
 import { useState, useEffect } from 'react'
 import { handlePriceChange } from '../../utils/handlePriceChange'
 import styles from './UpdateTool.module.css'
-import api from '../../utils/api'
 
-const UpdateTool = ({ tool }) => {
+
+const UpdateTool = ({ tool, errors, handleUpdate }) => {
     const [name, setName] = useState("");
     const [totalQuantity, setTotalQuantity] = useState("")
     const [quantity, setQuantity] = useState("");
     const [daily, setDaily] = useState("");
     const [week, setWeek] = useState("");
     const [priceMonth, setPriceMonth] = useState("");
-    const [errors, setErrors] = useState(null);
-    const [success, setSuccess] = useState(null);
 
     // Atualizar os estados quando `tool` mudar
     useEffect(() => {
@@ -36,24 +34,16 @@ const UpdateTool = ({ tool }) => {
             week: parseFloat(String(week).replace(/\./g, '').replace(',', '.')),
             priceMonth: parseFloat(String(priceMonth).replace(/\./g, '').replace(',', '.')),
         };
+
+        await handleUpdate(tool.id, updateTool)
     
-        try {
-            const response = await api.put(`http://localhost:8080/tools/update/${tool.id}`, updateTool);
-            console.log(response.data)
-            setSuccess(response.data.message);
-            setErrors(null)
-            setTimeout(() => setSuccess(null), 3000);
-        } catch (error) {
-            console.error(error);
-            setErrors(error.response?.data?.errors || ["Erro ao atualizar ferramenta."]);
-        }
+      
     };
 
 
     return (
         <div>
             <h2>Atualização de ferramenta</h2>
-            {success && <p style={{ color: "#28a745", textAlign: "center" }}>{success}</p>}
             <form className={styles.formContainer} onSubmit={handleSubmit}>
                 <div className={styles.form}>
                     <div className={styles.inputContainer}>
