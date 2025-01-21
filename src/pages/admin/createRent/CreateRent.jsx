@@ -10,13 +10,14 @@ import TableTools from '../../../components/tableTools/TableTools'
 
 import styles from './CreateRent.module.css'
 import CompleteRent from '../../../components/completeRent/CompleteRent'
+import { formateNumber } from '../../../utils/formatNumber'
 
 const CreateRent = () => {
 
     const [client, setClient] = useState({})
     const [tool, setTool] = useState("")
     const [price, setPrice] = useState("")
-    const [quantity, setQuantity] = useState(null)
+    const [quantity, setQuantity] = useState('')
     const [meters, setMeters] = useState("")
     const [listItems, setListItems] = useState([])
 
@@ -91,14 +92,25 @@ const CreateRent = () => {
             return
         }
 
-        const parsedPrice = parseFloat(price.replace(/\./g, '').replace(',', '.'));
+        let parsedPrice;
+
+        if(price.startsWith('R$')) {
+            parsedPrice = (parseFloat(price.replace('R$', "")))
+        } else {
+            parsedPrice = parseFloat(price.replace(/\./g, '').replace(',', '.'));
+        }
+
+    
         const parsedQuantity = parseFloat(quantity)
 
+        console.log(meters)
+
+        console.log(parsedPrice)
         const item = {
             toolId: tool.id,
             tool: tool.name,
             quantity: parsedQuantity,
-            price: tool.name.startsWith('Andaime') ? (parsedPrice * parsedQuantity * parseFloat(meters)) : parsedPrice
+            price: tool.name.startsWith('Andaime') ? (parsedPrice * parseFloat(meters)) : parsedPrice
 
         }
 
@@ -125,7 +137,8 @@ const CreateRent = () => {
 
     const calculateQuantityOfAndaime = (e) => {
         e.preventDefault()
-        setMeters(parseFloat((e.target.value)))
+
+        setMeters(parseFloat(meters))
 
         switch (tool.name) {
             case 'Andaime 1,5m':
@@ -175,9 +188,9 @@ const CreateRent = () => {
                                     <option value="">Selecione uma opção</option>
                                     {tool && (
                                          <>
-                                         <option value={tool.daily}>Diária (1 dia)</option>
-                                         <option value={tool.week}>Semana (7 dias)</option>
-                                         <option value={tool.priceMonth}>Mensal (30 dias)</option>
+                                         <option value={formateNumber(tool.daily)}>Diária (1 dia)</option>
+                                         <option value={formateNumber(tool.week)}>Semana (7 dias)</option>
+                                         <option value={formateNumber(tool.priceMonth)}>Mensal (30 dias)</option>
                                          </>  
                                        
                                     )}
@@ -212,7 +225,7 @@ const CreateRent = () => {
                             <h2>Items da locação</h2>
                             <ul>
                                 {listItems.length > 0 && listItems.map((item, index) => (
-                                    <li key={index}><div>{item.tool}</div> <div>{item.quantity}un</div>  <div>R${item.price}</div>
+                                    <li key={index}><div>{item.tool}</div> <div>{item.quantity}un</div>  <div>{formateNumber(item.price)}</div>
                                         <button
                                             className={styles.removeButton}
                                             onClick={() => handleRemoveItem(index)}

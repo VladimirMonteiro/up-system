@@ -1,0 +1,80 @@
+/* ComponentMessage.module.css */
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    z-index: 9999;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+
+    color: #fff;
+    min-width: 250px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Tipo de mensagem: sucesso, erro, aviso */
+.toast.success {
+    background-color: #28a745; /* Verde para sucesso */
+}
+
+.toast.error {
+    background-color: #dc3545; /* Vermelho para erro */
+}
+
+.toast.warning {
+    background-color: #ffc107; /* Amarelo para aviso */
+}
+
+/* Exibe a mensagem quando o sucesso ou erro é definido */
+.toast.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Botão de fechar (X) */
+.closeButton {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    padding: 10px;
+}
+
+/* Efeito ao passar o mouse no botão de fechar */
+.closeButton:hover {
+    transform: scale(1.2);
+}
+
+/* Animação de entrada e saída suave */
+.toast-enter {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.toast-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.toast-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast-exit-active {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}

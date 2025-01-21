@@ -1,6 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import generatePDF, { Resolution, Margin } from 'react-to-pdf';
 import styles from './Pdf.module.css';
+import { formateNumber } from '../../utils/formatNumber';
 
 const options = {
   method: 'open',
@@ -59,8 +60,8 @@ const PdfPage = () => {
                 <tr key={index}>
                   <td>{item.tool|| item.name}</td>
                   <td>{item.quantity}</td>
-                  <td>R${item.price}</td>
-                  <td>R${(item.price * item.quantity).toFixed(2)}</td>
+                  <td>{formateNumber(item.price)}</td>
+                  <td>{formateNumber(item.price * item.quantity)}</td>
                 </tr>
               ))}
             </tbody>
@@ -68,8 +69,8 @@ const PdfPage = () => {
         </div>
 
         <div className={styles.summary}>
-          <h3>Total de Locação: R${price}</h3>
-          <p>Frete: R${freight || 0}</p>
+          <h3>Total de Locação: {formateNumber(price)}</h3>
+          <p>Frete: {formateNumber(freight || 0)}</p>
           <p>Observação: {obs}</p>
           <p><strong>Data Inicial:</strong> {initialDate}</p>
           <p><strong>Data de Entrega:</strong> {deliveryDate}</p>

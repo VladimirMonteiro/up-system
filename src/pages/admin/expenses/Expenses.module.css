@@ -1,0 +1,15 @@
+.containerSection {
+    margin-top: 100px;
+    width: 100%;
+    padding:  0 2%  ;
+}
+
+.containerSection h1 {
+    text-align: center;
+    margin: 50px 0;
+}
+
+.components {
+    display: flex;
+    justify-content: space-between;
+}

@@ -1,0 +1,61 @@
+
+.containerInput {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.containerInput label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.containerInput input,
+.containerInput select {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.containerInput input[type="text"],
+.containerInput input[type="date"] {
+    margin-bottom: 10px; /* Margem inferior para espaçar do próximo campo */
+}
+
+.mainContainer input[type="submit"] {
+    padding: 12px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.mainContainer input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+.mainContainer h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .containerInput input,
+    .containerInput select {
+        font-size: 14px;
+    }
+
+    .mainContainer [type="submit"] {
+        font-size: 14px;
+    }
+}

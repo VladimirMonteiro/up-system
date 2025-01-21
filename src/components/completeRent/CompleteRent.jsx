@@ -15,6 +15,16 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
   const finishRent = async (e) => {
     e.preventDefault();
 
+    if(!initialDate) {
+      alert('Informe a data inicial da locação.')
+      return
+    }
+
+    if(!deliveryDate) {
+      alert('Informe a data final da locação.')
+      return
+    }
+
     const updatedListItems = listItems.map((item) => {
       // eslint-disable-next-line no-unused-vars
       const { tool, ...rest } = item; // Desestrutura para remover 'tool'

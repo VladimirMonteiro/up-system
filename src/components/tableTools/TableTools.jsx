@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
+import { formateNumber } from '../../utils/formatNumber';
 
 const TableTools = ({ selected }) => {
   const [data, setData] = useState([]);
@@ -107,9 +108,9 @@ const TableTools = ({ selected }) => {
               <td>{row.name}</td>
               <td>{row.totalQuantity}un</td>
               <td>{row.quantity}un</td>
-              <td>R${row.daily.toFixed(2)}</td>
-              <td>R${row.week.toFixed(2)}</td>
-              <td>R${row.priceMonth.toFixed(2)}</td>
+              <td>{formateNumber(row.daily)}</td>
+              <td>{formateNumber(row.week)}</td>
+              <td>{formateNumber(row.priceMonth)}</td>
               {location === "/ferramentas" && (
                 <td>
                   <MdDelete
