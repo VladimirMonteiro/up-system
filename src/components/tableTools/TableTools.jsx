@@ -10,7 +10,7 @@ import ComponentMessage from '../componentMessage/ComponentMessage';
 
 
 const TableTools = ({ selected, tools }) => {
-  const [data, setData] = useState(tools);
+  const [data, setData] = useState(tools || []);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredTools, setFilteredTools] = useState([]);
   const [success, setSuccess] = useState(null)

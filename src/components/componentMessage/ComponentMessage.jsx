@@ -13,7 +13,7 @@ const ComponentMessage = ({ message, type, onClose }) => {
             const timer = setTimeout(() => {
                 setShowMessage(false);
                 onClose(); // Limpa a mensagem de sucesso ou erro no componente pai
-            }, 2000);
+            }, 2500);
 
             return () => clearTimeout(timer); // Limpa o timer se o componente for desmontado antes
         }

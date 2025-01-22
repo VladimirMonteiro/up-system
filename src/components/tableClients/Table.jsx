@@ -6,14 +6,16 @@ import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 
 import { useLocation } from 'react-router-dom';
-import Loading from '../loading/Loading';
 import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
+import ComponentMessage from '../componentMessage/ComponentMessage';
+
 
 const Table = ({ selected }) => {
 
   const [data, setData] = useState([])
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredClients, setFilteredClients] = useState([]);
+  const [success, setSuccess] = useState(null)
   const [currentPage, setCurrentPage] = useState(1);
   const [openModal, setOpenModal] = useState(false)
   const [ClientToDelete, setClientToDelete] = useState(null);  // Para armazenar o ID da ferramenta
@@ -72,7 +74,8 @@ const Table = ({ selected }) => {
 
       setData(prevData => prevData.filter(data => data.id !== id))
       setOpenModal(false)
-      
+      setSuccess(response.data.message)
+
 
     } catch (error) {
       console.log(error)
@@ -81,7 +84,7 @@ const Table = ({ selected }) => {
 
   }
 
-  
+
   const openModalClient = (e, id, name) => {
     e.preventDefault();
     setClientToDelete(id);  // Salva o ID da ferramenta que será deletada
@@ -93,6 +96,7 @@ const Table = ({ selected }) => {
   return (
 
     <div className={styles.tableContainer}>
+      {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
       <div className={styles.searchContainer}>
         <label htmlFor="search">Pesquisar</label>
         <input type="text" id="search" placeholder="Digite para buscar..." value={searchTerm}
@@ -136,7 +140,7 @@ const Table = ({ selected }) => {
           ))}
         </tbody>
       </table>
-      <ConfirmDeleteModal open={openModal} itemName={clientName} onClose={()=> setOpenModal(false)} onConfirm={()=> handleDelete(ClientToDelete)} remove={true} />
+      <ConfirmDeleteModal open={openModal} itemName={clientName} onClose={() => setOpenModal(false)} onConfirm={() => handleDelete(ClientToDelete)} remove={true} />
       <div className={styles.pagination}>
         <button onClick={handlePrevious} disabled={currentPage === 1}>
           Anterior

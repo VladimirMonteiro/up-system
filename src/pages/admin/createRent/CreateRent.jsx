@@ -251,7 +251,7 @@ const CreateRent = () => {
             </Modal>
 
             {/* Modal para Cliente */}
-            <Modal isOpen={isClientModalOpen} onClose={closeClientModal}>
+            <Modal isOpen={isClientModalOpen} onClose={closeClientModal} height={'auto'}>
                 <h2>Selecione um Cliente</h2>
                 {/* Aqui você pode adicionar os componentes ou listagens para clientes */}
                 <Table selected={handleSelectClient} />
@@ -259,7 +259,7 @@ const CreateRent = () => {
             </Modal>
 
             {/* Modal para Ferramentas */}
-            <Modal isOpen={isToolModalOpen} onClose={closeToolModal}>
+            <Modal isOpen={isToolModalOpen} onClose={closeToolModal} height={"auto"}>
                 <h2>Selecione uma Ferramenta</h2>
                 {/* Aqui você pode adicionar os componentes ou listagens para ferramentas */}
                 <TableTools selected={handleSelectTool} />

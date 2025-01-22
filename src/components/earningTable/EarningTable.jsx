@@ -4,13 +4,16 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
+import ComponentMessage from '../componentMessage/ComponentMessage';
 import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
+import { formateNumber } from '../../utils/formatNumber';
 
-const EarningTable = ({ selected }) => {
-    const [data, setData] = useState([]);
+const EarningTable = ({ selected, earnings }) => {
+    const [data, setData] = useState(earnings);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchStatus, setSearchStatus] = useState(false); // Controle para mostrar "Nenhum pagamento encontrado"
     const [filteredTools, setFilteredTools] = useState([]);
+    const [success, setSuccess] = useState(null)
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
     const location = useLocation().pathname;
@@ -39,7 +42,7 @@ const EarningTable = ({ selected }) => {
             }
         };
         fetchData();
-    }, []);
+    }, [earnings]);
 
     const openModal = (e, id, name) => {
         e.preventDefault();
@@ -93,6 +96,7 @@ const EarningTable = ({ selected }) => {
             setData((prevData) => prevData.filter((tool) => tool.earningId !== id));
             setFilteredTools((prevData) => prevData.filter((tool) => tool.earningId !== id));  // Atualiza após remoção
             setOpenModalDelete(false);
+            setSuccess(response.data.message)
         } catch (error) {
             console.log(error);
         }
@@ -100,6 +104,7 @@ const EarningTable = ({ selected }) => {
 
     return (
         <div className={styles.tableContainer} style={{ width: "45%" }}>
+                   {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
             <form className={styles.searchContainer} onSubmit={handleSearch}>
                 <label htmlFor="search">Pesquisar</label>
                 <input style={{ margin: "10px" }}
@@ -160,7 +165,7 @@ const EarningTable = ({ selected }) => {
                             >
                                 <td>{row.rent.id}</td>
                                 <td>{row.rent.client.name}</td>
-                                <td>R${row.price}</td>
+                                <td>{formateNumber(row.price)}</td>
                                 <td>{row.dateOfEarn}</td>
                                 {location === "/faturamentos" && (
                                     <td>
@@ -168,7 +173,7 @@ const EarningTable = ({ selected }) => {
                                             style={{ color: "red" }}
                                             onClick={(e) => openModal(e, row.earningId, row.name)}
                                         />
-                                        <FaPen onClick={(e) => selected(e, row.id)} />
+                                        <FaPen onClick={(e) => selected(e, row.earningId)} />
                                     </td>
                                 )}
                             </tr>
@@ -195,11 +200,11 @@ const EarningTable = ({ selected }) => {
                 {filteredTools.length > 0 && !searchStatus && (
                     <div style={{ textAlign: "center", margin: "50px 0" }}>
                         <p style={{ fontSize: "20px" }}>
-                            Faturamento total: R${" "}
+                            Faturamento total: {" "}
                             <span style={{ color: "#28a745" }}>
-                                {filteredTools.reduce((accumulator, currentItem) => {
+                                {formateNumber(filteredTools.reduce((accumulator, currentItem) => {
                                     return (accumulator + currentItem.price);
-                                }, 0)}
+                                }, 0))}
                             </span>
                         </p>
                     </div>
