@@ -153,6 +153,8 @@ const CreateRent = () => {
             default:
                 alert('Tool name not recognized:', tool.name);
         }
+
+        setMeters('')
     }
 
     const handleRemoveItem = (index) => {

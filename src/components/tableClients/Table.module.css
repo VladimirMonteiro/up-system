@@ -82,4 +82,13 @@
     background-color: #ccc;
     cursor: not-allowed;
   }
-  
+
+  .messageNotFound {
+    color: red;
+    position: absolute;
+    left: 43.5%;
+    margin: 50px 0;
+    font-size: 18px;
+    width: 100%;
+  }
+

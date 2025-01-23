@@ -2,16 +2,20 @@ import api from "../../utils/api";
 import styles from "../tableClients/Table.module.css";
 
 import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { data, useLocation, useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 import { FaPaste } from "react-icons/fa";
 import { MdOutlineDoneOutline } from "react-icons/md";
 import ConfirmDeleteModal from "../modalConfirmDelete/ConfirmDeleteModal";
+import { formateNumber } from "../../utils/formatNumber";
+import ComponentMessage from "../componentMessage/ComponentMessage";
 
 const RentsTable = ({ selected }) => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [NotFound, setNotFound] = useState(null)
+  const [success, setSuccess] = useState(null)
   const [filteredTools, setFilteredTools] = useState([]);
   const [selectedFilter, setSelectedFiter] = useState('')
   const [currentPage, setCurrentPage] = useState(1);
@@ -44,12 +48,36 @@ const RentsTable = ({ selected }) => {
           value.toString().toLowerCase().includes(searchTerm.toLowerCase())
       )
     );
-    setFilteredTools(filteredData);
-    setCurrentPage(1); 
 
-    console.log(selectedFilter)
+
+    if(filteredData.length == 0) {
+      setNotFound(true)
+      return
+    }
+    setFilteredTools(filteredData);
+    setCurrentPage(1);
+    setNotFound(null)
     // Reinicia para a primeira página
   };
+
+  const SelectedFilterSearch = (e) => {
+    e.preventDefault()
+
+    if (selectedFilter == 'finalizado') {
+      setFilteredTools(data.filter(data => data.stateRent == 'PAID'))
+      setCurrentPage(1);
+    } else if (selectedFilter == 'vencendo') {
+      setFilteredTools(data.filter(data => getDeliveryStatus(data.deliveryDate) == 'near'))
+      setCurrentPage(1)
+    } else if (selectedFilter == 'atrasado') {
+      setFilteredTools(data.filter(data => getDeliveryStatus(data.deliveryDate) == 'overdue' && data.stateRent != 'PAID'))
+      setCurrentPage(1)
+    }
+    else {
+      setFilteredTools('')
+    }
+    console.log(selectedFilter)
+  }
 
   const totalPages = Math.ceil(data.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
@@ -68,6 +96,7 @@ const RentsTable = ({ selected }) => {
         `http://localhost:8080/rent/delete/${id}`
       );
       setOpenModal(false);
+      setSuccess(response.data.message)
 
       setData((prevData) => prevData.filter((rent) => rent.id !== id));
     } catch (error) {
@@ -148,7 +177,9 @@ const RentsTable = ({ selected }) => {
 
   return (
     <div className={styles.tableContainer}>
-      <form className={styles.searchContainer}>
+        {/* Exibe a mensagem de sucesso */}
+        {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
+      <form className={styles.searchContainer} onSubmit={SelectedFilterSearch}>
         <label htmlFor="search">Pesquisar</label>
         <input
           type="text"
@@ -160,12 +191,12 @@ const RentsTable = ({ selected }) => {
             handleSearch(e.target.value);
           }}
         />
-       <select name="filter" id="filter" onChange={e => setSelectedFiter(e.target.value)} value={selectedFilter}>
-        <option value="">Filtro</option>
-        <option value="finalizado">Finalizado</option>
-        <option value="vencendo">Vencendo</option>
-        <option value="atrasado">Atrasado</option>
-       </select>
+        <select name="filter" id="filter" onChange={e => setSelectedFiter(e.target.value)} value={selectedFilter}>
+          <option value="">Filtro</option>
+          <option value="finalizado">Finalizado</option>
+          <option value="vencendo">Vencendo</option>
+          <option value="atrasado">Atrasado</option>
+        </select>
         <input type="submit" value="Pesquisar" />
       </form>
       <table className={styles.table}>
@@ -182,7 +213,7 @@ const RentsTable = ({ selected }) => {
           </tr>
         </thead>
         <tbody>
-          {currentData.map((row) => (
+          {NotFound ? (<div className={styles.messageNotFound}><p>Nenhuma Locação encontrada</p></div>) : currentData.map((row) => (
             <tr
               key={row.id}
               onClick={location == "/alugar" ? () => selected(row) : undefined}
@@ -191,10 +222,10 @@ const RentsTable = ({ selected }) => {
                   row.stateRent === "PAID"
                     ? "#2ecc70bd"
                     : getDeliveryStatus(row.deliveryDate) === "near"
-                    ? "#f1c40fca" // Amarelo para datas próximas (menos de 2 dias)
-                    : getDeliveryStatus(row.deliveryDate) === "overdue"
-                    ? "#ff190084" // Vermelho para datas passadas
-                    : "",
+                      ? "#f1c40fca" // Amarelo para datas próximas (menos de 2 dias)
+                      : getDeliveryStatus(row.deliveryDate) === "overdue"
+                        ? "#ff190084" // Vermelho para datas passadas
+                        : "",
               }}
             >
               <td>{row.id}</td>
@@ -202,8 +233,8 @@ const RentsTable = ({ selected }) => {
               <td>{row.client.addresses[0].street}</td>
               <td>{row.initialDate}</td>
               <td>{row.deliveryDate}</td>
-              <td>R${row.price}</td>
-              <td>{row.stateRent}</td>
+              <td>{formateNumber(row.price)}</td>
+              <td>{row.stateRent == 'PAID' ? 'FINALIZADO' : 'PENDENTE'}</td>
               {location == "/alugueis" && (
                 <td style={{ display: "flex", justifyContent: "space-around" }}>
                   <MdDelete
@@ -224,6 +255,7 @@ const RentsTable = ({ selected }) => {
               )}
             </tr>
           ))}
+        
         </tbody>
       </table>
       <ConfirmDeleteModal

@@ -76,14 +76,14 @@ const Clients = () => {
                 <div className={styles.containerBtn}>
                     <button onClick={openModalClient}>Cadastrar Cliente</button>
                 </div>
-                <Modal isOpen={modalClients} onClose={closeModalClient} width="1400px" height="650px">
+                <Modal isOpen={modalClients} onClose={closeModalClient} width="1400px" height="auto">
                     <RegisterClient/>
                 </Modal>
                 <Modal isOpen={modalUpdateClients} onClose={closeModalUpdateClientFs}>
                   <UpdateClientFs clientId={client.id}/>
                  
                 </Modal>
-                <Modal isOpen={modalUpdateClientsPj} onClose={closeModalUpdateClientPj}>
+                <Modal isOpen={modalUpdateClientsPj} onClose={closeModalUpdateClientPj} height={'auto'}>
                   <UpdateClientPj clientId={client.id}/>
                 </Modal>
 
