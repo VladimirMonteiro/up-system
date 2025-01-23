@@ -1,4 +1,4 @@
-import styles from "../../pages/admin/createRent/CreateRent.Module.css";
+import styles from '../../pages/admin/createRent/CreateRent.module.css';
 import { handlePriceChange } from "../../utils/handlePriceChange";
 
 import { useState } from "react";
