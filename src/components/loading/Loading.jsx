@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './Loading.module.css';
 
-const Loading = () => {
+const Loading = ({table}) => {
   return (
-    <div className={styles.loadingContainer}>
+    <div className={table ? styles.loadingTable : styles.loadingContainer}>
       <div className={styles.loader}></div>
       <p className={styles.desc}>Carregando...</p>
     </div>

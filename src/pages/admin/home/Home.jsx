@@ -17,9 +17,9 @@ const Home = () => {
     useEffect(() => {
         const fetchClients = async () => {
             try {
-                const response = await api.get("http://localhost:8080/clients");
-                const response2 = await api.get("http://localhost:8080/tools");
-                const response3 = await api.get("http://localhost:8080/rent");
+                const response = await api.get(`/clients`);
+                const response2 = await api.get("/tools");
+                const response3 = await api.get("/rent");
                 setClients(response.data);
                 setTools(response2.data)
                 setRents(response3.data)

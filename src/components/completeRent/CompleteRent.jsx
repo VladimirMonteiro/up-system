@@ -57,7 +57,7 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
 
     try {
       const request = await api.post(
-        "http://localhost:8080/rent/create",
+        "/rent/create",
         newRent
       );
       console.log(request.data);
@@ -95,10 +95,10 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
         </div>
         <div className={styles.inputContainer2} style={{margin: '10px auto'}}>
             <label htmlFor="freight">Frete</label>
-            <input type="text" name="freight" id="freight" placeholder="Opcional" onChange={(e) => handlePriceChange(e, setFreight)} value={freight} />
+            <input type="text" name="freight" id="freight" placeholder="Opcional" onChange={(e) => handlePriceChange(e, setFreight)} value={freight || ""} />
         </div>
         <div className={styles.textareaContainer}>
-      <textarea className={styles.textareaInput} placeholder="Observação (Opcional)" onChange={e => setObs(e.target.value)}></textarea>
+      <textarea className={styles.textareaInput} placeholder="Observação (Opcional)" onChange={e => setObs(e.target.value)} value={obs || ""}></textarea>
     </div>
         <div className={styles.inputContainer2} style={{margin: '10px auto'}}>
           <input type="submit" value="Finalizar locação" />

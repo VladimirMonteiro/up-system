@@ -6,10 +6,11 @@ import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
 import { formateNumber } from '../../utils/formatNumber';
+import Loading from '../loading/Loading'
 import ComponentMessage from '../componentMessage/ComponentMessage';
 
 
-const TableTools = ({ selected, tools }) => {
+const TableTools = ({ selected, tools, loading, setLoading }) => {
   const [data, setData] = useState(tools || []);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredTools, setFilteredTools] = useState([]);
@@ -24,8 +25,9 @@ const TableTools = ({ selected, tools }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get("http://localhost:8080/tools");
+        const response = await api.get("tools");
         setData(response.data);
+        setLoading(false)
       } catch (error) {
         console.log(error);
       }
@@ -62,7 +64,7 @@ const TableTools = ({ selected, tools }) => {
 
   const handleDeleteTool = async (id) => {
     try {
-      const response = await api.delete(`http://localhost:8080/tools/delete/${id}`);
+      const response = await api.delete(`tools/delete/${id}`);
       console.log(response.data);
       setData((prevData) => prevData.filter((tool) => tool.id !== id));
       setOpenModalDelete(false);  // Fecha o modal após a deleção
@@ -73,81 +75,90 @@ const TableTools = ({ selected, tools }) => {
   };
 
   return (
-    <div className={styles.tableContainer}>
-        {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
-      <div className={styles.searchContainer}>
-        <label htmlFor="search">Pesquisar</label>
-        <input
-          type="text"
-          id="search"
-          placeholder="Digite para buscar..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            handleSearch(e.target.value);
-          }}
-        />
-        <input type="submit" value="Pesquisar" />
-      </div>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>Quantidade total</th>
-            <th>Quantidade disponível</th>
-            <th>Diária</th>
-            <th>Semanal</th>
-            <th>Mensal</th>
-            {location === "/ferramentas" && <th>Ações</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {currentData.map((row) => (
-            <tr
-              key={row.id}
-              onClick={location === "/alugar" ? () => selected(row) : undefined}
-              style={row.quantity === 0 ? { backgroundColor: '#ffcccc' } : {}}
-            >
-              <td>{row.id}</td>
-              <td>{row.name}</td>
-              <td>{row.totalQuantity}un</td>
-              <td>{row.quantity}un</td>
-              <td>{formateNumber(row.daily)}</td>
-              <td>{formateNumber(row.week)}</td>
-              <td>{formateNumber(row.priceMonth)}</td>
-              {location === "/ferramentas" && (
-                <td>
-                  <MdDelete
-                    style={{ color: "red" }}
-                    onClick={(e) => openModal(e, row.id, row.name)}  // Passa o ID e nome da ferramenta para o modal
-                  />
-                  <FaPen onClick={(e) => selected(e, row.id)} />
-                </td>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <ConfirmDeleteModal
-        open={openModalDelete}
-        onClose={() => setOpenModalDelete(false)}
-        itemName={toolName}  // Passa o nome da ferramenta para o modal
-        onConfirm={() => handleDeleteTool(toolToDelete)}  // Chama a função de deletar com o ID
-        remove={true}
-      />
-      <div className={styles.pagination}>
-        <button onClick={handlePrevious} disabled={currentPage === 1}>
-          Anterior
-        </button>
-        <span>
-          Página {currentPage} de {totalPages}
-        </span>
-        <button onClick={handleNext} disabled={currentPage === totalPages}>
-          Próxima
-        </button>
-      </div>
-    </div>
+
+    <>
+    {loading ? (<Loading table={true}/>) : (
+       <div className={styles.tableContainer}>
+       {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
+     <div className={styles.searchContainer}>
+       <label htmlFor="search">Pesquisar</label>
+       <input
+         type="text"
+         id="search"
+         placeholder="Digite para buscar..."
+         value={searchTerm}
+         onChange={(e) => {
+           setSearchTerm(e.target.value);
+           handleSearch(e.target.value);
+         }}
+       />
+       <input type="submit" value="Pesquisar" />
+     </div>
+     <table className={styles.table}>
+       <thead>
+         <tr>
+           <th>ID</th>
+           <th>Nome</th>
+           <th>Quantidade total</th>
+           <th>Quantidade disponível</th>
+           <th>Diária</th>
+           <th>Semanal</th>
+           <th>Mensal</th>
+           {location === "/ferramentas" && <th>Ações</th>}
+         </tr>
+       </thead>
+       <tbody>
+         {currentData.map((row) => (
+           <tr
+             key={row.id}
+             onClick={location === "/alugar" ? () => selected(row) : undefined}
+             style={row.quantity === 0 ? { backgroundColor: '#ffcccc' } : {}}
+           >
+             <td>{row.id}</td>
+             <td>{row.name}</td>
+             <td>{row.totalQuantity}un</td>
+             <td>{row.quantity}un</td>
+             <td>{formateNumber(row.daily)}</td>
+             <td>{formateNumber(row.week)}</td>
+             <td>{formateNumber(row.priceMonth)}</td>
+             {location === "/ferramentas" && (
+               <td>
+                 <MdDelete
+                   style={{ color: "red" }}
+                   onClick={(e) => openModal(e, row.id, row.name)}  // Passa o ID e nome da ferramenta para o modal
+                 />
+                 <FaPen onClick={(e) => selected(e, row.id)} />
+               </td>
+             )}
+           </tr>
+         ))}
+       </tbody>
+     </table>
+     <ConfirmDeleteModal
+       open={openModalDelete}
+       onClose={() => setOpenModalDelete(false)}
+       itemName={toolName}  // Passa o nome da ferramenta para o modal
+       onConfirm={() => handleDeleteTool(toolToDelete)}  // Chama a função de deletar com o ID
+       remove={true}
+     />
+     <div className={styles.pagination}>
+       <button onClick={handlePrevious} disabled={currentPage === 1}>
+         Anterior
+       </button>
+       <span>
+         Página {currentPage} de {totalPages}
+       </span>
+       <button onClick={handleNext} disabled={currentPage === totalPages}>
+         Próxima
+       </button>
+     </div>
+   </div>
+
+    )}
+    
+    
+    </>
+   
   );
 };
 

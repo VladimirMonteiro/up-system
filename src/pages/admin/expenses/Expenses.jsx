@@ -25,7 +25,7 @@ const Expenses = () => {
         openModalUpdate(e);
 
         try {
-            const response = await api.get(`http://localhost:8080/spent/${id}`);
+            const response = await api.get(`spent/${id}`);
             setSelectedExpense(response.data);
         } catch (error) {
             console.error(error);

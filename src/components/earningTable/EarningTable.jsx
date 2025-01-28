@@ -34,7 +34,7 @@ const EarningTable = ({ selected, earnings }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await api.get("http://localhost:8080/earning");
+                const response = await api.get("/earning");
                 setData(response.data);
                 setFilteredTools(response.data);  // Inicializando com todos os dados
             } catch (error) {

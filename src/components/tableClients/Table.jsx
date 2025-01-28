@@ -30,7 +30,7 @@ const Table = ({ selected }) => {
 
       try {
 
-        const response = await api.get("http://localhost:8080/clients")
+        const response = await api.get("clients")
         setData(response.data)
 
       } catch (error) {
@@ -69,7 +69,7 @@ const Table = ({ selected }) => {
 
     try {
 
-      const response = await api.delete(`http://localhost:8080/clients/delete/${id}`)
+      const response = await api.delete(`clients/delete/${id}`)
       console.log(response.data)
 
       setData(prevData => prevData.filter(data => data.id !== id))

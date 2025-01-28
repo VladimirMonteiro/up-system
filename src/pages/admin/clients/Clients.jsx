@@ -53,7 +53,7 @@ const Clients = () => {
     
 
     try {
-      const response = await api.get(`http://localhost:8080/clients/${id}`)
+      const response = await api.get(`clients/${id}`)
       setClient(response.data)
       if (response.data.cnpj) {
         setModalUpdateClientsPj(true)

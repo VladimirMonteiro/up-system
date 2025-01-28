@@ -31,7 +31,7 @@ const RentsTable = ({ selected }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get("http://localhost:8080/rent");
+        const response = await api.get("rent");
         setData(response.data);
       } catch (error) {
         console.log(error);
@@ -93,7 +93,7 @@ const RentsTable = ({ selected }) => {
   const handleDeleteRent = async (id) => {
     try {
       const response = await api.delete(
-        `http://localhost:8080/rent/delete/${id}`
+        `rent/delete/${id}`
       );
       setOpenModal(false);
       setSuccess(response.data.message)

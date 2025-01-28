@@ -12,7 +12,7 @@ const UpdateExpense = ({ expense, handleUpdateSpent, errors }) => {
         if (expense) {
             setDescription(expense.description || "");
             setValue(expense.value || "");
-            setFixed(expense.fixed || "");
+            setFixed(expense.fixed ? true : false);
             setDateOfSpent(expense.dateOfSpent || "");
         }
     }, [expense]);
@@ -57,10 +57,10 @@ const UpdateExpense = ({ expense, handleUpdateSpent, errors }) => {
                         onChange={e => setDescription(e.target.value)}
                         value={description}
                     />
-                       {errors && errors.length > 0 && (
+                    {errors && errors.length > 0 && (
                         <p style={{ color: "red", margin: '5px 0', fontSize: '15px' }}>{errors.filter(error => error.includes("descrição"))}</p>
                     )}
-                    
+
                 </div>
                 <div className={styles.containerInput}>
                     <label htmlFor="price">Valor:</label>
@@ -72,13 +72,14 @@ const UpdateExpense = ({ expense, handleUpdateSpent, errors }) => {
                         onChange={e => handlePriceChange(e, setValue)}
                         value={value}
                     />
-                      {errors && errors.length > 0 && (
+                    {errors && errors.length > 0 && (
                         <p style={{ color: "red", margin: '5px 0', fontSize: '15px' }}>{errors.filter(error => error.includes("valor"))}</p>
                     )}
-                    <select name="fixed" id="fixed" onChange={e => setFixed(e.target.value)} value={fixed}>
+                    <select name="fixed" id="fixed" onChange={e => setFixed(e.target.value)} value={fixed || ""}>
                         <option value="">Selecione tipo de gasto</option>
                         <option value={true}>Fixo</option>
-                        <option value={false}>Não fixo</option>
+                        <option value={false}>{fixed === false ? "Não fixo" : ""}</option>
+
                     </select>
                     {errors && errors.length > 0 && (
                         <p style={{ color: "red", margin: '5px 0', fontSize: '15px' }}>{errors.filter(error => error.includes("tipo"))}</p>
@@ -94,7 +95,7 @@ const UpdateExpense = ({ expense, handleUpdateSpent, errors }) => {
                         onChange={e => setDateOfSpent(e.target.value)}
                         value={dateOfSpent}
                     />
-                       {errors && errors.length > 0 && (
+                    {errors && errors.length > 0 && (
                         <p style={{ color: "red", margin: '5px 0', fontSize: '15px' }}>{errors.filter(error => error.includes("data"))}</p>
                     )}
                 </div>

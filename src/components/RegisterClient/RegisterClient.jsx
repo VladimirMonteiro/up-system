@@ -81,7 +81,7 @@ const RegisterClient = () => {
         try {
 
             if (selectedForm == "pf") {
-                const response = await api.post(`http://localhost:8080/clients/createFs`, newClientFs)
+                const response = await api.post(`clients/createFs`, newClientFs)
                 console.log(response.data)
                 setSuccess(response.data.message)
 
@@ -116,7 +116,7 @@ const RegisterClient = () => {
 
                 }
 
-                const response = await api.post(`http://localhost:8080/clients/createPj`, newClientPj)
+                const response = await api.post(`clients/createPj`, newClientPj)
                 console.log(response.data)
                 setSuccess(response.data.message)
 

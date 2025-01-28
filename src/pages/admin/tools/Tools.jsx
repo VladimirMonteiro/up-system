@@ -35,7 +35,7 @@ const Tools = () => {
     openModalToolUpdate(e)
 
     try {
-      const response = await api.get(`http://localhost:8080/tools/${id}`)
+      const response = await api.get(`tools/${id}`)
       setTool(response.data)
 
     } catch (error) {

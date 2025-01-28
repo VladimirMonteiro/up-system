@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { getUserLocalStorage } from '../context/authProvider/utils';
 
+const baseURL = import.meta.env.VITE_API_URL;
 const api = axios.create({
-  baseURL: `http://localhost:8080`
+  baseURL: `${baseURL}`
 });
 
 api.interceptors.request.use(

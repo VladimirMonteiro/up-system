@@ -25,7 +25,7 @@ export async function loginRequest(login, password) {
  
     try {
       // Envia a requisição POST para o backend
-      const response = await api.post("http://localhost:8080/auth/login", {
+      const response = await api.post("auth/login", {
         login,
         password,
       });
