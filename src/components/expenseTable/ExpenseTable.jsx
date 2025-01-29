@@ -4,17 +4,16 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
-import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
-
-import { formateNumber } from '../../utils/formatNumber'
 import ComponentMessage from '../componentMessage/ComponentMessage';
+import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
+import { formateNumber } from '../../utils/formatNumber';
 
-const ExpenseTable = ({ selected, expenses }) => {
+const SpentTable = ({ selected, expenses }) => {
     const [data, setData] = useState(expenses);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchStatus, setSearchStatus] = useState(false); // Controle para mostrar "Nenhum pagamento encontrado"
     const [filteredTools, setFilteredTools] = useState([]);
-    const [success, setSuccess] = useState(null);  // Estado para a mensagem de sucesso
+    const [success, setSuccess] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
     const location = useLocation().pathname;
@@ -60,24 +59,21 @@ const ExpenseTable = ({ selected, expenses }) => {
         // Filtro por nome da descrição
         if (searchTerm) {
             filteredData = filteredData.filter((data) =>
-                data.description.toLowerCase().includes(searchTerm.toLowerCase()) // Considera "includes" para maior flexibilidade
+                data.description.toLowerCase().startsWith(searchTerm.toLowerCase())
             );
         }
 
         // Filtro por ano selecionado
         if (selectedYear) {
             filteredData = filteredData.filter((data) =>
-                new Date(data.dateOfSpent).getFullYear() === parseInt(selectedYear) 
-            ||
-            data.fixed == true // Considera "includes" para maior flexibilidade// Comparando o ano da data
+                data.dateOfSpent.split("/")[2] === selectedYear
             );
         }
+
         // Filtro por mês selecionado
         if (selectedMonth) {
             filteredData = filteredData.filter((data) =>
-                new Date(data.dateOfSpent).getMonth() === (parseInt(selectedMonth) - 1)
-            ||
-            data.fixed == true // Considera "includes" para maior flexibilidade // Comparando o mês da data
+                parseInt(data.dateOfSpent.split("/")[1]) === parseInt(selectedMonth)
             );
         }
 
@@ -95,12 +91,12 @@ const ExpenseTable = ({ selected, expenses }) => {
 
     const handleDeleteTool = async (id) => {
         try {
-            const response = await api.delete(`spent/delete/${id}`);
+            const response = await api.delete(`http://localhost:8080/spent/delete/${id}`);
             console.log(response.data);
             setData((prevData) => prevData.filter((tool) => tool.id !== id));
             setFilteredTools((prevData) => prevData.filter((tool) => tool.id !== id));  // Atualiza após remoção
-            setSuccess(response.data.message)
             setOpenModalDelete(false);
+            setSuccess(response.data.message)
         } catch (error) {
             console.log(error);
         }
@@ -108,6 +104,7 @@ const ExpenseTable = ({ selected, expenses }) => {
 
     return (
         <div className={styles.tableContainer} style={{ width: "45%" }}>
+            {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
             <form className={styles.searchContainer} onSubmit={handleSearch}>
                 <label htmlFor="search">Pesquisar</label>
                 <input style={{ margin: "10px" }}
@@ -148,9 +145,6 @@ const ExpenseTable = ({ selected, expenses }) => {
                 </p>
             )}
 
-                {/* Exibe a mensagem de sucesso */}
-                {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
-
             {!searchStatus && (
                 <table className={styles.table}>
                     <thead>
@@ -159,7 +153,6 @@ const ExpenseTable = ({ selected, expenses }) => {
                             <th>Descrição</th>
                             <th>Valor</th>
                             <th>Data de pagamento</th>
-                            <th>Tipo</th>
                             {location === "/gastos" && <th>Ações</th>}
                         </tr>
                     </thead>
@@ -174,7 +167,6 @@ const ExpenseTable = ({ selected, expenses }) => {
                                 <td>{row.description}</td>
                                 <td>{formateNumber(row.value)}</td>
                                 <td>{row.dateOfSpent}</td>
-                                <td>{row.fixed ? 'FIXO' : 'NÃO FIXO'}</td>
                                 {location === "/gastos" && (
                                     <td>
                                         <MdDelete
@@ -203,14 +195,15 @@ const ExpenseTable = ({ selected, expenses }) => {
                     Próxima
                 </button>
             </div>
+
             <div>
                 {filteredTools.length > 0 && !searchStatus && (
                     <div style={{ textAlign: "center", margin: "50px 0" }}>
                         <p style={{ fontSize: "20px" }}>
                             Gasto total: {" "}
                             <span style={{ color: "red" }}>
-                                { formateNumber(filteredTools.reduce((accumulator, currentItem) => {
-                                    return (accumulator + currentItem.value);
+                                {formateNumber(filteredTools.reduce((accumulator, currentItem) => {
+                                    return accumulator + (currentItem.value || 0);
                                 }, 0))}
                             </span>
                         </p>
@@ -229,4 +222,4 @@ const ExpenseTable = ({ selected, expenses }) => {
     );
 };
 
-export default ExpenseTable;
+export default SpentTable;

@@ -76,50 +76,69 @@ const CreateRent = () => {
 
 
     const addItems = (e) => {
-        e.preventDefault()
-
-
+        e.preventDefault();
+    
         if (!tool) {
-            alert("Selecione um equipamento para a locação!")
-            return
+            alert("Selecione um equipamento para a locação!");
+            return;
         }
-
+    
         if (!price) {
-            alert("Informe o valor da locação!")
-            return
+            alert("Informe o valor da locação!");
+            return;
         }
+    
         if (!quantity) {
-            alert("Informe a quantidade da ferramenta!")
-            return
+            alert("Informe a quantidade da ferramenta!");
+            return;
         }
-
-        let parsedPrice;
-
-        if(price.startsWith('R$')) {
-            parsedPrice = (parseFloat(price.replace('R$', "")))
+    
+        let parsedPrice = 0;
+    
+        if (price.startsWith('R$')) {
+            parsedPrice = parseFloat(price.replace('R$', "").replace(/\./g, '').replace(',', '.'));
         } else {
             parsedPrice = parseFloat(price.replace(/\./g, '').replace(',', '.'));
         }
-
     
-        const parsedQuantity = parseFloat(quantity)
-
-        console.log(meters)
-
-        console.log(parsedPrice)
+        // Verifica se parsedPrice é um número válido
+        if (isNaN(parsedPrice)) {
+            alert("Preço inválido!");
+            return;
+        }
+    
+        const parsedQuantity = parseFloat(quantity);
+    
+        // Verifica se parsedQuantity é um número válido
+        if (isNaN(parsedQuantity)) {
+            alert("Quantidade inválida!");
+            return;
+        }
+    
+        let itemPrice = parsedPrice;
+    
+        // Se a ferramenta for um Andaime, multiplicar o preço pelo número de metros
+        if (tool.name.startsWith('Andaime') && meters) {
+            const parsedMeters = parseFloat(meters);
+            itemPrice = parsedPrice * parsedMeters;
+        }
+    
         const item = {
             toolId: tool.id,
             tool: tool.name,
             quantity: parsedQuantity,
-            price: tool.name.startsWith('Andaime') ? (parsedPrice * parseFloat(meters)) : parsedPrice
-
-        }
-
-        setListItems([...listItems, item])
-        setTool("")
-        setPrice("")
-        setQuantity("")
-    }
+            price: itemPrice,
+        };
+    
+        console.log(item.price);
+    
+        setListItems([...listItems, item]);
+        setTool("");
+        setPrice("");
+        setQuantity("");
+        setMeters(""); // Reseta o campo de metros após a adição
+    };
+    
 
     const handleSelectClient = (client) => {
         setClient(client)
