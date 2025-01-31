@@ -8,9 +8,10 @@ import { FaPen } from "react-icons/fa";
 import { useLocation } from 'react-router-dom';
 import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
 import ComponentMessage from '../componentMessage/ComponentMessage';
+import Loading from '../loading/Loading';
 
 
-const Table = ({ selected }) => {
+const Table = ({ selected, loading, setLoading }) => {
 
   const [data, setData] = useState([])
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,6 +33,7 @@ const Table = ({ selected }) => {
 
         const response = await api.get("clients")
         setData(response.data)
+        setLoading(false)
 
       } catch (error) {
         console.log(error)
@@ -94,65 +96,72 @@ const Table = ({ selected }) => {
 
 
   return (
-
-    <div className={styles.tableContainer}>
-      {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
-      <div className={styles.searchContainer}>
-        <label htmlFor="search">Pesquisar</label>
-        <input type="text" id="search" placeholder="Digite para buscar..." value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            handleSearch(e.target.value);
-          }} />
-        <input type="submit" value="Pesquisar" />
-      </div>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nome</th>
-            <th>CPF/CNPJ</th>
-            <th>Telefone</th>
-            <th>Endereço</th>
-            <th>Cidade</th>
-            <th>Bairro</th>
-            <th>CEP</th>
-            {location == "/clientes" && (
-              <th>Ações</th>
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {currentData.map((row) => (
-            <tr key={row.id} onClick={location == "/alugar" ? () => selected(row) : undefined}>
-              <td>{row.id}</td>
-              <td>{row.name}</td>
-              <td>{row.cpf ? row.cpf : row.cnpj}</td>
-              <td>{row.phones[0]}</td>
-              <td>{row.addresses[0].street} - {row.addresses[0].number}</td>
-              <td>{row.addresses[0].city}</td>
-              <td>{row.addresses[0].neighborhood}</td>
-              <td>{row.addresses[0].cep}</td>
+    <>
+      {loading ? (<Loading table={true}/>) : (
+        <div className={styles.tableContainer}>
+        {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
+        <div className={styles.searchContainer}>
+          <label htmlFor="search">Pesquisar</label>
+          <input type="text" id="search" placeholder="Digite para buscar..." value={searchTerm}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              handleSearch(e.target.value);
+            }} />
+          <input type="submit" value="Pesquisar" />
+        </div>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>CPF/CNPJ</th>
+              <th>Telefone</th>
+              <th>Endereço</th>
+              <th>Cidade</th>
+              <th>Bairro</th>
+              <th>CEP</th>
               {location == "/clientes" && (
-                <td><MdDelete style={{ color: "red" }} onClick={(e) => openModalClient(e, row.id, row.name)} /> <FaPen onClick={(e) => selected(e, row.id)} /></td>
+                <th>Ações</th>
               )}
             </tr>
-          ))}
-        </tbody>
-      </table>
-      <ConfirmDeleteModal open={openModal} itemName={clientName} onClose={() => setOpenModal(false)} onConfirm={() => handleDelete(ClientToDelete)} remove={true} />
-      <div className={styles.pagination}>
-        <button onClick={handlePrevious} disabled={currentPage === 1}>
-          Anterior
-        </button>
-        <span>
-          Página {currentPage} de {totalPages}
-        </span>
-        <button onClick={handleNext} disabled={currentPage === totalPages}>
-          Próxima
-        </button>
+          </thead>
+          <tbody>
+            {currentData.map((row) => (
+              <tr key={row.id} onClick={location == "/alugar" ? () => selected(row) : undefined}>
+                <td>{row.id}</td>
+                <td>{row.name}</td>
+                <td>{row.cpf ? row.cpf : row.cnpj}</td>
+                <td>{row.phones[0]}</td>
+                <td>{row.addresses[0].street} - {row.addresses[0].number}</td>
+                <td>{row.addresses[0].city}</td>
+                <td>{row.addresses[0].neighborhood}</td>
+                <td>{row.addresses[0].cep}</td>
+                {location == "/clientes" && (
+                  <td><MdDelete style={{ color: "red" }} onClick={(e) => openModalClient(e, row.id, row.name)} /> <FaPen onClick={(e) => selected(e, row.id)} /></td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <ConfirmDeleteModal open={openModal} itemName={clientName} onClose={() => setOpenModal(false)} onConfirm={() => handleDelete(ClientToDelete)} remove={true} />
+        <div className={styles.pagination}>
+          <button onClick={handlePrevious} disabled={currentPage === 1}>
+            Anterior
+          </button>
+          <span>
+            Página {currentPage} de {totalPages}
+          </span>
+          <button onClick={handleNext} disabled={currentPage === totalPages}>
+            Próxima
+          </button>
+        </div>
       </div>
-    </div>
+      )}
+    
+    
+    
+    </>
+    
   );
 };
 

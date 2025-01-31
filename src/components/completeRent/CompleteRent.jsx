@@ -10,6 +10,7 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
   const [deliveryDate, setDeliveryDate] = useState("");
   const [obs, setObs] = useState('')
   const [freight, setFreight] = useState(0 || null)
+  const [loading, setLoading] = useState(false)
   const navigate = useNavigate();
 
   const finishRent = async (e) => {
@@ -60,12 +61,15 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
 
     console.log(price)
 
+    setLoading(true)
+
     try {
       const request = await api.post(
         "/rent/create",
         newRent
       );
       console.log(request.data);
+      setLoading(false)
 
       navigate("/pdf", { state: dataRentToPdf });
     } catch (error) {
@@ -106,7 +110,7 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
       <textarea className={styles.textareaInput} placeholder="Observação (Opcional)" onChange={e => setObs(e.target.value)} value={obs || ""}></textarea>
     </div>
         <div className={styles.inputContainer2} style={{margin: '10px auto'}}>
-          <input type="submit" value="Finalizar locação" />
+          <input type="submit" value= {loading ? "Finalizando..." : "Finalizar locação"}/>
         </div>
       </form>
     </div>

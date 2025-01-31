@@ -91,7 +91,7 @@ const EarningTable = ({ selected, earnings }) => {
 
     const handleDeleteTool = async (id) => {
         try {
-            const response = await api.delete(`http://localhost:8080/earning/delete/${id}`);
+            const response = await api.delete(`earning/delete/${id}`);
             console.log(response.data);
             setData((prevData) => prevData.filter((tool) => tool.earningId !== id));
             setFilteredTools((prevData) => prevData.filter((tool) => tool.earningId !== id));  // Atualiza após remoção

@@ -91,7 +91,7 @@ const SpentTable = ({ selected, expenses }) => {
 
     const handleDeleteTool = async (id) => {
         try {
-            const response = await api.delete(`http://localhost:8080/spent/delete/${id}`);
+            const response = await api.delete(`spent/delete/${id}`);
             console.log(response.data);
             setData((prevData) => prevData.filter((tool) => tool.id !== id));
             setFilteredTools((prevData) => prevData.filter((tool) => tool.id !== id));  // Atualiza após remoção
