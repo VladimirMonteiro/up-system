@@ -34,9 +34,10 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
     const dataRentToPdf = {
       client,
       items: listItems,
-      price: listItems
-        .reduce((total, item) => total + item.price * item.quantity, 0)
-        .toFixed(2),
+      price: (
+        listItems.reduce((total, item) => total + item.price * item.quantity, 0) 
+        + parseFloat(freight)
+      ).toFixed(2), // Convertendo para 2 casas decimais após a soma
       initialDate,
       deliveryDate,
       obs,
@@ -46,14 +47,18 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
     const newRent = {
       client,
       items: updatedListItems,
-      price: listItems
-        .reduce((total, item) => total + item.price * item.quantity, 0)
-        .toFixed(2),
+      price: (
+        listItems.reduce((total, item) => total + item.price * item.quantity, 0) 
+        + parseFloat(freight)
+      ).toFixed(2),
       initialDate,
       deliveryDate,
       obs,
       freight: parseFloat(freight)
     };
+    
+
+    console.log(price)
 
     try {
       const request = await api.post(

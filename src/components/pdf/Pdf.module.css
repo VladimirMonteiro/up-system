@@ -1,22 +1,21 @@
 /* Container principal */
 .containerPdf {
     width: 100%;
-    height: 100vh;
+    height: auto;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #f2f2f2;
-    padding: 20px;
+    padding: 10px;
     flex-direction: column;
   }
   
   /* Contêiner para o conteúdo do PDF */
   .content {
     width: 210mm; /* Largura A4 */
-    height: 297mm; /* Altura A4 */
-    padding: 15mm; /* Ajustando o padding para ter borda ao redor */
+    height: auto; /* Altura A4 */
+    padding: 5mm; /* Ajustando o padding para ter borda ao redor */
     background-color: #fff;
-    border: 1px solid #ddd; /* Borda do contrato */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
     font-size: 12px;
@@ -29,17 +28,17 @@
   /* Cabeçalho com título e subtítulo */
   .header {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom:5px;
   }
   
   .header h1 {
-    font-size: 2.5rem;
+    font-size: 2.0rem;
     color: #333;
     font-weight: bold;
   }
   
   .header h2 {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: #555;
     margin-top: 10px;
   }
@@ -53,16 +52,42 @@
   .clientInfo p {
     margin: 5px 0;
   }
+
+  .line5 {
+    display: flex;
+    border-top: 1px solid #555;
+    border-bottom: 1px solid #555;
+    border-left: 1px solid #555;
+    border-right: 1px solid #555;
+    justify-content: space-around;
+  }
+
+  .line5 div {
+    display: flex;
+    width: 100%;
+  }
+
+  .line5 span {
+    font-weight: bold;
+  }
+
+  .line5 div span {
+    margin: 0 0 0 5px;
+  }
   
+  .line5 div:nth-child(2) {
+    border-left: 2px solid #555;
+  }
   /* Seção de itens alugados */
   .itemsSection {
-    margin-bottom: 30px;
+    margin-bottom: 0px;
   }
   
   .itemsSection h3 {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     color: #333;
-    margin-bottom: 10px;
+    margin: 15px 0;
+    text-align: center;
   }
   
   .itemsTable {
@@ -73,7 +98,7 @@
   
   .itemsTable th,
   .itemsTable td {
-    padding: 8px;
+    padding: 2px;
     text-align: left;
     border: 1px solid #ddd;
   }
@@ -86,12 +111,10 @@
   .itemsTable td {
     background-color: #f9f9f9;
   }
+
+
   
   /* Resumo da locação */
-  .summary {
-    margin-top: 30px;
-  }
-  
   .summary h3 {
     font-size: 1.4rem;
     font-weight: bold;
@@ -102,18 +125,39 @@
     font-size: 1.1rem;
     margin: 5px 0;
   }
+
+  .containerClausulas h2 {
+    font-size: 17px;
+    margin-top: 10px;
+    
+  }
+
+  .containerClausulas h3 {
+    font-size: 11px;
+    margin-bottom: 5px;
+  }
+
+  .containerClausulas p {
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
+
+  .containerClausulas ul {
+    list-style: none;
+  }
   
   /* Rodapé */
   .footer {
     text-align: center;
-    margin-top: 40px;
+    margin-top: 0px;
     font-size: 0.9rem;
     color: #777;
   }
   
   /* Seção de assinaturas */
   .signatureSection {
-    margin-top: 40px;
+    margin-top: 90px;
     display: flex;
     justify-content: space-between;
     padding: 0 20px;
@@ -165,4 +209,6 @@
   .generatePdfButton:hover {
     background-color: #0056b3;
   }
+
+
   
