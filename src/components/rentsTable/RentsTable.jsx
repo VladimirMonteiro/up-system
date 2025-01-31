@@ -266,6 +266,7 @@ const RentsTable = ({ selected }) => {
          itemName={clientName}
          onClose={() => setOpenModal(false)}
          onConfirm={() => handleDeleteRent(rentToDeleteId)}
+         remove={true}
        />
        <ConfirmDeleteModal
          open={openModalCompleteRent}
