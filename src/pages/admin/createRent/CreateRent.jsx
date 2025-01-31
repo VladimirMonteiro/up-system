@@ -21,6 +21,7 @@ const CreateRent = () => {
     const [meters, setMeters] = useState("")
     const [listItems, setListItems] = useState([])
     const [loading, setLoading] = useState(true)
+    const [loadingClients, setLoadingClients] = useState(true)
 
     const [isClientModalOpen, setClientModalOpen] = useState(false); // Estado para o modal de cliente
     const [isToolModalOpen, setToolModalOpen] = useState(false); // Estado para o modal de ferramenta
@@ -276,7 +277,7 @@ const CreateRent = () => {
             <Modal isOpen={isClientModalOpen} onClose={closeClientModal} height={'auto'}>
                 <h2>Selecione um Cliente</h2>
                 {/* Aqui você pode adicionar os componentes ou listagens para clientes */}
-                <Table selected={handleSelectClient} loading={loading} setLoading={setLoading} />
+                <Table selected={handleSelectClient} loading={loadingClients} setLoading={setLoadingClients} />
                 <button onClick={closeClientModal}>Fechar</button>
             </Modal>
 
