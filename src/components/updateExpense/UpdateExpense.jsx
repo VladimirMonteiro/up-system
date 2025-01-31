@@ -78,7 +78,7 @@ const UpdateExpense = ({ expense, handleUpdateSpent, errors }) => {
                     <select name="fixed" id="fixed" onChange={e => setFixed(e.target.value)} value={fixed || ""}>
                         <option value="">Selecione tipo de gasto</option>
                         <option value={true}>Fixo</option>
-                        <option value={false}>{fixed === false ? "Não fixo" : ""}</option>
+                        <option value={false}>Não Fixo</option>
 
                     </select>
                     {errors && errors.length > 0 && (

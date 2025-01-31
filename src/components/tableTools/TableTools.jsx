@@ -25,6 +25,7 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+  
         const response = await api.get("tools");
         setData(response.data);
         setLoading(false)

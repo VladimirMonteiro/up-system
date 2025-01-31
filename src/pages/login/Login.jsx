@@ -9,6 +9,7 @@ const Login = () => {
 
     const [login, setLogin] = useState("")
     const [password, setPassword] = useState("")
+    const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([])
 
     const auth = useContext(authContext)
@@ -18,19 +19,23 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
+        setLoading(true)
         const data = await auth.authenticate({ login, password })
 
         if (data.status == 403) {
             setErrors(["Usuário não encontrado."])
+            setLoading(false)
         } else if (data.response) {
             console.log(data.response.data.errors)
             console.log(data)
             setErrors(data.response.data.errors)
+            setLoading(false)
 
         }
         else {
             setLogin("")
             setPassword("")
+            setLoading(false)
             navigate("/inicial")
 
         }
@@ -61,7 +66,7 @@ const Login = () => {
                     {errors.length > 0 && (
                         <p style={{ color: "red" }}>{errors.filter(error => error.includes("Usuário"))}</p>
                     )}
-                    <input type="submit" value="Entrar" />
+                    <input type="submit" value={loading ? "Acessando..." : "Entrar"} />
                 </form>
             </div>
 

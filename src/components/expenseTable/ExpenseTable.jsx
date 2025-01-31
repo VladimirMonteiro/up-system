@@ -36,6 +36,7 @@ const SpentTable = ({ selected, expenses }) => {
             try {
                 const response = await api.get("/spent");
                 setData(response.data);
+                console.log(response.data)
                 setFilteredTools(response.data);  // Inicializando com todos os dados
             } catch (error) {
                 console.log(error);
@@ -152,6 +153,7 @@ const SpentTable = ({ selected, expenses }) => {
                             <th>ID</th>
                             <th>Descrição</th>
                             <th>Valor</th>
+                            <th>Tipo</th>
                             <th>Data de pagamento</th>
                             {location === "/gastos" && <th>Ações</th>}
                         </tr>
@@ -166,6 +168,7 @@ const SpentTable = ({ selected, expenses }) => {
                                 <td>{row.id}</td>
                                 <td>{row.description}</td>
                                 <td>{formateNumber(row.value)}</td>
+                                <td>{row.fixed ? "FIXO" : "NÃO FIXO"}</td>
                                 <td>{row.dateOfSpent}</td>
                                 {location === "/gastos" && (
                                     <td>

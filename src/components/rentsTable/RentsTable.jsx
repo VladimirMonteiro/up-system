@@ -10,6 +10,7 @@ import { MdOutlineDoneOutline } from "react-icons/md";
 import ConfirmDeleteModal from "../modalConfirmDelete/ConfirmDeleteModal";
 import { formateNumber } from "../../utils/formatNumber";
 import ComponentMessage from "../componentMessage/ComponentMessage";
+import Loading from '../loading/Loading'
 
 const RentsTable = ({ selected }) => {
   const [data, setData] = useState([]);
@@ -24,15 +25,18 @@ const RentsTable = ({ selected }) => {
   const [rentToDeleteId, setRentToDeleteId] = useState("");
   const [rentToCompleteId, setRentToCompleteId] = useState("");
   const [clientName, setClientName] = useState("");
+  const [loading, setLoading] = useState(true)
   const rowsPerPage = 10;
   const location = useLocation().pathname;
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await api.get("rent");
         setData(response.data);
+        setLoading(false)
       } catch (error) {
         console.log(error);
       }
@@ -163,123 +167,128 @@ const RentsTable = ({ selected }) => {
   };
 
   return (
-    <div className={styles.tableContainer}>
-      {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
-      <form className={styles.searchContainer} onSubmit={selectedFilterSearch}>
-        <label htmlFor="search">Pesquisar</label>
-        <input
-          type="text"
-          id="search"
-          placeholder="Digite para buscar..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            handleSearch(e.target.value);
-          }}
-        />
-        <select
-          name="filter"
-          id="filter"
-          onChange={(e) => setSelectedFilter(e.target.value)}
-          value={selectedFilter}
-        >
-          <option value="">Filtro</option>
-          <option value="finalizado">Finalizado</option>
-          <option value="vencendo">Vencendo</option>
-          <option value="atrasado">Atrasado</option>
-        </select>
-        <input type="submit" value="Pesquisar" />
-      </form>
-
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Endereço</th>
-            <th>Data inicial</th>
-            <th>Data final</th>
-            <th>Valor</th>
-            <th>Status</th>
-            {location === "/alugueis" && <th>Ações</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {notFound ? (
-            <tr style={{border: "none"}}>
-              <td style={{border: "none"}} colSpan="1" className={styles.messageNotFound}>
-                Nenhuma Locação encontrada
-              </td>
-            </tr>
-          ) : (
-            currentData.map((row) => (
-              <tr
-                key={row.id}
-                onClick={location === "/alugar" ? () => selected(row) : undefined}
-                style={{
-                  backgroundColor:
-                    row.stateRent === "PAID"
-                      ? "#2ecc70bd"
-                      : getDeliveryStatus(row.deliveryDate) === "near"
-                      ? "#f1c40fca"
-                      : getDeliveryStatus(row.deliveryDate) === "overdue"
-                      ? "#ff190084"
-                      : "",
-                }}
-              >
-                <td>{row.id}</td>
-                <td>{row.client.name}</td>
-                <td>{row.client.addresses[0].street}</td>
-                <td>{row.initialDate}</td>
-                <td>{row.deliveryDate}</td>
-                <td>{formateNumber(row.price)}</td>
-                <td>{row.stateRent === "PAID" ? "FINALIZADO" : "PENDENTE"}</td>
-                {location === "/alugueis" && (
-                  <td style={{ display: "flex", justifyContent: "space-around" }}>
-                    <MdDelete color="red" onClick={(e) => openModalClient(e, row.id, row.client.name)} />
-                    <FaPen onClick={(e) => selected(e, row.id)} />
-                    <FaPaste onClick={() => openPdf(row)} />
-                    <MdOutlineDoneOutline
-                      color="green"
-                      onClick={
-                        row.stateRent === "PENDENT"
-                          ? (e) => openModalFinishRent(e, row.id, row.client.name)
-                          : null
-                      }
-                    />
-                  </td>
-                )}
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-
-      <ConfirmDeleteModal
-        open={openModal}
-        itemName={clientName}
-        onClose={() => setOpenModal(false)}
-        onConfirm={() => handleDeleteRent(rentToDeleteId)}
-      />
-      <ConfirmDeleteModal
-        open={openModalCompleteRent}
-        itemName={clientName}
-        onClose={() => setOpenModalCompleteRent(false)}
-        onConfirm={() => completeRent(rentToCompleteId)}
-      />
-
-      <div className={styles.pagination}>
-        <button onClick={handlePrevious} disabled={currentPage === 1}>
-          Anterior
-        </button>
-        <span>
-          Página {currentPage} de {totalPages}
-        </span>
-        <button onClick={handleNext} disabled={currentPage === totalPages}>
-          Próxima
-        </button>
-      </div>
-    </div>
+    <>
+    {loading ? (<Loading table={true}/>) : (
+       <div className={styles.tableContainer}>
+       {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
+       <form className={styles.searchContainer} onSubmit={selectedFilterSearch}>
+         <label htmlFor="search">Pesquisar</label>
+         <input
+           type="text"
+           id="search"
+           placeholder="Digite para buscar..."
+           value={searchTerm}
+           onChange={(e) => {
+             setSearchTerm(e.target.value);
+             handleSearch(e.target.value);
+           }}
+         />
+         <select
+           name="filter"
+           id="filter"
+           onChange={(e) => setSelectedFilter(e.target.value)}
+           value={selectedFilter}
+         >
+           <option value="">Filtro</option>
+           <option value="finalizado">Finalizado</option>
+           <option value="vencendo">Vencendo</option>
+           <option value="atrasado">Atrasado</option>
+         </select>
+         <input type="submit" value="Pesquisar" />
+       </form>
+ 
+       <table className={styles.table}>
+         <thead>
+           <tr>
+             <th>ID</th>
+             <th>Cliente</th>
+             <th>Endereço</th>
+             <th>Data inicial</th>
+             <th>Data final</th>
+             <th>Valor</th>
+             <th>Status</th>
+             {location === "/alugueis" && <th>Ações</th>}
+           </tr>
+         </thead>
+         <tbody>
+           {notFound ? (
+             <tr style={{border: "none"}}>
+               <td style={{border: "none"}} colSpan="1" className={styles.messageNotFound}>
+                 Nenhuma Locação encontrada
+               </td>
+             </tr>
+           ) : (
+             currentData.map((row) => (
+               <tr
+                 key={row.id}
+                 onClick={location === "/alugar" ? () => selected(row) : undefined}
+                 style={{
+                   backgroundColor:
+                     row.stateRent === "PAID"
+                       ? "#2ecc70bd"
+                       : getDeliveryStatus(row.deliveryDate) === "near"
+                       ? "#f1c40fca"
+                       : getDeliveryStatus(row.deliveryDate) === "overdue"
+                       ? "#ff190084"
+                       : "",
+                 }}
+               >
+                 <td>{row.id}</td>
+                 <td>{row.client.name}</td>
+                 <td>{row.client.addresses[0].street}</td>
+                 <td>{row.initialDate}</td>
+                 <td>{row.deliveryDate}</td>
+                 <td>{formateNumber(row.price)}</td>
+                 <td>{row.stateRent === "PAID" ? "FINALIZADO" : "PENDENTE"}</td>
+                 {location === "/alugueis" && (
+                   <td style={{ display: "flex", justifyContent: "space-around" }}>
+                     <MdDelete color="red" onClick={(e) => openModalClient(e, row.id, row.client.name)} />
+                     <FaPen onClick={(e) => selected(e, row.id)} />
+                     <FaPaste onClick={() => openPdf(row)} />
+                     <MdOutlineDoneOutline
+                       color="green"
+                       onClick={
+                         row.stateRent === "PENDENT"
+                           ? (e) => openModalFinishRent(e, row.id, row.client.name)
+                           : null
+                       }
+                     />
+                   </td>
+                 )}
+               </tr>
+             ))
+           )}
+         </tbody>
+       </table>
+ 
+       <ConfirmDeleteModal
+         open={openModal}
+         itemName={clientName}
+         onClose={() => setOpenModal(false)}
+         onConfirm={() => handleDeleteRent(rentToDeleteId)}
+       />
+       <ConfirmDeleteModal
+         open={openModalCompleteRent}
+         itemName={clientName}
+         onClose={() => setOpenModalCompleteRent(false)}
+         onConfirm={() => completeRent(rentToCompleteId)}
+       />
+ 
+       <div className={styles.pagination}>
+         <button onClick={handlePrevious} disabled={currentPage === 1}>
+           Anterior
+         </button>
+         <span>
+           Página {currentPage} de {totalPages}
+         </span>
+         <button onClick={handleNext} disabled={currentPage === totalPages}>
+           Próxima
+         </button>
+       </div>
+     </div>
+    )}
+    </>
+   
   );
 };
 

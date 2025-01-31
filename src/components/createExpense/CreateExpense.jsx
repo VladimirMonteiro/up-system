@@ -77,7 +77,7 @@ const CreateExpense = ({ handleCreateExpense, errors }) => {
                     <select name="fixed" id="fixed" onChange={e => setFixed(e.target.value)} value={fixed || ''}>
                         <option value=''>Selecione tipo de gasto</option>
                         <option value={'true'}>Fixo</option>
-                        <option value={false}>Não fixo</option>
+                        <option value={'false'}>Não fixo</option>
                     </select>
                     {errors && errors.length > 0 && (
                         <p style={{ color: "red", margin: '5px 0', fontSize: '15px' }}>{errors.filter(error => error.includes("tipo"))}</p>
