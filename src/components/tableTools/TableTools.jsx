@@ -16,6 +16,7 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
   const [filteredTools, setFilteredTools] = useState([]);
   const [success, setSuccess] = useState(null)
   const [currentPage, setCurrentPage] = useState(1);
+  const [loadingTable, setLoadingTable] = useState(true)
   const rowsPerPage = 10;
   const location = useLocation().pathname;
   const [openModalDelete, setOpenModalDelete] = useState(false);
@@ -28,7 +29,7 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
   
         const response = await api.get("tools");
         setData(response.data);
-        setLoading(false)
+        setLoadingTable(false)
       } catch (error) {
         console.log(error);
       }
@@ -78,7 +79,7 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
   return (
 
     <>
-    {loading ? (<Loading table={true}/>) : (
+    {loadingTable ? (<Loading table={true}/>) : (
        <div className={styles.tableContainer}>
        {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
      <div className={styles.searchContainer}>

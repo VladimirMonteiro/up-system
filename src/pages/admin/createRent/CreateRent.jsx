@@ -277,7 +277,7 @@ const CreateRent = () => {
             <Modal isOpen={isClientModalOpen} onClose={closeClientModal} height={'auto'}>
                 <h2>Selecione um Cliente</h2>
                 {/* Aqui você pode adicionar os componentes ou listagens para clientes */}
-                <Table selected={handleSelectClient} loading={loadingClients} setLoading={setLoadingClients} />
+                <Table selected={handleSelectClient} loading={loadingClients} setLoadingClients={setLoadingClients} />
                 <button onClick={closeClientModal}>Fechar</button>
             </Modal>
 

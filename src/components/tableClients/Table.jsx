@@ -11,7 +11,7 @@ import ComponentMessage from '../componentMessage/ComponentMessage';
 import Loading from '../loading/Loading';
 
 
-const Table = ({ selected, loading, setLoading }) => {
+const Table = ({ selected, loading, setLoadingClients }) => {
 
   const [data, setData] = useState([])
   const [searchTerm, setSearchTerm] = useState('');
@@ -19,6 +19,7 @@ const Table = ({ selected, loading, setLoading }) => {
   const [success, setSuccess] = useState(null)
   const [currentPage, setCurrentPage] = useState(1);
   const [openModal, setOpenModal] = useState(false)
+  const [loadingTable, setLoadingTable] = useState(true)
   const [ClientToDelete, setClientToDelete] = useState(null);  // Para armazenar o ID da ferramenta
   const [clientName, setClientName] = useState('');  // Para armazenar o nome da ferramenta
   const rowsPerPage = 10
@@ -33,7 +34,8 @@ const Table = ({ selected, loading, setLoading }) => {
 
         const response = await api.get("clients")
         setData(response.data)
-        setLoading(false)
+        setLoadingClients(false)
+        setLoadingTable(false)
 
       } catch (error) {
         console.log(error)
@@ -97,7 +99,7 @@ const Table = ({ selected, loading, setLoading }) => {
 
   return (
     <>
-      {loading ? (<Loading table={true}/>) : (
+      {loading || loadingTable ? (<Loading table={true}/>) : (
         <div className={styles.tableContainer}>
         {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
         <div className={styles.searchContainer}>

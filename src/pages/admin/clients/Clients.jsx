@@ -17,6 +17,7 @@ const Clients = () => {
 
     const [modalClients, setModalClients] = useState(false)
     const [client, setClient] = useState({})
+    const [loadingClient, setLoadingClient] = useState(true)
     const [modalUpdateClients, setModalUpdateClients] = useState(false)
     const [modalUpdateClientsPj, setModalUpdateClientsPj] = useState(false)
    
@@ -72,7 +73,7 @@ const Clients = () => {
 
             <section className={styles.containerSection}>
                 <h1>Clientes</h1>
-                <Table  selected={handleUpdateClient}/>
+                <Table  selected={handleUpdateClient} loading={loadingClient} setLoadingClients={setLoadingClient}/>
                 <div className={styles.containerBtn}>
                     <button onClick={openModalClient}>Cadastrar Cliente</button>
                 </div>

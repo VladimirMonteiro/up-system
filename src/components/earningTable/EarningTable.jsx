@@ -7,6 +7,7 @@ import { FaPen } from "react-icons/fa";
 import ComponentMessage from '../componentMessage/ComponentMessage';
 import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
 import { formateNumber } from '../../utils/formatNumber';
+import Loading from '../loading/Loading';
 
 const EarningTable = ({ selected, earnings }) => {
     const [data, setData] = useState(earnings);
@@ -14,6 +15,7 @@ const EarningTable = ({ selected, earnings }) => {
     const [searchStatus, setSearchStatus] = useState(false); // Controle para mostrar "Nenhum pagamento encontrado"
     const [filteredTools, setFilteredTools] = useState([]);
     const [success, setSuccess] = useState(null)
+    const [loading, setLoading] = useState(true)
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
     const location = useLocation().pathname;
@@ -36,7 +38,8 @@ const EarningTable = ({ selected, earnings }) => {
             try {
                 const response = await api.get("/earning");
                 setData(response.data);
-                setFilteredTools(response.data);  // Inicializando com todos os dados
+                setFilteredTools(response.data); 
+                setLoading(false) // Inicializando com todos os dados
             } catch (error) {
                 console.log(error);
             }
@@ -103,125 +106,130 @@ const EarningTable = ({ selected, earnings }) => {
     };
 
     return (
-        <div className={styles.tableContainer} style={{ width: "45%" }}>
-                   {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
-            <form className={styles.searchContainer} onSubmit={handleSearch}>
-                <label htmlFor="search">Pesquisar</label>
-                <input style={{ margin: "10px" }}
-                    type="text"
-                    id="search"
-                    placeholder="Digite para buscar..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <select style={{ margin: "10px" }}
-                    name="year"
-                    id="year"
-                    value={selectedYear}
-                    onChange={(e) => setSelectedYear(e.target.value)}
-                >
-                    <option value="">Ano</option>
-                    {years.map((year) => (
-                        <option key={year} value={year}>{year}</option>
-                    ))}
-                </select>
-                <select style={{ margin: "10px" }}
-                    name="month"
-                    id="month"
-                    value={selectedMonth}
-                    onChange={(e) => setSelectedMonth(e.target.value)}
-                >
-                    <option value="">Mês</option>
-                    {months.map((month, key) => (
-                        <option key={key} value={key + 1}>{month}</option>
-                    ))}
-                </select>
-                <input type="submit" value="Pesquisar" />
-            </form>
+        <>
+        {loading ? <Loading table={true} width={"45%"}/> : (
+             <div className={styles.tableContainer} style={{ width: "45%" }}>
+             {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
+      <form className={styles.searchContainer} onSubmit={handleSearch}>
+          <label htmlFor="search">Pesquisar</label>
+          <input style={{ margin: "10px" }}
+              type="text"
+              id="search"
+              placeholder="Digite para buscar..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <select style={{ margin: "10px" }}
+              name="year"
+              id="year"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value)}
+          >
+              <option value="">Ano</option>
+              {years.map((year) => (
+                  <option key={year} value={year}>{year}</option>
+              ))}
+          </select>
+          <select style={{ margin: "10px" }}
+              name="month"
+              id="month"
+              value={selectedMonth}
+              onChange={(e) => setSelectedMonth(e.target.value)}
+          >
+              <option value="">Mês</option>
+              {months.map((month, key) => (
+                  <option key={key} value={key + 1}>{month}</option>
+              ))}
+          </select>
+          <input type="submit" value="Pesquisar" />
+      </form>
 
-            {searchStatus && (
-                <p style={{ textAlign: "center", margin: "20px 0", color: "red" }}>
-                    Nenhum pagamento encontrado
-                </p>
-            )}
+      {searchStatus && (
+          <p style={{ textAlign: "center", margin: "20px 0", color: "red" }}>
+              Nenhum pagamento encontrado
+          </p>
+      )}
 
-            {!searchStatus && (
-                <table className={styles.table}>
-                    <thead>
-                        <tr>
-                            <th>ID Locação</th>
-                            <th>Cliente</th>
-                            <th>Valor</th>
-                            <th>Data pagamento</th>
-                            {location === "/faturamentos" && <th>Ações</th>}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {currentData.map((row) => (
-                            <tr
-                                key={row.earningId}
-                                onClick={location === "/alugar" ? () => selected(row) : undefined}
-                                style={row.quantity === 0 ? { backgroundColor: '#ffcccc' } : {}}
-                            >
-                                <td>{row.rent.id}</td>
-                                <td>{row.rent.client.name}</td>
-                                <td>{formateNumber(row.price)}</td>
-                                <td>{row.dateOfEarn}</td>
-                                {location === "/faturamentos" && (
-                                    <td>
-                                        <MdDelete
-                                            style={{ color: "red" }}
-                                            onClick={(e) => openModal(e, row.earningId, row.name)}
-                                        />
-                                        <FaPen onClick={(e) => selected(e, row.earningId)} />
-                                    </td>
-                                )}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
+      {!searchStatus && (
+          <table className={styles.table}>
+              <thead>
+                  <tr>
+                      <th>ID Locação</th>
+                      <th>Cliente</th>
+                      <th>Valor</th>
+                      <th>Data pagamento</th>
+                      {location === "/faturamentos" && <th>Ações</th>}
+                  </tr>
+              </thead>
+              <tbody>
+                  {currentData.map((row) => (
+                      <tr
+                          key={row.earningId}
+                          onClick={location === "/alugar" ? () => selected(row) : undefined}
+                          style={row.quantity === 0 ? { backgroundColor: '#ffcccc' } : {}}
+                      >
+                          <td>{row.rent.id}</td>
+                          <td>{row.rent.client.name}</td>
+                          <td>{formateNumber(row.price)}</td>
+                          <td>{row.dateOfEarn}</td>
+                          {location === "/faturamentos" && (
+                              <td>
+                                  <MdDelete
+                                      style={{ color: "red" }}
+                                      onClick={(e) => openModal(e, row.earningId, row.name)}
+                                  />
+                                  <FaPen onClick={(e) => selected(e, row.earningId)} />
+                              </td>
+                          )}
+                      </tr>
+                  ))}
+              </tbody>
+          </table>
+      )}
 
-            <ConfirmDeleteModal open={openModalDelete} onClose={() => setOpenModalDelete(false)} itemName={toolName} onConfirm={() => handleDeleteTool(toolToDelete)} remove={true} />
+      <ConfirmDeleteModal open={openModalDelete} onClose={() => setOpenModalDelete(false)} itemName={toolName} onConfirm={() => handleDeleteTool(toolToDelete)} remove={true} />
 
-            <div className={styles.pagination}>
-                <button onClick={handlePrevious} disabled={currentPage === 1}>
-                    Anterior
-                </button>
-                <span>
-                    Página {currentPage} de {totalPages}
-                </span>
-                <button onClick={handleNext} disabled={currentPage === totalPages}>
-                    Próxima
-                </button>
-            </div>
-            <div>
-                {/* Se houver resultados de pesquisa (ou seja, filteredTools tem itens), mostre o total */}
-                {filteredTools.length > 0 && !searchStatus && (
-                    <div style={{ textAlign: "center", margin: "50px 0" }}>
-                        <p style={{ fontSize: "20px" }}>
-                            Faturamento total: {" "}
-                            <span style={{ color: "#28a745" }}>
-                                {formateNumber(filteredTools.reduce((accumulator, currentItem) => {
-                                    return (accumulator + currentItem.price);
-                                }, 0))}
-                            </span>
-                        </p>
-                    </div>
-                )}
+      <div className={styles.pagination}>
+          <button onClick={handlePrevious} disabled={currentPage === 1}>
+              Anterior
+          </button>
+          <span>
+              Página {currentPage} de {totalPages}
+          </span>
+          <button onClick={handleNext} disabled={currentPage === totalPages}>
+              Próxima
+          </button>
+      </div>
+      <div>
+          {/* Se houver resultados de pesquisa (ou seja, filteredTools tem itens), mostre o total */}
+          {filteredTools.length > 0 && !searchStatus && (
+              <div style={{ textAlign: "center", margin: "50px 0" }}>
+                  <p style={{ fontSize: "20px" }}>
+                      Faturamento total: {" "}
+                      <span style={{ color: "#28a745" }}>
+                          {formateNumber(filteredTools.reduce((accumulator, currentItem) => {
+                              return (accumulator + currentItem.price);
+                          }, 0))}
+                      </span>
+                  </p>
+              </div>
+          )}
 
-                {/* Se não houver resultados de pesquisa (searchStatus é true), mostre a mensagem */}
-                {searchStatus && (
-                    <div style={{ textAlign: "center", margin: "50px 0" }}>
-                        <p style={{ fontSize: "20px", color: "red" }}>
-                            Nenhum pagamento encontrado
-                        </p>
-                    </div>
-                )}
-            </div>
+          {/* Se não houver resultados de pesquisa (searchStatus é true), mostre a mensagem */}
+          {searchStatus && (
+              <div style={{ textAlign: "center", margin: "50px 0" }}>
+                  <p style={{ fontSize: "20px", color: "red" }}>
+                      Nenhum pagamento encontrado
+                  </p>
+              </div>
+          )}
+      </div>
 
 
-        </div>
+  </div>
+        )}
+        </>
+       
     );
 };
 
