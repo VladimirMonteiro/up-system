@@ -70,7 +70,7 @@ const RegisterClient = () => {
     
         if (cnpjValue.length === 14) {
             try {
-                const response = await api.get(`http://localhost:8080/clients/consultaCnpjReceitaWs/${cnpjValue}`);
+                const response = await api.get(`clients/consultaCnpjReceitaWs/${cnpjValue}`);
                 const data = response.data
     
                 console.log(response.data)
