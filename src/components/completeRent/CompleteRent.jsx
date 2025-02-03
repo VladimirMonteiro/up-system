@@ -36,26 +36,26 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
       client,
       items: listItems,
       price: (
-        listItems.reduce((total, item) => total + item.price * item.quantity, 0) 
-        + parseFloat(freight)
+        listItems.reduce((total, item) => total + item.price * item.quantity, 0)
+        + (freight ? parseFloat(freight) : 0)
       ).toFixed(2), // Convertendo para 2 casas decimais após a soma
       initialDate,
       deliveryDate,
       obs,
-      freight: parseFloat(freight)
+      freight: freight ? parseFloat(freight) : 0
     };
-
+    
     const newRent = {
       client,
       items: updatedListItems,
       price: (
-        listItems.reduce((total, item) => total + item.price * item.quantity, 0) 
-        + parseFloat(freight)
+        updatedListItems.reduce((total, item) => total + item.price * item.quantity, 0)
+        + (freight ? parseFloat(freight) : 0)
       ).toFixed(2),
       initialDate,
       deliveryDate,
       obs,
-      freight: parseFloat(freight)
+      freight: freight ? parseFloat(freight) : 0
     };
     
 

@@ -19,7 +19,8 @@
     border-radius: 4px;
   }
   
-  .searchContainer input[type="submit"] {
+  
+  .searchContainer input[type="submit"], .btnReport {
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
@@ -28,7 +29,7 @@
     cursor: pointer;
   }
   
-  .searchContainer input[type="submit"]:hover {
+  .searchContainer input[type="submit"]:hover, .btnReport:hover {
     background-color: #0056b3;
   }
   

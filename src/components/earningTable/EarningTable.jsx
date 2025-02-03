@@ -1,7 +1,7 @@
 import api from '../../utils/api';
 import styles from '../tableClients/Table.module.css';
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 import ComponentMessage from '../componentMessage/ComponentMessage';
@@ -19,6 +19,7 @@ const EarningTable = ({ selected, earnings }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 10;
     const location = useLocation().pathname;
+    const navigate = useNavigate()
 
     const [openModalDelete, setOpenModalDelete] = useState(false);
     const [toolToDelete, setToolToDelete] = useState(null);
@@ -104,6 +105,28 @@ const EarningTable = ({ selected, earnings }) => {
             console.log(error);
         }
     };
+
+
+
+
+    const handleReport = (e) => {
+        e.preventDefault()
+
+        if(!selectedMonth) {
+            alert("Selecione o mês.")
+            return
+        }
+        
+        if(!selectedYear) {
+            alert("Selecione o ano.")
+            return
+        }
+
+        let reportData = filteredTools ? filteredTools : data
+    
+
+        navigate("/emitir-relatorio", { state: {reportData, selectedMonth, selectedYear}})
+    }
 
     return (
         <>
@@ -224,10 +247,15 @@ const EarningTable = ({ selected, earnings }) => {
               </div>
           )}
       </div>
-
+      <div style={{textAlign: "center", width: "100%"}}>
+      <input className={styles.btnReport}type="submit" value={"Gerar relatório"} onClick={handleReport} />
+      </div>
+    
 
   </div>
         )}
+
+   
         </>
        
     );
