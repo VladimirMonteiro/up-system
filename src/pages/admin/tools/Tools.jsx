@@ -102,11 +102,11 @@ const Tools = () => {
         <div className={styles.containerBtn}>
           <button onClick={openModalTool} >Cadastrar Ferramenta</button>
         </div>
-        <Modal isOpen={modalTool} onClose={() => setModalTool(false)}>
+        <Modal isOpen={modalTool} onClose={() => setModalTool(false)} height={"auto"}>
           <RegisterTool handleRegisterTool={registerTool} errors={errors} />
 
         </Modal>
-        <Modal isOpen={modalToolUpdate} onClose={() => setModalToolUpdate(false)}>
+        <Modal isOpen={modalToolUpdate} onClose={() => setModalToolUpdate(false)} height={"auto"}>
           <UpdateTool tool={tool} handleUpdate={updateTool} errors={errorsUpdate}/>
 
         </Modal>

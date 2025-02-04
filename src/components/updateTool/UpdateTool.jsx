@@ -9,6 +9,8 @@ const UpdateTool = ({ tool, errors, handleUpdate }) => {
     const [quantity, setQuantity] = useState("");
     const [daily, setDaily] = useState("");
     const [week, setWeek] = useState("");
+    const [biweekly, setBiweekly] = useState("")
+    const [twentyOneDays, setTwentyOneDays] = useState("")
     const [priceMonth, setPriceMonth] = useState("");
 
     // Atualizar os estados quando `tool` mudar
@@ -19,25 +21,29 @@ const UpdateTool = ({ tool, errors, handleUpdate }) => {
             setQuantity(tool.quantity || "");
             setDaily(tool.daily || "");
             setWeek(tool.week || "");
+            setBiweekly(tool.biweekly || "");
+            setTwentyOneDays(tool.twentyOneDays);
             setPriceMonth(tool.priceMonth || "");
         }
     }, [tool]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         const updateTool = {
             name,
             totalQuantity: parseFloat(totalQuantity),
             quantity: parseFloat(quantity),
             daily: parseFloat(String(daily).replace(/\./g, '').replace(',', '.')),
             week: parseFloat(String(week).replace(/\./g, '').replace(',', '.')),
+            biweekly: parseFloat(biweekly.replace(/\./g, '').replace(',', '.')),
+            twentyOneDays: parseFloat(twentyOneDays.replace(/\./g, '').replace(',', '.')),
             priceMonth: parseFloat(String(priceMonth).replace(/\./g, '').replace(',', '.')),
         };
 
         await handleUpdate(tool.id, updateTool)
-    
-      
+
+
     };
 
 
@@ -79,6 +85,20 @@ const UpdateTool = ({ tool, errors, handleUpdate }) => {
                         <input type="text" name="week" id="week" onChange={(e) => handlePriceChange(e, setWeek)} value={week} />
                         {errors && errors.length > 0 && (
                             <p style={{ color: "red" }}>{errors.find(error => error.toLowerCase().includes("semanal"))}</p>
+                        )}
+                    </div>
+                    <div className={styles.inputContainer}>
+                        <label htmlFor="week">Valor quinzena (15)</label>
+                        <input type="text" name='biweekly' id='biweekly' onChange={(e) => handlePriceChange(e, setBiweekly)} value={biweekly} />
+                        {errors && errors.length > 0 && (
+                            <p style={{ color: "red" }}>{errors.filter(error => error.includes("quinzena"))}</p>
+                        )}
+                    </div>
+                    <div className={styles.inputContainer}>
+                        <label htmlFor="week">Valor 3 semanas (21)</label>
+                        <input type="text" name='twentyOneDays' id='twentyOneDays' onChange={(e) => handlePriceChange(e, setTwentyOneDays)} value={twentyOneDays} />
+                        {errors && errors.length > 0 && (
+                            <p style={{ color: "red" }}>{errors.filter(error => error.includes("21 dias"))}</p>
                         )}
                     </div>
                     <div className={styles.inputContainer}>

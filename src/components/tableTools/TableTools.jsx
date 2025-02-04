@@ -105,6 +105,8 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
            <th>Quantidade disponível</th>
            <th>Diária</th>
            <th>Semanal</th>
+           <th>Quinzena</th>
+           <th>3 semanas (21) dias</th>
            <th>Mensal</th>
            {location === "/ferramentas" && <th>Ações</th>}
          </tr>
@@ -122,6 +124,8 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
              <td>{row.quantity}un</td>
              <td>{formateNumber(row.daily)}</td>
              <td>{formateNumber(row.week)}</td>
+             <td>{formateNumber(row.biweekly)}</td>
+             <td>{formateNumber(row.twentyOneDays)}</td>
              <td>{formateNumber(row.priceMonth)}</td>
              {location === "/ferramentas" && (
                <td>
