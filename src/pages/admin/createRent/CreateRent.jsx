@@ -119,7 +119,7 @@ const CreateRent = () => {
         let itemPrice = parsedPrice;
     
         // Se a ferramenta for um Andaime, multiplicar o preço pelo número de metros
-        if (tool.name.startsWith('Andaime') && meters) {
+        if (tool.name.startsWith('ANDAIME') && meters) {
             const parsedMeters = parseFloat(meters);
             itemPrice = parsedPrice * parsedMeters;
         }
@@ -162,10 +162,10 @@ const CreateRent = () => {
         setMeters(parseFloat(meters))
 
         switch (tool.name) {
-            case 'Andaime 1,5m':
+            case 'ANDAIME 1,5':
                 setQuantity(Math.ceil((meters / 1.5) * 2));
                 break;
-            case 'Andaime 2m':
+            case 'ANDAIME 2,00 X 1,00':
                 setQuantity((meters / 2) * 2);
                 break;
             case 'Andaime 1m':
