@@ -171,8 +171,6 @@ const CreateRent = () => {
             case 'Andaime 1m':
                 setQuantity(meters * 2);
                 break;
-            default:
-                alert('Tool name not recognized:', tool.name);
         }
 
         setMeters('')
