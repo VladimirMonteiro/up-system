@@ -162,10 +162,10 @@ const CreateRent = () => {
         setMeters(parseFloat(meters))
 
         switch (tool.name) {
-            case 'ANDAIME 1,5':
+            case 'ANDAIME 1.5':
                 setQuantity(Math.ceil((meters / 1.5) * 2));
                 break;
-            case 'ANDAIME 2,00 X 1,00':
+            case 'ANDAIME 2.00 X 1.00':
                 setQuantity((meters / 2) * 2);
                 break;
             case 'Andaime 1m':
