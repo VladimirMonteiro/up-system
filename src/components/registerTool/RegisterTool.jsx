@@ -11,6 +11,8 @@ const RegisterTool = ({handleRegisterTool, errors}) => {
     const [totalQuantity, setTotalQuantity] = useState("")
     const [daily, setDaily] = useState("")
     const [week, setWeek] = useState("")
+    const [biweekly, setBiweekly] = useState("")
+    const [twentyOneDays, setTwentyOneDays] = useState("")
     const [priceMonth, setPriceMonth] = useState("")
   
     const handleSubmit = async (e) => {
@@ -22,6 +24,8 @@ const RegisterTool = ({handleRegisterTool, errors}) => {
             quantity: parseFloat(quantity),
             daily: parseFloat(daily.replace(/\./g, '').replace(',', '.')),
             week: parseFloat(week.replace(/\./g, '').replace(',', '.')),
+            biweekly:parseFloat(biweekly.replace(/\./g, '').replace(',', '.')),
+            twentyOneDays: parseFloat(twentyOneDays.replace(/\./g, '').replace(',', '.')),
             priceMonth: parseFloat(priceMonth.replace(/\./g, '').replace(',', '.'))
         }
 
@@ -35,6 +39,8 @@ const RegisterTool = ({handleRegisterTool, errors}) => {
                 setDaily("")
                 setWeek("")
                 setPriceMonth("")
+                setBiweekly("")
+                setTwentyOneDays("")
 
             }     
         } catch (error) {
@@ -70,17 +76,31 @@ const RegisterTool = ({handleRegisterTool, errors}) => {
                         )}
                     </div>
                     <div className={styles.inputContainer}>
-                        <label htmlFor="daily">Diária</label>
+                        <label htmlFor="daily">Valor diária</label>
                         <input type="text" name='daily' id='daily' onChange={(e) => handlePriceChange(e, setDaily)} value={daily} />
                         {errors && errors.length > 0 && (
                             <p style={{ color: "red" }}>{errors.filter(error => error.includes("diária"))}</p>
                         )}
                     </div>
                     <div className={styles.inputContainer}>
-                        <label htmlFor="week">Semanal</label>
+                        <label htmlFor="week">Valor semanal</label>
                         <input type="text" name='week' id='week' onChange={(e) => handlePriceChange(e, setWeek)} value={week} />
                         {errors && errors.length > 0 && (
                             <p style={{ color: "red" }}>{errors.filter(error => error.includes("semanal"))}</p>
+                        )}
+                    </div>
+                    <div className={styles.inputContainer}>
+                        <label htmlFor="week">Valor quinzena (15)</label>
+                        <input type="text" name='biweekly' id='biweekly' onChange={(e) => handlePriceChange(e, setBiweekly)} value={biweekly} />
+                        {errors && errors.length > 0 && (
+                            <p style={{ color: "red" }}>{errors.filter(error => error.includes("quinzena"))}</p>
+                        )}
+                    </div>
+                    <div className={styles.inputContainer}>
+                        <label htmlFor="week">Valor 3 semanas (21)</label>
+                        <input type="text" name='twentyOneDays' id='twentyOneDays' onChange={(e) => handlePriceChange(e, setTwentyOneDays)} value={twentyOneDays} />
+                        {errors && errors.length > 0 && (
+                            <p style={{ color: "red" }}>{errors.filter(error => error.includes("21 dias"))}</p>
                         )}
                     </div>
                     <div className={styles.inputContainer}>

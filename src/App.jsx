@@ -14,6 +14,8 @@ import Protected from "./components/Protected"
 import PdfPage from "./components/pdf/Pdf"
 import Earnings from "./pages/admin/earnings/Earninigs"
 import Expenses from "./pages/admin/expenses/Expenses"
+import ReportPDF from "./components/pdf/ReportPDF"
+
 
 
 function App() {
@@ -34,6 +36,8 @@ function App() {
             <Route path="/faturamentos" element={ <Protected> <Earnings /> </Protected> } />
             <Route path="/gastos" element={ <Protected> <Expenses /> </Protected> } />
             <Route path="/pdf" element={ <Protected> <PdfPage/> </Protected> } />
+            <Route path="/emitir-relatorio" element={ <Protected> <ReportPDF/> </Protected> } />
+          
           </Routes>
         </Router>
       </AuthProvider>

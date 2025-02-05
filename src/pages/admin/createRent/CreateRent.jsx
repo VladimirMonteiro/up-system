@@ -213,6 +213,8 @@ const CreateRent = () => {
                                          <>
                                          <option value={formateNumber(tool.daily)}>Diária (1 dia)</option>
                                          <option value={formateNumber(tool.week)}>Semana (7 dias)</option>
+                                         <option value={formateNumber(tool.biweekly)}>Quinzena (15 dias)</option>
+                                         <option value={formateNumber(tool.twentyOneDays)}>3 semanas (21 dias)</option>
                                          <option value={formateNumber(tool.priceMonth)}>Mensal (30 dias)</option>
                                          </>  
                                        

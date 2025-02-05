@@ -69,9 +69,9 @@ const PdfPage = () => {
           email={client.email}
         />
 
-<p style={{fontWeight: 'bold'}}>PERIODO DE LOCAÇÃO</p>
+        <p style={{ fontWeight: 'bold' }}>PERIODO DE LOCAÇÃO</p>
         <div className={styles.line5}>
-         
+
           <div>
             <span>Inicio: </span>
             <p>{initialDate}</p>
@@ -168,16 +168,16 @@ const PdfPage = () => {
           <div className={styles.signatureRow}>
             <div className={styles.signatureBox}>
               <p>
-                <strong>Locador <br/></strong>
-                <strong>Assinatura da Up Locações<br/></strong>
+                <strong>Locador <br /></strong>
+                <strong>Assinatura da Up Locações<br /></strong>
                 <strong>CPF/CNPJ: 40.094.239/0001-92</strong>
               </p>
             </div>
 
             <div className={styles.signatureBox}>
               <p>
-              <strong>Locatário <br/></strong>
-                <strong>Assinatura {client.name}<br/></strong>
+                <strong>Locatário <br /></strong>
+                <strong>Assinatura {client.name}<br /></strong>
                 <strong>CPF/CNPJ: {client.cpf ? client.cpf : client.cnpj}</strong>
               </p>
             </div>
