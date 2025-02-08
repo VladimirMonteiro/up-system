@@ -38,18 +38,6 @@ const ReportPDF = () => {
         return <div>No data available for this report errad.</div>;
     }
 
-    const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-
-    // Function to get the month name based on the number (1 to 12)
-    function getMonthName(monthNumber) {
-        if (monthNumber >= 1 && monthNumber <= 12) {
-            return months[monthNumber - 1]; // Array is 0-indexed, so subtract 1
-        } else {
-            return "Mês inválido"; // Return an error message if the month number is invalid
-        }
-    }
-
     return (
 
 

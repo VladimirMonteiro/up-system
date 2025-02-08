@@ -32,19 +32,7 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
       return rest; // Retorna o objeto sem a chave 'tool'
     });
 
-    const dataRentToPdf = {
-      client,
-      items: listItems,
-      price: (
-        listItems.reduce((total, item) => total + item.price * item.quantity, 0)
-        + (freight ? parseFloat(freight) : 0)
-      ).toFixed(2), // Convertendo para 2 casas decimais após a soma
-      initialDate,
-      deliveryDate,
-      obs,
-      freight: freight ? parseFloat(freight) : 0
-    };
-    
+  
     const newRent = {
       client,
       items: updatedListItems,
@@ -70,6 +58,21 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
       );
       console.log(request.data);
       setLoading(false)
+
+      const dataRentToPdf = {
+        client,
+        rentId: request.data.id,
+        items: listItems,
+        price: (
+          listItems.reduce((total, item) => total + item.price * item.quantity, 0)
+          + (freight ? parseFloat(freight) : 0)
+        ).toFixed(2), // Convertendo para 2 casas decimais após a soma
+        initialDate,
+        deliveryDate,
+        obs,
+        freight: freight ? parseFloat(freight) : 0
+      };
+      
 
       navigate("/pdf", { state: dataRentToPdf });
     } catch (error) {
