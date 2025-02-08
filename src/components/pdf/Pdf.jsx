@@ -220,7 +220,7 @@ const PdfPage = () => {
         <div style={{marginTop: "20px"}}>
           <p style={{fontWeight: "bold"}}>
             Esteio, {dateFormatter(initialDate).split("/")[0]} de{" "}
-            {getMonthName(dateFormatter(initialDate).split("/")[1])}.
+            {getMonthName(dateFormatter(initialDate).split("/")[1])} de {dateFormatter(initialDate).split("/")[2]}.
           </p>
         </div>
 
