@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import styles from "../RegisterClient/RegisterClient.module.css";
 import api from "../../utils/api";
 
-const UpdateClientPj = ({ clientId }) => {
+const UpdateClientPj = ({ clientId, updateClientPj, errors }) => {
   const [name, setName] = useState("");
   const [socialReason, setSocialReason] = useState("");
   const [cnpj, setCnpj] = useState("");
@@ -19,7 +19,7 @@ const UpdateClientPj = ({ clientId }) => {
     city: "",
     state: "",
   });
-  const [errors, setErrors] = useState(null);
+  
   const [success, setSuccess] = useState(null);
 
   useEffect(() => {
@@ -38,6 +38,7 @@ const UpdateClientPj = ({ clientId }) => {
         setFantasyName(fantasyName || "");
       } catch (error) {
         console.error("Erro ao buscar dados do cliente:", error);
+        // Definindo erros aqui
         setErrors(["Erro ao carregar dados do cliente."]);
       }
     };
@@ -96,24 +97,16 @@ const UpdateClientPj = ({ clientId }) => {
 
     console.log("Dados enviados:", updatedClientPj);
 
-    try {
-      const response = await api.put(
-        `/clients/update/clientPj/${clientId}`,
-        updatedClientPj
-      );
-      console.log(response.data);
-      setSuccess("Cliente atualizado com sucesso!");
-      setErrors(null)
+    await updateClientPj(clientId, updatedClientPj)
+      .then(() => setSuccess("Cliente atualizado com sucesso!"))
+      .catch((error) => console.error("Erro ao atualizar cliente:", error));
+  };
 
-      set
-
-      setTimeout(() => {
-        setSuccess(null);
-      }, 3000);
-    } catch (error) {
-      console.error("Erro ao atualizar cliente:", error);
-      setErrors(error.response?.data?.errors || ["Erro ao atualizar cliente."]);
+  const displayErrors = (fieldName) => {
+    if (Array.isArray(errors)) {
+      return errors.filter((error) => error.toLowerCase().includes(fieldName.toLowerCase()));
     }
+    return [];
   };
 
   return (
@@ -132,9 +125,9 @@ const UpdateClientPj = ({ clientId }) => {
               onChange={(e) => setName(e.target.value)}
               value={name}
             />
-            {errors && errors.length > 0 && (
+            {displayErrors("nome").length > 0 && (
               <p style={{ color: "red" }}>
-                {errors.filter((error) => error.includes("nome"))}
+                {displayErrors("nome").join(", ")}
               </p>
             )}
           </div>
@@ -148,9 +141,9 @@ const UpdateClientPj = ({ clientId }) => {
               onChange={(e) => setSocialReason(e.target.value)}
               value={socialReason}
             />
-            {errors && errors.length > 0 && (
+            {displayErrors("razão social").length > 0 && (
               <p style={{ color: "red" }}>
-                {errors.filter((error) => error.includes("razão social"))}
+                {displayErrors("razão social").join(", ")}
               </p>
             )}
           </div>
@@ -164,8 +157,10 @@ const UpdateClientPj = ({ clientId }) => {
               onChange={(e) => setCnpj(e.target.value)}
               value={cnpj}
             />
-            {errors && errors.length > 0 && (
-              <p style={{ color: "red" }}>{errors.filter((error) => error.includes("CNPJ"))}</p>
+            {displayErrors("CNPJ").length > 0 && (
+              <p style={{ color: "red" }}>
+                {displayErrors("CNPJ").join(", ")}
+              </p>
             )}
           </div>
 
@@ -178,9 +173,9 @@ const UpdateClientPj = ({ clientId }) => {
               onChange={(e) => setPhones(e.target.value)}
               value={phones}
             />
-            {errors && errors.length > 0 && (
+            {displayErrors("telefone").length > 0 && (
               <p style={{ color: "red" }}>
-                {errors.filter((error) => error.includes("telefone"))}
+                {displayErrors("telefone").join(", ")}
               </p>
             )}
           </div>
@@ -194,8 +189,10 @@ const UpdateClientPj = ({ clientId }) => {
               value={addresses.cep}
               onChange={handleCepChange}
             />
-            {errors && errors.length > 0 && (
-              <p style={{ color: "red" }}>{errors.filter((error) => error.includes("CEP"))}</p>
+            {displayErrors("CEP").length > 0 && (
+              <p style={{ color: "red" }}>
+                {displayErrors("CEP").join(", ")}
+              </p>
             )}
           </div>
 
@@ -208,9 +205,9 @@ const UpdateClientPj = ({ clientId }) => {
               onChange={(e) => setMunicipalRegistration(e.target.value)}
               value={municipalRegistration}
             />
-            {errors && errors.length > 0 && (
+            {displayErrors("registro do município").length > 0 && (
               <p style={{ color: "red" }}>
-                {errors.filter((error) => error.includes("O registro do município"))}
+                {displayErrors("registro do município").join(", ")}
               </p>
             )}
           </div>
@@ -224,9 +221,9 @@ const UpdateClientPj = ({ clientId }) => {
               onChange={(e) => setStateRegistration(e.target.value)}
               value={stateRegistration}
             />
-            {errors && errors.length > 0 && (
+            {displayErrors("Registro do estado").length > 0 && (
               <p style={{ color: "red" }}>
-                {errors.filter((error) => error.includes("O Registro do estado"))}
+                {displayErrors("Registro do estado").join(", ")}
               </p>
             )}
           </div>
@@ -240,9 +237,9 @@ const UpdateClientPj = ({ clientId }) => {
               onChange={(e) => setFantasyName(e.target.value)}
               value={fantasyName}
             />
-            {errors && errors.length > 0 && (
+            {displayErrors("fantasia").length > 0 && (
               <p style={{ color: "red" }}>
-                {errors.filter((error) => error.includes("fantasia"))}
+                {displayErrors("fantasia").join(", ")}
               </p>
             )}
           </div>
@@ -256,9 +253,9 @@ const UpdateClientPj = ({ clientId }) => {
               value={addresses.street}
               onChange={handleInputChange}
             />
-            {errors && errors.length > 0 && (
+            {displayErrors("rua").length > 0 && (
               <p style={{ color: "red" }}>
-                {errors.filter((error) => error.includes("rua"))}
+                {displayErrors("rua").join(", ")}
               </p>
             )}
           </div>
@@ -272,9 +269,9 @@ const UpdateClientPj = ({ clientId }) => {
               value={addresses.number}
               onChange={handleInputChange}
             />
-            {errors && errors.length > 0 && (
+            {displayErrors("número").length > 0 && (
               <p style={{ color: "red" }}>
-                {errors.filter((error) => error.includes("número"))}
+                {displayErrors("número").join(", ")}
               </p>
             )}
           </div>
@@ -300,9 +297,9 @@ const UpdateClientPj = ({ clientId }) => {
               value={addresses.neighborhood}
               onChange={handleInputChange}
             />
-            {errors && errors.length > 0 && (
+            {displayErrors("bairro").length > 0 && (
               <p style={{ color: "red" }}>
-                {errors.filter((error) => error.includes("bairro"))}
+                {displayErrors("bairro").join(", ")}
               </p>
             )}
           </div>
@@ -316,9 +313,9 @@ const UpdateClientPj = ({ clientId }) => {
               value={addresses.city}
               onChange={handleInputChange}
             />
-            {errors && errors.length > 0 && (
+            {displayErrors("cidade").length > 0 && (
               <p style={{ color: "red" }}>
-                {errors.filter((error) => error.includes("cidade"))}
+                {displayErrors("cidade").join(", ")}
               </p>
             )}
           </div>
@@ -332,9 +329,9 @@ const UpdateClientPj = ({ clientId }) => {
               value={addresses.state}
               onChange={handleInputChange}
             />
-            {errors && errors.length > 0 && (
+            {displayErrors("estado").length > 0 && (
               <p style={{ color: "red" }}>
-                {errors.filter((error) => error.includes("estado"))}
+                {displayErrors("estado").join(", ")}
               </p>
             )}
           </div>
