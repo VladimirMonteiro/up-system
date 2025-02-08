@@ -2,12 +2,11 @@ import { useState } from "react";
 import styles from './RegisterClient.module.css';
 import api from "../../utils/api";
 
-const RegisterClient = () => {
+const RegisterClient = ({createClientFs, errors, createClientPj, errorsPj}) => {
     const [selectedForm, setSelectedForm] = useState("pf"); // "pf" para Pessoa Física e "pj" para Pessoa Jurídica
     const [name, setName] = useState("");
     const [cpf, setCpf] = useState("");
     const [phones, setPhones] = useState(undefined);
-    const [errors, setErrors] = useState(null);
     const [sucess, setSuccess] = useState(null);
     const [addresses, setAddresses] = useState({
         cep: "",
@@ -112,14 +111,13 @@ const RegisterClient = () => {
 
         try {
             if (selectedForm === "pf") {
-                const response = await api.post(`clients/createFs`, newClientFs);
-                console.log(response.data);
-                setSuccess(response.data.message);
-
+                const response = await createClientFs(newClientFs)
+            
+                if(!response) {
+                    
                 setName("");
                 setCpf("");
                 setPhones("");
-                setErrors(null);
 
                 const emptyAddress = Object.keys(addresses).reduce((acc, key) => {
                     acc[key] = ""; // Define cada atributo como ""
@@ -130,6 +128,9 @@ const RegisterClient = () => {
                 setTimeout(() => {
                     setSuccess(null);
                 }, 3000);
+
+                }
+
             } else {
                 const newClientPj = {
                     name,
@@ -142,31 +143,33 @@ const RegisterClient = () => {
                     municipalRegistration
                 };
 
-                const response = await api.post(`clients/createPj`, newClientPj);
-                console.log(response.data);
-                setSuccess(response.data.message);
+                const response = await createClientPj(newClientPj)
+             
+                if(!response) {
 
-                setName("");
-                setCnpj("");
-                setPhones("");
-                setSocialReason("");
-                setFantasyName("");
-                setStateRegistration("");
-                setMunicipalRegistration("");
-                setErrors(null);
-
-                const emptyAddress = Object.keys(addresses).reduce((acc, key) => {
-                    acc[key] = ""; // Define cada atributo como ""
-                    return acc;
-                }, {});
-                setAddresses(emptyAddress);
-
-                setTimeout(() => {
-                    setSuccess(null);
-                }, 3000);
+                    setName("");
+                    setCnpj("");
+                    setPhones("");
+                    setSocialReason("");
+                    setFantasyName("");
+                    setStateRegistration("");
+                    setMunicipalRegistration("");
+                   
+    
+                    const emptyAddress = Object.keys(addresses).reduce((acc, key) => {
+                        acc[key] = ""; // Define cada atributo como ""
+                        return acc;
+                    }, {});
+                    setAddresses(emptyAddress);
+    
+                    setTimeout(() => {
+                        setSuccess(null);
+                    }, 3000);
+                }
             }
         } catch (error) {
-            setErrors(error.response.data.errors);
+            console.log(error)
+           
         }
     };
 
@@ -211,7 +214,7 @@ const RegisterClient = () => {
                     <div className={styles.form}>
                         <div className={styles.inputContainer}>
                             <label htmlFor="name">Nome</label>
-                            <input type="text" name="name" id="name" onChange={e => setName(e.target.value)} value={name} />
+                            <input type="text" name="name" id="name" onChange={e => setName(e.target.value)} value={name || ""} />
                             {errors && errors.length > 0 && (
                                 <p style={{ color: "red" }}>{errors.filter(error => error.includes("nome"))}</p>)}
                         </div>
@@ -283,8 +286,8 @@ const RegisterClient = () => {
                         <div className={styles.inputContainer}>
                             <label htmlFor="name">Nome</label>
                             <input type="text" name="name" id="name" onChange={e => setName(e.target.value)} value={name || ""} />
-                            {errors && errors.length > 0 && (
-                                <p style={{ color: "red" }}>{errors.filter(error => error.includes("nome"))}</p>)}
+                            {errorsPj && errorsPj.length > 0 && (
+                                <p style={{ color: "red" }}>{errorsPj.filter(error => error.includes("nome"))}</p>)}
                         </div>
 
                         <div className={styles.inputContainer}>
@@ -301,20 +304,20 @@ const RegisterClient = () => {
                                 value={cnpj}
                                 maxLength={"14"}
                             />
-                            {errors && errors.length > 0 && (
-                                <p style={{ color: "red" }}>{errors.filter(error => error.includes("CNPJ"))}</p>)}
+                            {errorsPj && errorsPj.length > 0 && (
+                                <p style={{ color: "red" }}>{errorsPj.filter(error => error.includes("CNPJ"))}</p>)}
                         </div>
                         <div className={styles.inputContainer}>
                             <label htmlFor="phones">Telefone</label>
                             <input type="text" name="phones" id="phones" onChange={e => setPhones(e.target.value)} value={phones || ""} />
-                            {errors && errors.length > 0 && (
-                                <p style={{ color: "red" }}>{errors.filter(error => error.includes("telefone"))}</p>)}
+                            {errorsPj && errorsPj.length > 0 && (
+                                <p style={{ color: "red" }}>{errorsPj.filter(error => error.includes("telefone"))}</p>)}
                         </div>
                         <div className={styles.inputContainer}>
                             <label htmlFor="cep">CEP</label>
                             <input type="text" name="cep" id="cep" value={addresses.cep} onChange={handleCepChange} />
-                            {errors && errors.length > 0 && (
-                                <p style={{ color: "red" }}>{errors.filter(error => error.includes("CEP"))}</p>)}
+                            {errorsPj && errorsPj.length > 0 && (
+                                <p style={{ color: "red" }}>{errorsPj.filter(error => error.includes("CEP"))}</p>)}
                         </div>
                         <div className={styles.inputContainer}>
                             <label htmlFor="municipalRegistration">Registro Municipal</label>
@@ -332,14 +335,14 @@ const RegisterClient = () => {
                         <div className={styles.inputContainer}>
                             <label htmlFor="street">Endereço</label>
                             <input type="text" name="street" id="street" value={addresses.street} onChange={handleInputChange} />
-                            {errors && errors.length > 0 && (
-                                <p style={{ color: "red" }}>{errors.filter(error => error.includes("rua"))}</p>)}
+                            {errorsPj && errorsPj.length > 0 && (
+                                <p style={{ color: "red" }}>{errorsPj.filter(error => error.includes("rua"))}</p>)}
                         </div>
                         <div className={styles.inputContainer}>
                             <label htmlFor="number">nº</label>
                             <input type="text" name="number" id="number" value={addresses.number || ""} onChange={handleInputChange} />
-                            {errors && errors.length > 0 && (
-                                <p style={{ color: "red" }}>{errors.filter(error => error.includes("número"))}</p>)}
+                            {errorsPj && errorsPj.length > 0 && (
+                                <p style={{ color: "red" }}>{errorsPj.filter(error => error.includes("número"))}</p>)}
                         </div>
                         <div className={styles.inputContainer}>
                             <label htmlFor="complement">Complemento</label>
@@ -348,20 +351,20 @@ const RegisterClient = () => {
                         <div className={styles.inputContainer}>
                             <label htmlFor="neighborhood">Bairro</label>
                             <input type="text" name="neighborhood" id="neighborhood" value={addresses.neighborhood || ""} onChange={handleInputChange} />
-                            {errors && errors.length > 0 && (
-                                <p style={{ color: "red" }}>{errors.filter(error => error.includes("bairro"))}</p>)}
+                            {errorsPj && errorsPj.length > 0 && (
+                                <p style={{ color: "red" }}>{errorsPj.filter(error => error.includes("bairro"))}</p>)}
                         </div>
                         <div className={styles.inputContainer}>
                             <label htmlFor="city">Cidade</label>
                             <input type="text" name="city" id="city" value={addresses.city || ""} onChange={handleInputChange} />
-                            {errors && errors.length > 0 && (
-                                <p style={{ color: "red" }}>{errors.filter(error => error.includes("cidade"))}</p>)}
+                            {errorsPj && errorsPj.length > 0 && (
+                                <p style={{ color: "red" }}>{errorsPj.filter(error => error.includes("cidade"))}</p>)}
                         </div>
                         <div className={styles.inputContainer}>
                             <label htmlFor="state">Estado</label>
                             <input type="text" name="state" id="state" value={addresses.state || ""} onChange={handleInputChange} />
-                            {errors && errors.length > 0 && (
-                                <p style={{ color: "red" }}>{errors.filter(error => error.includes("estado"))}</p>)}
+                            {errorsPj && errorsPj.length > 0 && (
+                                <p style={{ color: "red" }}>{errorsPj.filter(error => error.includes("estado"))}</p>)}
                         </div>
 
                         <div className={styles.inputContainer} style={{ marginTop: "35px" }}>

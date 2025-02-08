@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import styles from "../RegisterClient/RegisterClient.module.css";
 import api from "../../utils/api";
 
-const UpdateClientFs = ({ clientId }) => {
+const UpdateClientFs = ({ clientId, updateClientFs, errors }) => {
     const [name, setName] = useState("");
     const [cpf, setCpf] = useState("");
     const [phone, setPhone] = useState(""); // Apenas o primeiro telefone
@@ -15,7 +15,6 @@ const UpdateClientFs = ({ clientId }) => {
         city: "",
         state: "",
     });
-    const [errors, setErrors] = useState(null);
     const [success, setSuccess] = useState(null);
 
     useEffect(() => {
@@ -30,7 +29,6 @@ const UpdateClientFs = ({ clientId }) => {
                 setAddresses(addresses?.length ? addresses[0] : {});
             } catch (error) {
                 console.error("Erro ao buscar dados do cliente:", error);
-                setErrors(["Erro ao carregar dados do cliente."]);
             }
         };
 
@@ -82,23 +80,9 @@ const UpdateClientFs = ({ clientId }) => {
             addresses: [addresses],
         };
 
-        console.log("Dados enviados:", updatedClientFs);
-
-        try {
-            const response = await api.put(
-                `/clients/update/clientFs/${clientId}`,
-                updatedClientFs
-            );
-            console.log(response.data);
-            setSuccess("Cliente atualizado com sucesso!");
-
-            setTimeout(() => {
-                setSuccess(null);
-            }, 3000);
-        } catch (error) {
-            console.error("Erro ao atualizar cliente:", error);
-            setErrors(error.response?.data?.errors || ["Erro ao atualizar cliente."]);
-        }
+        
+           await updateClientFs(clientId, updatedClientFs)
+        
     };
 
     return (

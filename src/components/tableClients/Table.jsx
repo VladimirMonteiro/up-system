@@ -11,9 +11,9 @@ import ComponentMessage from '../componentMessage/ComponentMessage';
 import Loading from '../loading/Loading';
 
 
-const Table = ({ selected, loading, setLoadingClients }) => {
+const Table = ({ selected, loading, setLoadingClients, clients }) => {
 
-  const [data, setData] = useState([])
+  const [data, setData] = useState([clients])
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredClients, setFilteredClients] = useState([]);
   const [success, setSuccess] = useState(null)
@@ -43,7 +43,7 @@ const Table = ({ selected, loading, setLoadingClients }) => {
     }
     fetchData()
 
-  }, [])
+  }, [clients])
 
 
   const handleSearch = (searchTerm) => {
