@@ -34,9 +34,6 @@ const PdfPage = () => {
 
   const getTargetElement = () => document.getElementById("content-id");
 
-  console.log(initialDate)
-  console.log(deliveryDate)
-
   const months = [
     "Janeiro",
     "Fevereiro",
@@ -62,10 +59,28 @@ const PdfPage = () => {
   }
 
   function dateFormatter(date) {
-    const newDate = new Date(date)
-    return new Intl.DateTimeFormat('pt-BR', {dateStyle: 'short'}).format(newDate)
-
+    // If the date is a string in "DD/MM/YYYY" format, convert it to "YYYY-MM-DD"
+    if (typeof date === "string") {
+      const parts = date.split("/");
+      date = `${parts[2]}-${parts[1]}-${parts[0]}`; // Reorder to "YYYY-MM-DD"
+    }
+  
+    const newDate = new Date(date);
+  
+    // Check if the newDate is valid
+    if (isNaN(newDate)) {
+      throw new Error("Invalid date format");
+    }
+  
+    return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" }).format(newDate);
   }
+dateFormatter(initialDate)
+  const getDayOfMonth = (date) => dateFormatter(date).split("/")[0];
+const getMonth = (date) => dateFormatter(date).split("/")[1];
+const getYear = (date) => dateFormatter(date).split("/")[2];
+
+console.log(initialDate)
+
   
   return (
     <div className={styles.containerPdf}>
@@ -219,7 +234,7 @@ const PdfPage = () => {
 
         <div style={{marginTop: "20px"}}>
           <p style={{fontWeight: "bold"}}>
-            Esteio, {dateFormatter(initialDate).split("/")[0]} de{" "}
+            Esteio, {rentId ? dateFormatter(initialDate).split("/")[0] : initialDate.split("/")[0]} de{" "}
             {getMonthName(dateFormatter(initialDate).split("/")[1])} de {dateFormatter(initialDate).split("/")[2]}.
           </p>
         </div>
