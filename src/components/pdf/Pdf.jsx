@@ -3,6 +3,7 @@ import generatePDF, { Resolution, Margin } from "react-to-pdf";
 import styles from "./Pdf.module.css";
 import { formateNumber } from "../../utils/formatNumber";
 import LocData from "./LocData";
+import logo_up from "../../assets/logo_up.png";
 
 const options = {
   method: "open",
@@ -28,18 +29,56 @@ const options = {
 
 const PdfPage = () => {
   const location = useLocation();
-  const { client, items, price, freight, obs, initialDate, deliveryDate } =
+  const { client, rentId, items, price, freight, obs, initialDate, deliveryDate } =
     location.state || {};
 
   const getTargetElement = () => document.getElementById("content-id");
 
-  console.log(client);
+  console.log(initialDate)
+  console.log(deliveryDate)
 
+  const months = [
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
+  ];
+
+  // Function to get the month name based on the number (1 to 12)
+  function getMonthName(monthNumber) {
+    if (monthNumber >= 1 && monthNumber <= 12) {
+      return months[monthNumber - 1]; // Array is 0-indexed, so subtract 1
+    } else {
+      return "Mês inválido"; // Return an error message if the month number is invalid
+    }
+  }
+
+  function dateFormatter(date) {
+    const newDate = new Date(date)
+    return new Intl.DateTimeFormat('pt-BR', {dateStyle: 'short'}).format(newDate)
+
+  }
+  
   return (
     <div className={styles.containerPdf}>
       <div id="content-id" className={styles.content}>
         <div className={styles.header}>
-          <h1>Up Locações</h1>
+          <div className={styles.headerDiv}>
+            <div className={styles.imageContainer}>
+              <img src={logo_up} alt="up locacoes"></img>
+            </div>
+            <div className={styles.idRent}>
+              Número do contrato: Nº {rentId ? rentId : items[0].rent}
+            </div>
+          </div>
           <h2>Contrato de Locação</h2>
         </div>
 
@@ -69,16 +108,15 @@ const PdfPage = () => {
           email={client.email}
         />
 
-        <p style={{ fontWeight: 'bold' }}>PERIODO DE LOCAÇÃO</p>
+        <p style={{ fontWeight: "bold" }}>PERIODO DE LOCAÇÃO</p>
         <div className={styles.line5}>
-
           <div>
             <span>Inicio: </span>
-            <p>{initialDate}</p>
+            <p>{rentId ? dateFormatter(initialDate) : initialDate}</p>
           </div>
           <div>
             <span>Até: </span>
-            <p>{deliveryDate}</p>
+            <p>{rentId ? dateFormatter(deliveryDate) : deliveryDate}</p>
           </div>
         </div>
 
@@ -94,22 +132,38 @@ const PdfPage = () => {
               </tr>
             </thead>
             <tbody>
-              {items &&
-                items.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.tool || item.name}</td>
-                    <td>{item.quantity}</td>
-                    <td>{formateNumber(item.price)}</td>
-                    <td>{formateNumber(item.price * item.quantity)}</td>
-                  </tr>
-                ))}
+              <>
+                {items &&
+                  items.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.tool || item.name}</td>
+                      <td>{item.quantity}</td>
+                      <td>{formateNumber(item.price)}</td>
+                      <td>{formateNumber(item.price * item.quantity)}</td>
+                    </tr>
+                  ))}
+                <tr>
+                  <td
+                    style={{ backgroundColor: "transparent", border: "none" }}
+                  ></td>
+                  <td
+                    style={{ backgroundColor: "transparent", border: "none" }}
+                  ></td>
+                  <td
+                    style={{ backgroundColor: "transparent", border: "none" }}
+                  ></td>
+                  <td>
+                    <span style={{ fontWeight: "bold" }}>Frete: </span>
+                    {formateNumber(freight || 0)}
+                  </td>
+                </tr>
+              </>
             </tbody>
           </table>
         </div>
 
         <div className={styles.summary}>
           <h3>Total de Locação: {formateNumber(price)}</h3>
-          <p>Frete: {formateNumber(freight || 0)}</p>
           <p>Observação: {obs}</p>
         </div>
         <div className={styles.containerClausulas}>
@@ -163,22 +217,40 @@ const PdfPage = () => {
           </ul>
         </div>
 
+        <div style={{marginTop: "20px"}}>
+          <p style={{fontWeight: "bold"}}>
+            Esteio, {dateFormatter(initialDate).split("/")[0]} de{" "}
+            {getMonthName(dateFormatter(initialDate).split("/")[1])}.
+          </p>
+        </div>
+
         {/* Seções para Assinaturas */}
         <div className={styles.signatureSection}>
           <div className={styles.signatureRow}>
             <div className={styles.signatureBox}>
               <p>
-                <strong>Locador <br /></strong>
-                <strong>Assinatura da Up Locações<br /></strong>
+                <strong>
+                  Locador <br />
+                </strong>
+                <strong>
+                  Assinatura da Up Locações
+                  <br />
+                </strong>
                 <strong>CPF/CNPJ: 40.094.239/0001-92</strong>
               </p>
             </div>
-
             <div className={styles.signatureBox}>
               <p>
-                <strong>Locatário <br /></strong>
-                <strong>Assinatura {client.name}<br /></strong>
-                <strong>CPF/CNPJ: {client.cpf ? client.cpf : client.cnpj}</strong>
+                <strong>
+                  Locatário <br />
+                </strong>
+                <strong>
+                  Assinatura {client.name}
+                  <br />
+                </strong>
+                <strong>
+                  CPF/CNPJ: {client.cpf ? client.cpf : client.cnpj}
+                </strong>
               </p>
             </div>
           </div>

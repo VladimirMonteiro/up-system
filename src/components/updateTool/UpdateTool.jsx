@@ -36,8 +36,8 @@ const UpdateTool = ({ tool, errors, handleUpdate }) => {
             quantity: parseFloat(quantity),
             daily: parseFloat(String(daily).replace(/\./g, '').replace(',', '.')),
             week: parseFloat(String(week).replace(/\./g, '').replace(',', '.')),
-            biweekly: parseFloat(biweekly.replace(/\./g, '').replace(',', '.')),
-            twentyOneDays: parseFloat(twentyOneDays.replace(/\./g, '').replace(',', '.')),
+            biweekly: parseFloat(String(biweekly).replace(/\./g, '').replace(',', '.')),
+            twentyOneDays: parseFloat(String(twentyOneDays).replace(/\./g, '').replace(',', '.')),
             priceMonth: parseFloat(String(priceMonth).replace(/\./g, '').replace(',', '.')),
         };
 

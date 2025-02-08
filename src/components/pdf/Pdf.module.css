@@ -31,16 +31,30 @@
     margin-bottom:5px;
   }
   
-  .header h1 {
-    font-size: 2.0rem;
-    color: #333;
-    font-weight: bold;
-  }
-  
   .header h2 {
     font-size: 1.2rem;
     color: #555;
-    margin-top: 10px;
+  }
+
+  .headerDiv {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 150px;
+  }
+
+  .imageContainer {
+    width: 25%;
+  }
+  
+  .imageContainer img {
+    width: 100%;
+  }
+
+  .idRent {
+    font-size: 1.2rem;
+    color: #555;
+
   }
   
   /* Informações do cliente */
