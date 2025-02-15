@@ -185,113 +185,105 @@ const CreateRent = () => {
 
     return (
 
-        <>
-            <Navbar />
-            <section className={styles.sectionContainer}>
-                <h1>Alugar</h1>
-                <div className={styles.center}>
-                    <form className={styles.formContainer} onSubmit={modalFinishRent}>
-        <div style={{display: "flex", padding: "20px"}}>
+        <section style={{display: 'flex'}}>
             
-                            <div className={[styles.inputContainer2]} style={{margin: '10px'}}>
-                                <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client.name || ""} disabled placeholder='Selecione um cliente'/>
-                                <button onClick={openClients}>Selecionar</button>
-                            </div>
-                            <div className={styles.inputContainer2} style={{margin: '10px'}}>
-                                <input type="text" name="tool" id="tool" onChange={e => setTool(e.target.value)} value={tool.name || ""} disabled placeholder='Selecione uma ferramenta' />
-                                <button onClick={openTools}>Selecionar</button>
-                            </div>
-        </div>
-                        <div className={styles.containerTwoInput}>
-                            <div className={styles.inputContainer2} style={{display: "flex", flexDirection: "row", width:'90%'}}>
-                                <label htmlFor="price">Valor da Locação</label>
-                                <input type="text" name="price" id="price" onChange={(e) => handlePriceChange(e, setPrice)} value={price} autoComplete='off' placeholder='R$' />
-                                <input type="text" name="quantity" id="quantity" onChange={e => setQuantity(e.target.value)} value={quantity || ""} autoComplete='off' placeholder='Quantidade' />
-                                <select name="select" id="select" onChange={e => setPrice(e.target.value)}>
-                                    <option value="">Selecione uma opção</option>
-                                    {tool && (
-                                         <>
-                                         <option value={formateNumber(tool.daily)}>Diária (1 dia)</option>
-                                         <option value={formateNumber(tool.week)}>Semana (7 dias)</option>
-                                         <option value={formateNumber(tool.biweekly)}>Quinzena (15 dias)</option>
-                                         <option value={formateNumber(tool.twentyOneDays)}>3 semanas (21 dias)</option>
-                                         <option value={formateNumber(tool.priceMonth)}>Mensal (30 dias)</option>
-                                         </>  
-                                       
-                                    )}
-                                </select>
-                            </div>
-                              {tool.name && tool.name.toLowerCase().includes("andaime") && (
-                                <div>
-                                    <div className={styles.inputContainer2}>
-                                        <label htmlFor="quantity">Metros (m)</label>
-                                        <input type="text" name="meters" id="meters" onChange={e => setMeters(e.target.value)} value={meters || ""} autoComplete='off' placeholder='Opcional'/>
-                                    </div>
-                                    <p className={styles.pCalculate} onClick={calculateQuantityOfAndaime}>Calcular</p>
+                <Navbar />
+                <section className={styles.sectionContainer}>
+                    <h1>Alugar</h1>
+                    <div className={styles.center}>
+                        <form className={styles.formContainer} onSubmit={modalFinishRent}>
+            <div style={{display: "flex", padding: "20px"}}>
+            
+                                <div className={[styles.inputContainer2]} style={{margin: '10px'}}>
+                                    <input type="text" name="client" id="client" onChange={e => setClient(e.target.value)} value={client.name || ""} disabled placeholder='Selecione um cliente'/>
+                                    <button onClick={openClients}>Selecionar</button>
                                 </div>
-                            )}
-                            <div className={styles.inputContainer2} style={{display: "flex", flexDirection: "row", width: "70%"}}>
-                               
+                                <div className={styles.inputContainer2} style={{margin: '10px'}}>
+                                    <input type="text" name="tool" id="tool" onChange={e => setTool(e.target.value)} value={tool.name || ""} disabled placeholder='Selecione uma ferramenta' />
+                                    <button onClick={openTools}>Selecionar</button>
+                                </div>
+            </div>
+                            <div className={styles.containerTwoInput}>
+                                <div className={styles.inputContainer2} style={{display: "flex", flexDirection: "row", width:'90%'}}>
+                                    <label htmlFor="price">Valor da Locação</label>
+                                    <input type="text" name="price" id="price" onChange={(e) => handlePriceChange(e, setPrice)} value={price} autoComplete='off' placeholder='R$' />
+                                    <input type="text" name="quantity" id="quantity" onChange={e => setQuantity(e.target.value)} value={quantity || ""} autoComplete='off' placeholder='Quantidade' />
+                                    <select name="select" id="select" onChange={e => setPrice(e.target.value)}>
+                                        <option value="">Selecione uma opção</option>
+                                        {tool && (
+                                             <>
+                                             <option value={formateNumber(tool.daily)}>Diária (1 dia)</option>
+                                             <option value={formateNumber(tool.week)}>Semana (7 dias)</option>
+                                             <option value={formateNumber(tool.biweekly)}>Quinzena (15 dias)</option>
+                                             <option value={formateNumber(tool.twentyOneDays)}>3 semanas (21 dias)</option>
+                                             <option value={formateNumber(tool.priceMonth)}>Mensal (30 dias)</option>
+                                             </>
+            
+                                        )}
+                                    </select>
+                                </div>
+                                  {tool.name && tool.name.toLowerCase().includes("andaime") && (
+                                    <div>
+                                        <div className={styles.inputContainer2}>
+                                            <label htmlFor="quantity">Metros (m)</label>
+                                            <input type="text" name="meters" id="meters" onChange={e => setMeters(e.target.value)} value={meters || ""} autoComplete='off' placeholder='Opcional'/>
+                                        </div>
+                                        <p className={styles.pCalculate} onClick={calculateQuantityOfAndaime}>Calcular</p>
+                                    </div>
+                                )}
+                                <div className={styles.inputContainer2} style={{display: "flex", flexDirection: "row", width: "70%"}}>
+            
+                                </div>
                             </div>
-                        </div>
-                      
-
-                        <div className={styles.inputContainer2} style={{margin: '20px auto'}}>
-                            <button onClick={addItems}>Adicionar</button>
-                        </div>
-
-                        <div className={styles.inputContainer2} style={{margin: '0 auto'}}>
-                            <input type="submit" value="Alugar" />
-                        </div>
-                    </form>
-
-                    <div className={styles.listContainer}>
-                        <div className={styles.list}>
-                            <h2>Items da locação</h2>
-                            <ul>
-                                {listItems.length > 0 && listItems.map((item, index) => (
-                                    <li key={index}><div>{item.tool}</div> <div>{item.quantity}un</div>  <div>{formateNumber(item.price)}</div>
-                                        <button
-                                            className={styles.removeButton}
-                                            onClick={() => handleRemoveItem(index)}
-                                        >
-                                            Remover
-                                        </button>
-
-
-                                    </li>
-                                ))}
-                            </ul>
-                            <p className={styles.total}>
-                                TOTAL: R${listItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}
-                            </p>
+            
+                            <div className={styles.inputContainer2} style={{margin: '20px auto'}}>
+                                <button onClick={addItems}>Adicionar</button>
+                            </div>
+                            <div className={styles.inputContainer2} style={{margin: '0 auto'}}>
+                                <input type="submit" value="Alugar" />
+                            </div>
+                        </form>
+                        <div className={styles.listContainer}>
+                            <div className={styles.list}>
+                                <h2>Items da locação</h2>
+                                <ul>
+                                    {listItems.length > 0 && listItems.map((item, index) => (
+                                        <li key={index}><div>{item.tool}</div> <div>{item.quantity}un</div>  <div>{formateNumber(item.price)}</div>
+                                            <button
+                                                className={styles.removeButton}
+                                                onClick={() => handleRemoveItem(index)}
+                                            >
+                                                Remover
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <p className={styles.total}>
+                                    TOTAL: R${listItems.reduce((total, item) => total + (item.price * item.quantity), 0).toFixed(2)}
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
-
-            <Modal isOpen={isFinishRentOpen} onClose={modalFinishRentClose} width={'500px'} height={'auto'}>
-                <CompleteRent client={client} tool={tool} price={price} quantity={quantity} listItems={listItems}/>
-
-            </Modal>
-
-            {/* Modal para Cliente */}
-            <Modal isOpen={isClientModalOpen} onClose={closeClientModal} height={'auto'}>
-                <h2>Selecione um Cliente</h2>
-                {/* Aqui você pode adicionar os componentes ou listagens para clientes */}
-                <Table selected={handleSelectClient} loading={loadingClients} setLoadingClients={setLoadingClients} />
-                <button onClick={closeClientModal}>Fechar</button>
-            </Modal>
-
-            {/* Modal para Ferramentas */}
-            <Modal isOpen={isToolModalOpen} onClose={closeToolModal} height={"auto"} l>
-                <h2>Selecione uma Ferramenta</h2>
-                {/* Aqui você pode adicionar os componentes ou listagens para ferramentas */}
-                <TableTools selected={handleSelectTool} loading={loading} setLoading={setLoading} />
-                <button onClick={closeToolModal}>Fechar</button>
-            </Modal>
-
-        </>
+                </section>
+                <Modal isOpen={isFinishRentOpen} onClose={modalFinishRentClose} width={'500px'} height={'auto'}>
+                    <CompleteRent client={client} tool={tool} price={price} quantity={quantity} listItems={listItems}/>
+                </Modal>
+                {/* Modal para Cliente */}
+                <Modal isOpen={isClientModalOpen} onClose={closeClientModal} height={'auto'}>
+                    <h2>Selecione um Cliente</h2>
+                    {/* Aqui você pode adicionar os componentes ou listagens para clientes */}
+                    <Table selected={handleSelectClient} loading={loadingClients} setLoadingClients={setLoadingClients} />
+                    <button onClick={closeClientModal}>Fechar</button>
+                </Modal>
+                {/* Modal para Ferramentas */}
+                <Modal isOpen={isToolModalOpen} onClose={closeToolModal} height={"auto"} l>
+                    <h2>Selecione uma Ferramenta</h2>
+                    {/* Aqui você pode adicionar os componentes ou listagens para ferramentas */}
+                    <TableTools selected={handleSelectTool} loading={loading} setLoading={setLoading} />
+                    <button onClick={closeToolModal}>Fechar</button>
+                </Modal>
+        
+        </section>
 
     )
 }

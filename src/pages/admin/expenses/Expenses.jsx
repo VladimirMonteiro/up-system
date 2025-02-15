@@ -72,26 +72,27 @@ const Expenses = () => {
     };
 
     return (
-        <>
-            <Navbar />
-            {/* Exibe a mensagem de sucesso */}
-            {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
-            
-            <section className={styles.containerSection}>
-                <h1>Gastos</h1>
-                <div className={styles.components}>
-                    <CreateExpense handleCreateExpense={handleCreateSpent} errors={errors} />
-                    <ExpenseTable selected={handleFindSpentById} expenses={expenses} />
-                </div>
-                <Modal isOpen={openModal} onClose={() => setOpenModal(false)} width={'500px'} height={'auto'}>
-                    <UpdateExpense
-                        expense={selectedExpense}
-                        handleUpdateSpent={handleUpdateSpent}
-                        errors={errorsUpdate}
-                    />
-                </Modal>
-            </section>
-        </>
+        
+            <div className="mainContainerFlex">
+                <Navbar />
+                {/* Exibe a mensagem de sucesso */}
+                {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
+                
+                <section className={styles.containerSection}>
+                    <h1>Gastos</h1>
+                    <div className={styles.components}>
+                        <CreateExpense handleCreateExpense={handleCreateSpent} errors={errors} />
+                        <ExpenseTable selected={handleFindSpentById} expenses={expenses} />
+                    </div>
+                    <Modal isOpen={openModal} onClose={() => setOpenModal(false)} width={'500px'} height={'auto'}>
+                        <UpdateExpense
+                            expense={selectedExpense}
+                            handleUpdateSpent={handleUpdateSpent}
+                            errors={errorsUpdate}
+                        />
+                    </Modal>
+                </section>
+            </div>
     );
 };
 

@@ -6,3 +6,10 @@
   
 }
 
+.mainContainerFlex {
+  display: flex;
+}
+
+body {
+  background-color: #fef9f9e1;
+}
