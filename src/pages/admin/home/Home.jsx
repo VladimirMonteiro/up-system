@@ -30,7 +30,6 @@ const Home = () => {
     </>
   ) : (
     <div className="mainContainerFlex">
-      
         <Navbar />
         <section className={styles.sectionContainer}>
           <h1>Seja-bem vindo</h1>

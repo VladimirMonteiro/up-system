@@ -131,7 +131,7 @@ const EarningTable = ({ selected, earnings }) => {
     return (
         <>
         {loading ? <Loading table={true} width={"45%"}/> : (
-             <div className={styles.tableContainer} style={{ width: "45%" }}>
+             <div className={styles.tableContainer} style={{ width: "55%" }}>
              {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
       <form className={styles.searchContainer} onSubmit={handleSearch}>
           <label htmlFor="search">Pesquisar</label>

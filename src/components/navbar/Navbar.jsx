@@ -1,17 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { Menu } from "antd";
+import React, { useState, useEffect, useContext } from "react";
+import { Menu} from "antd";
 import {
   ContainerOutlined,
-  DesktopOutlined,
-  MailOutlined,
   PieChartOutlined,
+  ToolOutlined,
+  UserOutlined,
+  LineChartOutlined
 } from "@ant-design/icons";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import styles from './Navbar.module.css'
+import logo_up from "../../assets/logo_up.png"
+import {authContext} from '../../context/authProvider/AuthContext'
 
 const MyMenu = () => {
   const location = useLocation(); // Hook para obter a localização atual da página
   const [collapsed, setCollapsed] = useState(false);
   const [openKeys, setOpenKeys] = useState([]);
+
+  const auth = useContext(authContext)
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+
+      auth.logout()
+      navigate("/")
+
+  }
 
   // Lista de itens do menu
   const items = [
@@ -27,12 +41,12 @@ const MyMenu = () => {
     },
     {
       key: "2",
-      icon: <DesktopOutlined />,
+      icon: <ToolOutlined />,
       label: <NavLink to="/ferramentas">Ferramentas</NavLink>,
     },
     {
       key: "3",
-      icon: <ContainerOutlined />,
+      icon: <UserOutlined />,
       label: <NavLink to="/clientes">Clientes</NavLink>,
     },
     {
@@ -43,7 +57,7 @@ const MyMenu = () => {
     {
       key: "sub1",
       label: "Financeiro",
-      icon: <MailOutlined />,
+      icon: <LineChartOutlined />,
       children: [
         {
           key: "5",
@@ -96,9 +110,14 @@ const MyMenu = () => {
   }, [location]);
 
   const [selectedKey, setSelectedKey] = useState(getSelectedKey()); // Definindo a chave selecionada inicialmente
-
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
   return (
-    <div style={{ width: "257px" }}>
+    <div style={{ width: "257px"}}>
+     <div className={collapsed ?  styles.titleCollapsed :styles.title}>
+     <img src={logo_up} alt="Up" />
+     </div>
       <Menu
         mode="inline"
         theme="light"
@@ -106,11 +125,16 @@ const MyMenu = () => {
         selectedKeys={[selectedKey]} // Atualizando a seleção com base na rota
         openKeys={openKeys}
         items={items}
-        style={{ height: "100vh" }}
+        style={{ height: "90vh" }}
         onClick={handleClick} // Atualiza o item selecionado
         onOpenChange={handleOpenChange} // Controla os submenus abertos
       />
+
+      <div style={{width: '257px', color: 'red', backgroundColor: 'white'}}>
+        <h2 style={{cursor: 'pointer', fontWeight: 'bold'}} onClick={handleLogout}>Sair</h2>
+      </div>
     </div>
+    
   );
 };
 
