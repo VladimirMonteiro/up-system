@@ -35,16 +35,17 @@ const Rents = () => {
     } 
   }
   return (
-    <>
-      <Navbar />
-      <section className={styles.containerSection}>
-        <h1>Aluguéis</h1>
-        <RentsTable selected={updateRent}/>
-      <Modal isOpen={rentModal} onClose={closeRentModal} height={"auto"}>
-        <UpdateRent rent={rent}/>
-      </Modal>
-      </section>
-    </>
+    
+      <div className="mainContainerFlex">
+        <Navbar />
+        <section className={styles.containerSection}>
+          <h1>Aluguéis</h1>
+          <RentsTable selected={updateRent}/>
+        <Modal isOpen={rentModal} onClose={closeRentModal} height={"auto"}>
+          <UpdateRent rent={rent}/>
+        </Modal>
+        </section>
+      </div>
   );
 };
 

@@ -68,3 +68,33 @@
     border-bottom: 2px solid #007bff;
 }
 
+.title {
+    text-align: center;
+    color: #007bff;
+    width: 100%;
+    margin: 0 auto;
+    background-color: white;
+}
+
+.title img {
+    width: 50%;
+}
+
+.titleCollapsed {
+    width: 80px;
+    background-color: white;
+}
+
+.titleCollapsed img {
+    width: 100%;
+}
+
+.iconCollapsed {
+    width: 80px;
+    background-color: white;
+}
+
+.icon {
+    background-color: white;
+}
+

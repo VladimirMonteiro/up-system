@@ -29,27 +29,27 @@ const Home = () => {
       <Loading />
     </>
   ) : (
-    <>
-      <Navbar />
-      <section className={styles.sectionContainer}>
-        <h1>Seja-bem vindo</h1>
-
-        <div className={styles.cardsContainer}>
-          <div className={styles.singleCard}>
-            <h2>Aluguéis ativos</h2>
-            <p>{quantities.rent}</p>
+    <div className="mainContainerFlex">
+        <Navbar />
+        <section className={styles.sectionContainer}>
+          <h1>Seja-bem vindo</h1>
+          <div className={styles.cardsContainer}>
+            <div className={styles.singleCard}>
+              <h2>Aluguéis ativos</h2>
+              <p>{quantities.rent}</p>
+            </div>
+            <div className={styles.singleCard}>
+              <h2>Clientes</h2>
+              <p>{quantities.client}</p>
+            </div>
+            <div className={styles.singleCard}>
+              <h2>Equipamentos</h2>
+              <p>{quantities.tool}</p>
+            </div>
           </div>
-          <div className={styles.singleCard}>
-            <h2>Clientes</h2>
-            <p>{quantities.client}</p>
-          </div>
-          <div className={styles.singleCard}>
-            <h2>Equipamentos</h2>
-            <p>{quantities.tool}</p>
-          </div>
-        </div>
-      </section>
-    </>
+        </section>
+    
+    </div>
   );
 };
 

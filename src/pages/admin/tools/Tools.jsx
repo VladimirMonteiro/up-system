@@ -92,27 +92,29 @@ const Tools = () => {
   }
 
   return (
-    <>
-
-      <Navbar />
-      {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
-      <section className={styles.containerSection}>
-        <h1>Ferramentas</h1>
-        <TableTools selected={handleUpdateTool} tools={tools} />
-        <div className={styles.containerBtn}>
-          <button onClick={openModalTool} >Cadastrar Ferramenta</button>
-        </div>
-        <Modal isOpen={modalTool} onClose={() => setModalTool(false)} height={"auto"}>
-          <RegisterTool handleRegisterTool={registerTool} errors={errors} />
-
-        </Modal>
-        <Modal isOpen={modalToolUpdate} onClose={() => setModalToolUpdate(false)} height={"auto"}>
-          <UpdateTool tool={tool} handleUpdate={updateTool} errors={errorsUpdate}/>
-
-        </Modal>
-
-      </section>
-    </>
+  
+<div className="mainContainerFlex">
+  
+        <Navbar />
+        {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
+        <section className={styles.containerSection}>
+          <h1>Ferramentas</h1>
+          <TableTools selected={handleUpdateTool} tools={tools} />
+          <div className={styles.containerBtn}>
+            <button onClick={openModalTool} >Cadastrar Ferramenta</button>
+          </div>
+          <Modal isOpen={modalTool} onClose={() => setModalTool(false)} height={"auto"}>
+            <RegisterTool handleRegisterTool={registerTool} errors={errors} />
+  
+          </Modal>
+          <Modal isOpen={modalToolUpdate} onClose={() => setModalToolUpdate(false)} height={"auto"}>
+            <UpdateTool tool={tool} handleUpdate={updateTool} errors={errorsUpdate}/>
+  
+          </Modal>
+  
+        </section>
+  
+</div>
   );
 };
 

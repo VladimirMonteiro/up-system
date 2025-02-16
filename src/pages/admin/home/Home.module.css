@@ -1,5 +1,6 @@
 .sectionContainer {
-    margin-top: 100px;
+    margin: 50px auto;
+    width: calc(100% - 257px);
     
 
 }
@@ -38,6 +39,13 @@
     margin-top: 50px;
     color: rgb(85, 85, 85);
     font-size: 35px;
+
+}
+
+.containerHeader {
+    width: 100%;
+    background-color: blue;
+    height: 100px;
 
 }
 

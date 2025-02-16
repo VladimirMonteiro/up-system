@@ -117,47 +117,48 @@ const Clients = () => {
   };
 
   return (
-    <>
-      <Navbar />
-      {success && (
-        <ComponentMessage
-          message={success}
-          type="success"
-          onClose={() => setSuccess(null)}
-        />
-      )}
-      <section className={styles.containerSection}>
-        <h1>Clientes</h1>
-        <Table
-          selected={handleUpdateClient}
-          clients={clients}
-          loading={loadingClient}
-          setLoadingClients={setLoadingClient}
-        />
-        <div className={styles.containerBtn}>
-          <button onClick={openModalClient}>Cadastrar Cliente</button>
-        </div>
-        <Modal isOpen={modalClients} onClose={closeModalClient} width="1400px" height="auto">
-          <RegisterClient
-            createClientFs={handleCreateClientFs}
-            errors={errors}
-            createClientPj={handleCreateClientPj}
-            errorsPj={errorsPj}
+    <div className="mainContainerFlex">
+      
+        <Navbar />
+        {success && (
+          <ComponentMessage
+            message={success}
+            type="success"
+            onClose={() => setSuccess(null)}
           />
-        </Modal>
-        <Modal isOpen={modalUpdateClients} onClose={closeModalUpdateClientFs}>
-          <UpdateClientFs
-            clientId={client?.id}
-            clientFs={client}
-            errors={errorsUpdate}
-            updateClientFs={updateClientFs}
+        )}
+        <section className={styles.containerSection}>
+          <h1>Clientes</h1>
+          <Table
+            selected={handleUpdateClient}
+            clients={clients}
+            loading={loadingClient}
+            setLoadingClients={setLoadingClient}
           />
-        </Modal>
-        <Modal isOpen={modalUpdateClientsPj} onClose={closeModalUpdateClientPj} height={"auto"}>
-          <UpdateClientPj clientId={client?.id} errors={errorsUpdatePj} updateClientPj={updateClientPj} />
-        </Modal>
-      </section>
-    </>
+          <div className={styles.containerBtn}>
+            <button onClick={openModalClient}>Cadastrar Cliente</button>
+          </div>
+          <Modal isOpen={modalClients} onClose={closeModalClient} width="1400px" height="auto">
+            <RegisterClient
+              createClientFs={handleCreateClientFs}
+              errors={errors}
+              createClientPj={handleCreateClientPj}
+              errorsPj={errorsPj}
+            />
+          </Modal>
+          <Modal isOpen={modalUpdateClients} onClose={closeModalUpdateClientFs}>
+            <UpdateClientFs
+              clientId={client?.id}
+              clientFs={client}
+              errors={errorsUpdate}
+              updateClientFs={updateClientFs}
+            />
+          </Modal>
+          <Modal isOpen={modalUpdateClientsPj} onClose={closeModalUpdateClientPj} height={"auto"}>
+            <UpdateClientPj clientId={client?.id} errors={errorsUpdatePj} updateClientPj={updateClientPj} />
+          </Modal>
+        </section>
+    </div>
   );
 };
 

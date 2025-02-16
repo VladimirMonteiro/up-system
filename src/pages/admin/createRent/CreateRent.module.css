@@ -1,5 +1,6 @@
 .sectionContainer {
-    margin-top: 100px;
+    margin: 50px auto;
+    width: calc(100% - 257px);
 }
 
 .sectionContainer h1 {
