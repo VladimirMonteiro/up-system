@@ -28,7 +28,7 @@
 }
 
 .containerInput {
-    width: 50%;
+    min-width: 50%;
     display: flex;
     flex-direction: column;
     margin-bottom: 15px;

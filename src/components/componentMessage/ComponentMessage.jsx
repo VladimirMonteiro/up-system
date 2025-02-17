@@ -1,6 +1,7 @@
 // ComponentMessage.js
 import { useState, useEffect } from 'react';
 import styles from './ComponentMessage.module.css';
+import { Alert } from 'antd';
 
 const ComponentMessage = ({ message, type, onClose }) => {
     const [showMessage, setShowMessage] = useState(false);
@@ -20,12 +21,13 @@ const ComponentMessage = ({ message, type, onClose }) => {
     }, [message, onClose]);
 
     return (
-        <div
-            className={`${styles.toast} ${styles[type]} ${showMessage ? styles.show : ''}`}
-        >
-            <span>{message}</span>
-            <button className={styles.closeButton} onClick={onClose}>X</button>
-        </div>
+        <Alert
+        message="Sucesso!"
+        description={message}
+        type="success"
+        showIcon
+        style={{width: '300px', height: 'auto', position: 'absolute', left: '50%', top: '0', zIndex: '99', margin: '20px'}}
+      />
     );
 };
 
