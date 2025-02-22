@@ -1,0 +1,19 @@
+.container {
+    width: 100%;
+    background-color: #1677FF;
+    height: 45px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.container h2 {
+    color: yellow;
+    font-size: 20px;
+    margin: 20px 0;
+}
+
+.container div:nth-child(2) h2{
+    cursor: pointer;
+}
+

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import styles from "../RegisterClient/RegisterClient.module.css";
 import api from "../../utils/api";
+import {formatCnpj} from '../../utils/formatCnpj'
+import {formatPhone} from '../../utils/formatPhone'
 
 const UpdateClientPj = ({ clientId, updateClientPj, errors }) => {
   const [name, setName] = useState("");
@@ -154,7 +156,7 @@ const UpdateClientPj = ({ clientId, updateClientPj, errors }) => {
               type="text"
               name="cnpj"
               id="cnpj"
-              onChange={(e) => setCnpj(e.target.value)}
+              onChange={e => formatCnpj(e, setCnpj)}
               value={cnpj}
             />
             {displayErrors("CNPJ").length > 0 && (
@@ -170,7 +172,7 @@ const UpdateClientPj = ({ clientId, updateClientPj, errors }) => {
               type="text"
               name="phones"
               id="phones"
-              onChange={(e) => setPhones(e.target.value)}
+              onChange={(e) => formatPhone(e, setPhones)}
               value={phones}
             />
             {displayErrors("telefone").length > 0 && (

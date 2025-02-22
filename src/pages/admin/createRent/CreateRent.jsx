@@ -267,7 +267,7 @@ const CreateRent = () => {
                     <CompleteRent client={client} tool={tool} price={price} quantity={quantity} listItems={listItems}/>
                 </Modal>
                 {/* Modal para Cliente */}
-                <Modal isOpen={isClientModalOpen} onClose={closeClientModal} height={'auto'}>
+                <Modal isOpen={isClientModalOpen} onClose={closeClientModal} height={'90vh'}>
                     <h2>Selecione um Cliente</h2>
                     {/* Aqui você pode adicionar os componentes ou listagens para clientes */}
                     <Table selected={handleSelectClient} loading={loadingClients} setLoadingClients={setLoadingClients} />

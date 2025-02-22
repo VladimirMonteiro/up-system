@@ -80,7 +80,9 @@ const getMonth = (date) => dateFormatter(date).split("/")[1];
 const getYear = (date) => dateFormatter(date).split("/")[2];
 
 console.log(initialDate)
-
+console.log(rentId)
+console.log(freight)
+console.log(obs)
   
   return (
     <div className={styles.containerPdf}>
@@ -106,6 +108,7 @@ console.log(initialDate)
           city={"Esteio"}
           state={"RS"}
           phone={"(51) 99913-4363"}
+          servicePhone={"3059-4365"}
           email={"uplocacoes.rs@gmail.com"}
         />
 
@@ -169,7 +172,7 @@ console.log(initialDate)
                   ></td>
                   <td>
                     <span style={{ fontWeight: "bold" }}>Frete: </span>
-                    {formateNumber(freight || 0)}
+                    {formateNumber(freight ? freight : 0)}
                   </td>
                 </tr>
               </>

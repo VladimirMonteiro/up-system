@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import api from "../../../utils/api";
 import Loading from "../../../components/loading/Loading";
 
+
 const Home = () => {
   const [quantities, setQuantities] = useState({});
   const [loading, setLoading] = useState(true);
@@ -26,11 +27,12 @@ const Home = () => {
   return loading ? (
     <>
       <Navbar />
-      <Loading />
+      <Loading table={true} />
     </>
   ) : (
     <div className="mainContainerFlex">
         <Navbar />
+        
         <section className={styles.sectionContainer}>
           <h1>Seja-bem vindo</h1>
           <div className={styles.cardsContainer}>
