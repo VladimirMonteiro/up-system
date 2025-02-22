@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import styles from "../RegisterClient/RegisterClient.module.css";
 import api from "../../utils/api";
+import { formatCPF } from '../../utils/formatCpf'
+import { formatPhone } from "../../utils/formatPhone";
 
 const UpdateClientFs = ({ clientId, updateClientFs, errors }) => {
     const [name, setName] = useState("");
@@ -105,7 +107,7 @@ const UpdateClientFs = ({ clientId, updateClientFs, errors }) => {
 
                     <div className={styles.inputContainer}>
                         <label htmlFor="cpf">CPF</label>
-                        <input type="text" name="cpf" id="cpf" onChange={e => setCpf(e.target.value)} value={cpf} />
+                        <input type="text" name="cpf" id="cpf" onChange={e => formatCPF(e, setCpf)} value={cpf} maxLength={14} />
                         {errors && errors.length > 0 && (
                             <p style={{ color: "red" }}>{errors.filter(error => error.includes("CPF"))}</p>
                         )}
@@ -113,7 +115,7 @@ const UpdateClientFs = ({ clientId, updateClientFs, errors }) => {
 
                     <div className={styles.inputContainer}>
                         <label htmlFor="phones">Telefone</label>
-                        <input type="text" name="phones" id="phones" onChange={e => setPhone(e.target.value)} value={phone} />
+                        <input type="text" name="phones" id="phones" onChange={e => formatPhone(e, setPhone)} value={phone} />
                         {errors && errors.length > 0 && (
                             <p style={{ color: "red" }}>{errors.filter(error => error.includes("telefone"))}</p>
                         )}

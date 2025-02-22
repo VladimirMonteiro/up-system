@@ -7,25 +7,15 @@ import {
   UserOutlined,
   LineChartOutlined
 } from "@ant-design/icons";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation} from "react-router-dom";
 import styles from './Navbar.module.css'
 import logo_up from "../../assets/logo_up.png"
-import {authContext} from '../../context/authProvider/AuthContext'
 
 const MyMenu = () => {
   const location = useLocation(); // Hook para obter a localização atual da página
   const [collapsed, setCollapsed] = useState(false);
   const [openKeys, setOpenKeys] = useState([]);
 
-  const auth = useContext(authContext)
-  const navigate = useNavigate()
-
-  const handleLogout = () => {
-
-      auth.logout()
-      navigate("/")
-
-  }
 
   // Lista de itens do menu
   const items = [
@@ -125,14 +115,10 @@ const MyMenu = () => {
         selectedKeys={[selectedKey]} // Atualizando a seleção com base na rota
         openKeys={openKeys}
         items={items}
-        style={{ height: "90vh" }}
+        style={{ height: "calc(100% - 133px)" }}
         onClick={handleClick} // Atualiza o item selecionado
         onOpenChange={handleOpenChange} // Controla os submenus abertos
       />
-
-      <div style={{width: '257px', color: 'red', backgroundColor: 'white'}}>
-        <h2 style={{cursor: 'pointer', fontWeight: 'bold'}} onClick={handleLogout}>Sair</h2>
-      </div>
     </div>
     
   );

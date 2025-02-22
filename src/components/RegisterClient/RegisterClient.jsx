@@ -1,5 +1,8 @@
 import { useState } from "react";
 import styles from './RegisterClient.module.css';
+import { formatCPF } from "../../utils/formatCpf";
+import { formatCnpj } from "../../utils/formatCnpj";
+import { formatPhone } from "../../utils/formatPhone";
 import api from "../../utils/api";
 
 const RegisterClient = ({createClientFs, errors, createClientPj, errorsPj}) => {
@@ -64,23 +67,28 @@ const RegisterClient = ({createClientFs, errors, createClientPj, errorsPj}) => {
  
 
     const handleCnpjChange = async (e) => {
-        const cnpjValue = e.target.value.replace(/\D/g, ""); // Remove caracteres não numéricos
-        setCnpj(cnpjValue);
+        let cnpjValue = formatCnpj(e); // Formata o CNPJ com pontos, barras, etc.
+        setCnpj(cnpjValue);  // Atualiza o estado com o CNPJ formatado
     
-        if (cnpjValue.length === 14) {
+        // Remove qualquer caractere não numérico após formatação
+        const cleanedCnpj = cnpjValue.replace(/\D/g, "");
+        console.log(cleanedCnpj); // Agora 'cleanedCnpj' tem apenas os números do CNPJ
+    
+        // Verifica se o CNPJ tem exatamente 14 dígitos (sem formatação)
+        if (cleanedCnpj.length === 14) {
             try {
-                const response = await api.get(`clients/consultaCnpjReceitaWs/${cnpjValue}`);
-                const data = response.data
+                // Realiza a consulta à API utilizando o CNPJ limpo (sem pontos, barras, etc.)
+                const response = await api.get(`clients/consultaCnpjReceitaWs/${cleanedCnpj}`);
+                const data = response.data;
+        
+                console.log(data);
     
-                console.log(response.data)
-            
+                // Atualiza os estados com as informações do CNPJ
+                setName(data.nome || "");
+                setPhones(data.telefone || "");
+                setFantasyName(data.fantasia || "");
     
-                setName(data.nome || "")
-                setPhones(data.telefone || "")
-                setFantasyName(data.fantasia || "")
-            
-    
-                // Preencher os dados de endereço
+                // Preenche os dados de endereço
                 setAddresses({
                     cep: data.cep || "",
                     street: data.logradouro || "",
@@ -90,15 +98,13 @@ const RegisterClient = ({createClientFs, errors, createClientPj, errorsPj}) => {
                     city: data.municipio || "",
                     state: data.uf || "",
                 });
-    
             } catch (error) {
                 console.error("Erro ao buscar CNPJ:", error);
                 alert("Erro ao buscar o CNPJ. Tente novamente.");
             }
         }
     };
-    
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -220,13 +226,13 @@ const RegisterClient = ({createClientFs, errors, createClientPj, errorsPj}) => {
                         </div>
                         <div className={styles.inputContainer}>
                             <label htmlFor="cpf">CPF</label>
-                            <input type="text" name="cpf" id="cpf" onChange={e => setCpf(e.target.value)} value={cpf} />
+                            <input type="text" name="cpf" id="cpf" onChange={e => formatCPF(e, setCpf)} value={cpf || ""} maxLength={14}/>
                             {errors && errors.length > 0 && (
                                 <p style={{ color: "red" }}>{errors.filter(error => error.includes("CPF"))}</p>)}
                         </div>
                         <div className={styles.inputContainer}>
                             <label htmlFor="phones">Telefone</label>
-                            <input type="text" name="phones" id="phones" onChange={e => setPhones(e.target.value)} value={phones} />
+                            <input type="text" name="phones" id="phones" onChange={e => formatPhone(e, setPhones)} value={phones || ""} maxLength={15} />
                             {errors && errors.length > 0 && (
                                 <p style={{ color: "red" }}>{errors.filter(error => error.includes("telefone"))}</p>)}
                         </div>
@@ -302,14 +308,14 @@ const RegisterClient = ({createClientFs, errors, createClientPj, errorsPj}) => {
                                 id="cnpj"
                                 onChange={handleCnpjChange}
                                 value={cnpj}
-                                maxLength={"14"}
+                                maxLength={"18"}
                             />
                             {errorsPj && errorsPj.length > 0 && (
                                 <p style={{ color: "red" }}>{errorsPj.filter(error => error.includes("CNPJ"))}</p>)}
                         </div>
                         <div className={styles.inputContainer}>
                             <label htmlFor="phones">Telefone</label>
-                            <input type="text" name="phones" id="phones" onChange={e => setPhones(e.target.value)} value={phones || ""} />
+                            <input type="text" name="phones" id="phones" onChange={e => formatPhone(e, setPhones)} value={phones || ""} maxLength={15} />
                             {errorsPj && errorsPj.length > 0 && (
                                 <p style={{ color: "red" }}>{errorsPj.filter(error => error.includes("telefone"))}</p>)}
                         </div>

@@ -132,6 +132,8 @@ const RentsTable = ({ selected }) => {
       price: rent.price,
       initialDate: rent.initialDate,
       deliveryDate: rent.deliveryDate,
+      freight: rent.freight,
+      obs: rent.obs
     };
     navigate("/pdf", { state: rentData });
   };

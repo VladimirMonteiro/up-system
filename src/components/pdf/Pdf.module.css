@@ -14,7 +14,7 @@
   .content {
     width: 210mm; /* Largura A4 */
     height: auto; /* Altura A4 */
-    padding: 5mm; /* Ajustando o padding para ter borda ao redor */
+    padding: 4mm; /* Ajustando o padding para ter borda ao redor */
     background-color: #fff;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
@@ -28,7 +28,7 @@
   /* Cabeçalho com título e subtítulo */
   .header {
     text-align: center;
-    margin-bottom:5px;
+    margin-bottom:3px;
   }
   
   .header h2 {
@@ -44,7 +44,7 @@
   }
 
   .imageContainer {
-    width: 25%;
+    width: 20%;
   }
   
   .imageContainer img {
@@ -59,7 +59,7 @@
   
   /* Informações do cliente */
   .clientInfo {
-    margin-bottom: 20px;
+    margin-bottom: 5px;
     font-size: 1.1rem;
   }
   
@@ -100,7 +100,7 @@
   .itemsSection h3 {
     font-size: 1.1rem;
     color: #333;
-    margin: 15px 0;
+    margin: 10px 0;
     text-align: center;
   }
   
@@ -130,7 +130,7 @@
   
   /* Resumo da locação */
   .summary h3 {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     font-weight: bold;
     color: #007bff;
   }
@@ -142,7 +142,7 @@
 
   .containerClausulas h2 {
     font-size: 17px;
-    margin-top: 10px;
+    margin-top: 5px;
     
   }
 
@@ -171,7 +171,7 @@
   
   /* Seção de assinaturas */
   .signatureSection {
-    margin-top: 90px;
+    margin-top: 50px;
     display: flex;
     justify-content: space-between;
     padding: 0 20px;

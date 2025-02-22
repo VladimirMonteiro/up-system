@@ -9,7 +9,8 @@
 .mainContainerFlex {
   display: grid;
   grid-template-columns: 257px 1fr; /* Primeira coluna fixa em 257px, segunda coluna ocupa o resto do espaço */
-  height: 100vh; /* Opcional: para garantir que a altura do container ocupe toda a altura da tela */
+  height: calc(100vh - 50px); /* Opcional: para garantir que a altura do container ocupe toda a altura da tela */
+  overflow: scroll;
 }
 
 .content {
@@ -21,3 +22,4 @@
 body {
   background-color: #fef9f9e1;
 }
+
