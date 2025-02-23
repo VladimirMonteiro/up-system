@@ -1,7 +1,7 @@
 /* Estilos específicos para o UpdateRent */
 .updateRentSection {
   padding: 10px;
-  max-width: 900px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -26,6 +26,7 @@
 
 
 .updateRentForm {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -86,10 +87,13 @@
 .rentItemsList {
   list-style-type: none;
   padding: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .rentItem {
-  padding: 15px;
+  padding: 10px;
   background-color: #fff;
   border: 1px solid #ddd;
   margin-bottom: 15px;
@@ -97,6 +101,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin: 5px;
 }
 
 .rentItem:nth-child(even) {
@@ -117,8 +122,8 @@
 }
 
 .quantityInput, .priceInput, .readOnlyInput {
-  margin-right: 15px;
-  width: 130px;
+  margin-right: 5px;
+  width: 110px;
 }
 
 .deleteButton {
@@ -168,4 +173,104 @@
   background-color: #23b845;
 
 }
+
+
+/* Estilo geral do contêiner */
+.dateInputContainer {
+  width: 30%;
+  display: flex;
+  gap: 8px; /* Espaço entre o label e o input */
+  margin: 16px 0; /* Margem externa */
+  font-family: Arial, sans-serif;
+}
+
+/* Estilo do label */
+.dateInputContainer label {
+  font-size: 16px;
+  color: #333; /* Cor do texto */
+  font-weight: bold;
+}
+
+/* Estilo do input de data */
+.updateRentSection input[type="date"] {
+  padding: 5px 12px;
+  font-size: 16px;
+  border: 2px solid #ddd; /* Borda sutil */
+  border-radius: 8px; /* Bordas arredondadas */
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s; /* Animação suave */
+  background-color: #f9f9f9; /* Cor de fundo */
+  color: #333;
+}
+
+/* Efeito ao passar o mouse sobre o input */
+.updateRentSection input[type="date"]:hover {
+  border-color: #80bdff;
+}
+
+/* Efeito quando o input está focado */
+.updateRentSection input[type="date"]:focus {
+  border-color: #4d90fe;
+  box-shadow: 0 0 5px rgba(77, 144, 254, 0.5);
+}
+
+/* Estilo quando o input estiver desabilitado */
+.updateRentSection input[type="date"]:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Contêiner do Total Geral */
+.totalContainer {
+  display: flex;
+  flex-direction: column;
+  margin: 25px 0;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Rótulo do Total Geral */
+.totalLabel {
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+/* Input de Total Geral */
+.totalInput {
+  padding: 12px;
+  font-size: 20px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #007bff;
+  font-weight: bold;
+  text-align: center;
+  max-width: 280px;
+  transition: all 0.3s ease;
+  cursor: not-allowed; /* Indica que o campo é apenas leitura */
+}
+
+/* Efeito visual para o campo */
+.totalInput:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
+}
+
+/* Quando o input é somente leitura */
+.totalInput[readonly] {
+  background-color: #e9ecef; /* Cor mais suave quando está em modo leitura */
+  cursor: not-allowed; /* Previne a interação com o campo */
+}
+
+/* Efeito de hover sutil */
+.totalInput:hover {
+  border-color: #80bdff;
+}
+
+
 

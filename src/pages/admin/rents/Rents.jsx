@@ -5,11 +5,13 @@ import styles from "./Rents.module.css";
 import Modal from "../../../components/modal/Modal";
 import UpdateRent from "../../../components/updateRent/UpdateRent";
 import api from "../../../utils/api";
+import { useNavigate } from "react-router-dom";
 
 const Rents = () => {
 
   const [rent, setRent] = useState({})
   const [rentModal, setRentModal] = useState(false)
+  const navigate = useNavigate()
 
 
   const openRentModal = (e) => {
@@ -22,17 +24,7 @@ const Rents = () => {
   }
 
   const updateRent = async(e, id) => {
-    openRentModal(e)
-    console.log(id)
-    try {
-      const response = await api.get(`/rent/${id}`)
-      setRent(response.data)
-      console.log(response.data)
-      
-    } catch (error) {
-      console.log(error)
-      
-    } 
+    navigate(`/alugueis/${id}`)
   }
   return (
     

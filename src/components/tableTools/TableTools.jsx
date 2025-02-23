@@ -22,6 +22,7 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
   const [openModalDelete, setOpenModalDelete] = useState(false);
   const [toolToDelete, setToolToDelete] = useState(null);  // Para armazenar o ID da ferramenta
   const [toolName, setToolName] = useState('');  // Para armazenar o nome da ferramenta
+  const dynamicId = window.location.pathname
 
   useEffect(() => {
     const fetchData = async () => {
@@ -115,7 +116,8 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
          {currentData.map((row) => (
            <tr
              key={row.id}
-             onClick={location === "/alugar" ? () => selected(row) : undefined}
+             onClick={location === "/alugar" || `/alugar/${dynamicId}` ? () => selected(row) : undefined}
+
              style={row.quantity === 0 ? { backgroundColor: '#ffcccc' } : {}}
            >
              <td>{row.id}</td>

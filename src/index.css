@@ -10,16 +10,16 @@
   display: grid;
   grid-template-columns: 257px 1fr; /* Primeira coluna fixa em 257px, segunda coluna ocupa o resto do espaço */
   height: calc(100vh - 50px); /* Opcional: para garantir que a altura do container ocupe toda a altura da tela */
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .content {
-  background-color: #ffffff; /* Cor de fundo do conteúdo principal (você pode alterar) */
+  background-color: white; /* Cor de fundo do conteúdo principal (você pode alterar) */
   padding: 20px; /* Adicione o espaçamento interno que desejar */
 }
 
 
 body {
-  background-color: #fef9f9e1;
+  background-color: #F4F4F4 
 }
 

@@ -14,6 +14,7 @@ import Earnings from "./pages/admin/earnings/Earninigs";
 import Expenses from "./pages/admin/expenses/Expenses";
 import ReportPDF from "./components/pdf/ReportPDF";
 import HeaderDefault from "./components/header/Header";
+import SingleRent from "./pages/singleRent/SingleRent";
 
 // Componente HeaderControl (que usa useLocation para renderizar o HeaderDefault)
 const HeaderControl = () => {
@@ -40,6 +41,7 @@ function App() {
             <Route path="/clientes" element={<Protected><Clients /></Protected>} />
             <Route path="/ferramentas" element={<Protected><Tools /></Protected>} />
             <Route path="/alugueis" element={<Protected><Rents /></Protected>} />
+            <Route path="/alugueis/:id" element={<Protected><SingleRent /></Protected>} />
             <Route path="/faturamentos" element={<Protected><Earnings /></Protected>} />
             <Route path="/gastos" element={<Protected><Expenses /></Protected>} />
             <Route path="/pdf" element={<Protected><PdfPage /></Protected>} />
