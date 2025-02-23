@@ -10,7 +10,7 @@
   display: grid;
   grid-template-columns: 257px 1fr; /* Primeira coluna fixa em 257px, segunda coluna ocupa o resto do espaço */
   height: calc(100vh - 50px); /* Opcional: para garantir que a altura do container ocupe toda a altura da tela */
-  overflow: scroll;
+  overflow-y: scroll;
 }
 
 .content {

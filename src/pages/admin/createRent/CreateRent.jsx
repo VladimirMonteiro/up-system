@@ -162,7 +162,7 @@ const CreateRent = () => {
         setMeters(parseFloat(meters))
 
         switch (tool.name) {
-            case 'ANDAIME  1,5':
+            case 'ANDAIME  1,5m':
                 setQuantity(Math.ceil((meters / 1.5) * 2));
                 break;
             case 'ANDAIME  2,00 X 1,00':
@@ -269,14 +269,14 @@ const CreateRent = () => {
                     <CompleteRent client={client} tool={tool} price={price} quantity={quantity} listItems={listItems}/>
                 </Modal>
                 {/* Modal para Cliente */}
-                <Modal isOpen={isClientModalOpen} onClose={closeClientModal} height={'auto'} overflow={"scroll"}>
+                <Modal isOpen={isClientModalOpen} onClose={closeClientModal} height={'90vh'} overflow={"scroll"}>
                     <h2>Selecione um Cliente</h2>
                     {/* Aqui você pode adicionar os componentes ou listagens para clientes */}
                     <Table selected={handleSelectClient} loading={loadingClients} setLoadingClients={setLoadingClients} />
                     <button onClick={closeClientModal}>Fechar</button>
                 </Modal>
                 {/* Modal para Ferramentas */}
-                <Modal isOpen={isToolModalOpen} onClose={closeToolModal} height={"auto"} l>
+                <Modal isOpen={isToolModalOpen} onClose={closeToolModal} height={"90vh"} overflow={"scroll"}>
                     <h2>Selecione uma Ferramenta</h2>
                     {/* Aqui você pode adicionar os componentes ou listagens para ferramentas */}
                     <TableTools selected={handleSelectTool} loading={loading} setLoading={setLoading} />
