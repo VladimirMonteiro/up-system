@@ -26,6 +26,8 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
       return
     }
 
+    
+
     const updatedListItems = listItems.map((item) => {
       // eslint-disable-next-line no-unused-vars
       const { tool, ...rest } = item; // Desestrutura para remover 'tool'
@@ -46,6 +48,11 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
       freight: freight ? parseFloat(freight) : 0
     };
     
+
+    if( isNaN(newRent.price)) {
+      alert("Algum valor da lista de locação não foi informado!")
+      setLoading(false)
+    }
 
     console.log(price)
 
@@ -76,7 +83,8 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
 
       navigate("/pdf", { state: dataRentToPdf });
     } catch (error) {
-      alert(error);
+      alert("Erro ao gerar contrato");
+      setLoading(false)
     }
 
     console.log(newRent);
