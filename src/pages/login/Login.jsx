@@ -5,6 +5,8 @@ import { useContext, useState } from 'react'
 import { authContext } from '../../context/authProvider/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
+import logo from '../../assets/logo_up.png'
+
 const Login = () => {
 
     const [login, setLogin] = useState("")
@@ -43,33 +45,36 @@ const Login = () => {
 
 
     return (
-        <section className={styles.container}>
-
-            <h1>Up Locações</h1>
-            <div className={styles.containerForm}>
-                <h2>Login</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className={styles.inputContainer}>
-                        <label htmlFor="login">usename</label>
-                        <input type="text" name="login" id="login" onChange={e => setLogin(e.target.value)} value={login} autoComplete={'off'} />
-                        {errors.length > 0 && (
-                            <p style={{ color: "red" }}>{errors.filter(error => error.includes("login"))}</p>
-                        )}
-                    </div>
-                    <div className={styles.inputContainer}>
-                        <label htmlFor="password">password</label>
-                        <input type="password" name="password" id="password" onChange={e => setPassword(e.target.value)} value={password} />
-                        {errors.length > 0 && (
-                            <p style={{ color: "red" }}>{errors.filter(error => error.includes("senha"))}</p>
-                        )}
-                    </div>
-                    {errors.length > 0 && (
-                        <p style={{ color: "red" }}>{errors.filter(error => error.includes("Usuário"))}</p>
-                    )}
-                    <input type="submit" value={loading ? "Acessando..." : "Entrar"} />
-                </form>
+        <section className={styles.mainContainer}>
+            <div className={styles.imgContainer}>
+                <img src={logo} alt="Up Locações" />
             </div>
-
+            <div className={styles.container}>
+                <h1>Up Locações de Equipamentos</h1>
+                <div className={styles.containerForm}>
+                    <h2>Login</h2>
+                    <form onSubmit={handleSubmit}>
+                        <div className={styles.inputContainer}>
+                            <label htmlFor="login">usename</label>
+                            <input type="text" name="login" id="login" onChange={e => setLogin(e.target.value)} value={login} autoComplete={'off'} />
+                            {errors.length > 0 && (
+                                <p style={{ color: "red" }}>{errors.filter(error => error.includes("login"))}</p>
+                            )}
+                        </div>
+                        <div className={styles.inputContainer}>
+                            <label htmlFor="password">password</label>
+                            <input type="password" name="password" id="password" onChange={e => setPassword(e.target.value)} value={password} />
+                            {errors.length > 0 && (
+                                <p style={{ color: "red" }}>{errors.filter(error => error.includes("senha"))}</p>
+                            )}
+                        </div>
+                        {errors.length > 0 && (
+                            <p style={{ color: "red" }}>{errors.filter(error => error.includes("Usuário"))}</p>
+                        )}
+                        <input type="submit" value={loading ? "Acessando..." : "Entrar"} />
+                    </form>
+                </div>
+            </div>
         </section>
     )
 }

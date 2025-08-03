@@ -104,7 +104,7 @@ const MyMenu = () => {
     setCollapsed(!collapsed);
   };
   return (
-    <div style={{ width: "257px"}}>
+    <div style={{ width: "257px", height: 'auto'}}>
      <div className={collapsed ?  styles.titleCollapsed :styles.title}>
      <img src={logo_up} alt="Up" />
      </div>
@@ -115,7 +115,7 @@ const MyMenu = () => {
         selectedKeys={[selectedKey]} // Atualizando a seleção com base na rota
         openKeys={openKeys}
         items={items}
-        style={{ height: "calc(100% - 133px)" }}
+        style={{ height: "100vh" }}
         onClick={handleClick} // Atualiza o item selecionado
         onOpenChange={handleOpenChange} // Controla os submenus abertos
       />
