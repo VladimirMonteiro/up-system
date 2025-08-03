@@ -103,7 +103,7 @@ const CreateRent = () => {
 
         let itemPrice = parsedPrice;
 
-        if (tool.name.startsWith('Andaime') && meters) {
+        if (tool.name.startsWith('ANDAIME') && meters) {
             const parsedMeters = parseFloat(meters);
             itemPrice = parsedPrice * parsedMeters;
         }
