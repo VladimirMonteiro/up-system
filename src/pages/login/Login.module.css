@@ -1,11 +1,28 @@
 /* Container principal */
+.mainContainer {
+     background-image: url('../../assets/backgroundLogin.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+       height: 100vh;
+}
+
+.imgContainer {
+    width: 250px;
+    height: 250px;
+    padding: 10px;
+}
+
+.imgContainer img {
+    width: 100%;
+}
+
 .container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #f7f7f7;
+  
+   
 }
 
 /* Container do formulário */
@@ -29,7 +46,7 @@
 /* Título principal */
 .container h1 {
     font-size: 36px;
-    color: #007bff;
+    color: yellow;
     margin-bottom: 20px;
 }
 
