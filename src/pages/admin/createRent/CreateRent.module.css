@@ -272,6 +272,16 @@
     background-color: #f0f0f0;
 }
 
+.inputUpdate {
+    width: 16%;
+    height: 30px;
+    padding: 5px;
+    border-width: 2px;
+    border-color: #2a65c0;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
 .removeButton {
     padding: 5px 10px;
     background-color: #ff4d4f;
@@ -286,6 +296,7 @@
 .removeButton:hover {
     background-color: #e60000;
 }
+
 
 .total {
     text-align: center;
