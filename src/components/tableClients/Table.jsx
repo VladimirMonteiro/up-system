@@ -4,11 +4,13 @@ import api from '../../utils/api';
 
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
+import { GrView } from "react-icons/gr";
 
 import { useLocation } from 'react-router-dom';
 import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
 import ComponentMessage from '../componentMessage/ComponentMessage';
 import Loading from '../loading/Loading';
+import { useNavigate } from "react-router-dom";
 
 
 const Table = ({ selected, loading, setLoadingClients, clients }) => {
@@ -22,9 +24,11 @@ const Table = ({ selected, loading, setLoadingClients, clients }) => {
   const [loadingTable, setLoadingTable] = useState(true)
   const [ClientToDelete, setClientToDelete] = useState(null);  // Para armazenar o ID da ferramenta
   const [clientName, setClientName] = useState('');  // Para armazenar o nome da ferramenta
-  const rowsPerPage = 10
+  const rowsPerPage = 13
 
   const location = useLocation().pathname;
+  const navigation = useNavigate()
+ 
 
 
   useEffect(() => {
@@ -103,7 +107,6 @@ const Table = ({ selected, loading, setLoadingClients, clients }) => {
         <div className={styles.tableContainer}>
         {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
         <div className={styles.searchContainer}>
-          <label htmlFor="search">Pesquisar</label>
           <input type="text" id="search" placeholder="Digite para buscar..." value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -139,7 +142,13 @@ const Table = ({ selected, loading, setLoadingClients, clients }) => {
                 <td>{row.addresses[0].neighborhood}</td>
                 <td>{row.addresses[0].cep}</td>
                 {location == "/clientes" && (
-                  <td><MdDelete style={{ color: "red" }} onClick={(e) => openModalClient(e, row.id, row.name)} /> <FaPen onClick={(e) => selected(e, row.id)} /></td>
+                  <td style={{padding: "5x"}}>
+                  <FaPen style={{marginRight: "5px"}} onClick={(e) => selected(e, row.id)} />
+                  <GrView style={{marginRight: "5px"}} onClick={() => navigation(`/clientes/${row.id}`)} />
+                  <MdDelete style={{ color: "red" }} onClick={(e) => openModalClient(e, row.id, row.name)} /> 
+                  
+
+                  </td>
                 )}
               </tr>
             ))}

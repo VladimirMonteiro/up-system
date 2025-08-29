@@ -2,6 +2,7 @@ import styles from "./Header.module.css";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { authContext } from "../../context/authProvider/AuthContext";
+import { FiLogOut, FiUser } from "react-icons/fi";
 
 const HeaderDefault = () => {
   const auth = useContext(authContext);
@@ -13,14 +14,28 @@ const HeaderDefault = () => {
   };
 
   return (
-    <div className={styles.container}>
-      <div>
-        <h2>Up Locações de Equipamentos</h2>
+    <header className={styles.header}>
+      <div className={styles.logo}>
+        <h1>
+          <span className={styles.highlight}>Up</span> Locações de Equipamentos
+        </h1>
       </div>
-      <div>
-        <h2 onClick={handleLogout}>Sair</h2>
-      </div>
-    </div>
+
+      <nav className={styles.nav}>
+       <button className={styles.iconButton}>
+         
+        </button>
+
+        <div className={styles.profile}>
+          <FiUser className={styles.profileIcon} />
+          <span className={styles.profileName}>Administrador</span>
+        </div>
+
+        <button className={styles.logoutButton} onClick={handleLogout}>
+          <FiLogOut /> Sair
+        </button>
+      </nav>
+    </header>
   );
 };
 

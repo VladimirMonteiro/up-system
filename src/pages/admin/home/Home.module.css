@@ -1,51 +1,53 @@
-.sectionContainer {
-    margin: 50px auto;
-    width: calc(100% - 257px);
-    
 
+.sectionContainer {
+  flex: 1;
+  padding: 2rem 3rem;
 }
-.sectionContainer h1 {
-    text-align: center;
-    font-size: 32px;
-    margin-bottom: 60px;
+
+.welcomeTitle {
+  font-size: 2rem;
+  text-align: center;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 5rem;
 }
 
 .cardsContainer {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2%;
-    display: flex;
-    justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .singleCard {
-    width: 260px;
-    height: 250px;
-    border: 3px solid cornflowerblue;
-    border-radius: 10px;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.singleCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
 }
 
 .singleCard h2 {
-    text-align: center;
-    color: rgb(85, 85, 85);
-    font-weight: bold;
+  font-size: 1.2rem;
+  color: #374151;
+  margin-bottom: 0.5rem;
 }
 
 .singleCard p {
-    margin-top: 50px;
-    color: rgb(85, 85, 85);
-    font-size: 35px;
-
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2563eb;
 }
 
-.containerHeader {
-    width: 100%;
-    background-color: blue;
-    height: 100px;
-
+.sub {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 50px 0;
+  color: #1f2937;
 }
-

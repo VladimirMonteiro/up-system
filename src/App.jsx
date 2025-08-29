@@ -15,6 +15,8 @@ import Expenses from "./pages/admin/expenses/Expenses";
 import ReportPDF from "./components/pdf/ReportPDF";
 import HeaderDefault from "./components/header/Header";
 import SingleRent from "./pages/singleRent/SingleRent";
+import SingleClient from "./pages/admin/singleClient/SingleClient";
+import SingleTool from "./pages/admin/singleTool/SingleTool";
 
 // Componente HeaderControl (que usa useLocation para renderizar o HeaderDefault)
 const HeaderControl = () => {
@@ -39,7 +41,9 @@ function App() {
             <Route path="/inicial" element={<Protected><Home /></Protected>} />
             <Route path="/alugar" element={<Protected><CreateRent /></Protected>} />
             <Route path="/clientes" element={<Protected><Clients /></Protected>} />
+            <Route path="/clientes/:id" element={<Protected><SingleClient /></Protected>} />
             <Route path="/ferramentas" element={<Protected><Tools /></Protected>} />
+            <Route path="/ferramentas/:id" element={<Protected><SingleTool /></Protected>} />
             <Route path="/alugueis" element={<Protected><Rents /></Protected>} />
             <Route path="/alugueis/:id" element={<Protected><SingleRent /></Protected>} />
             <Route path="/faturamentos" element={<Protected><Earnings /></Protected>} />

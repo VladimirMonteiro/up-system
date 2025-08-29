@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
+import { GrView } from "react-icons/gr";
 import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
 import { formateNumber } from '../../utils/formatNumber';
 import Loading from '../loading/Loading'
 import ComponentMessage from '../componentMessage/ComponentMessage';
+import { useNavigate } from 'react-router-dom';
 
 
 const TableTools = ({ selected, tools, loading, setLoading }) => {
@@ -17,17 +19,19 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
   const [success, setSuccess] = useState(null)
   const [currentPage, setCurrentPage] = useState(1);
   const [loadingTable, setLoadingTable] = useState(true)
-  const rowsPerPage = 10;
+  const rowsPerPage = 13;
   const location = useLocation().pathname;
   const [openModalDelete, setOpenModalDelete] = useState(false);
   const [toolToDelete, setToolToDelete] = useState(null);  // Para armazenar o ID da ferramenta
   const [toolName, setToolName] = useState('');  // Para armazenar o nome da ferramenta
   const dynamicId = window.location.pathname
 
+  const navigate = useNavigate()
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-  
+
         const response = await api.get("tools");
         setData(response.data);
         setLoadingTable(false)
@@ -78,95 +82,90 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
   };
 
   return (
-
     <>
-    {loadingTable ? (<Loading table={true}/>) : (
-       <div className={styles.tableContainer}>
-       {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
-     <div className={styles.searchContainer}>
-       <label htmlFor="search">Pesquisar</label>
-       <input
-         type="text"
-         id="search"
-         placeholder="Digite para buscar..."
-         value={searchTerm}
-         onChange={(e) => {
-           setSearchTerm(e.target.value);
-           handleSearch(e.target.value);
-         }}
-       />
-       <input type="submit" value="Pesquisar" />
-     </div>
-     <table className={styles.table}>
-       <thead>
-         <tr>
-           <th>ID</th>
-           <th>Nome</th>
-           <th>Quantidade total</th>
-           <th>Quantidade disponível</th>
-           <th>Diária</th>
-           <th>Semanal</th>
-           <th>Quinzena</th>
-           <th>3 semanas (21) dias</th>
-           <th>Mensal</th>
-           {location === "/ferramentas" && <th>Ações</th>}
-         </tr>
-       </thead>
-       <tbody>
-         {currentData.map((row) => (
-           <tr
-             key={row.id}
-             onClick={location === "/alugar" || `/alugar/${dynamicId}` ? () => selected(row) : undefined}
+      {loadingTable ? (<Loading table={true} />) : (
+        <div className={styles.tableContainer}>
+          {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
+          <div className={styles.searchContainer}>
+            <input
+              type="text"
+              id="search"
+              placeholder="Digite para buscar..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                handleSearch(e.target.value);
+              }}
+            />
+            <input type="submit" value="Pesquisar" />
+          </div>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Quantidade total</th>
+                <th>Quantidade disponível</th>
+                <th>Diária</th>
+                <th>Semanal</th>
+                <th>Quinzena</th>
+                <th>3 semanas (21) dias</th>
+                <th>Mensal</th>
+                {location === "/ferramentas" && <th>Ações</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {currentData.map((row) => (
+                <tr
+                  key={row.id}
+                  onClick={location === "/alugar" || `/alugar/${dynamicId}` ? () => selected(row) : undefined}
 
-             style={row.quantity === 0 ? { backgroundColor: '#ffcccc' } : {}}
-           >
-             <td>{row.id}</td>
-             <td>{row.name}</td>
-             <td>{row.totalQuantity}un</td>
-             <td>{row.quantity}un</td>
-             <td>{formateNumber(row.daily)}</td>
-             <td>{formateNumber(row.week)}</td>
-             <td>{formateNumber(row.biweekly)}</td>
-             <td>{formateNumber(row.twentyOneDays)}</td>
-             <td>{formateNumber(row.priceMonth)}</td>
-             {location === "/ferramentas" && (
-               <td>
-                 <MdDelete
-                   style={{ color: "red" }}
-                   onClick={(e) => openModal(e, row.id, row.name)}  // Passa o ID e nome da ferramenta para o modal
-                 />
-                 <FaPen onClick={(e) => selected(e, row.id)} />
-               </td>
-             )}
-           </tr>
-         ))}
-       </tbody>
-     </table>
-     <ConfirmDeleteModal
-       open={openModalDelete}
-       onClose={() => setOpenModalDelete(false)}
-       itemName={toolName}  // Passa o nome da ferramenta para o modal
-       onConfirm={() => handleDeleteTool(toolToDelete)}  // Chama a função de deletar com o ID
-       remove={true}
-     />
-     <div className={styles.pagination}>
-       <button onClick={handlePrevious} disabled={currentPage === 1}>
-         Anterior
-       </button>
-       <span>
-         Página {currentPage} de {totalPages}
-       </span>
-       <button onClick={handleNext} disabled={currentPage === totalPages}>
-         Próxima
-       </button>
-     </div>
-   </div>
-
-    )}
-    
-    
+                  style={row.quantity === 0 ? { backgroundColor: '#ffcccc' } : {}}
+                >
+                  <td>{row.id}</td>
+                  <td>{row.name}</td>
+                  <td>{row.totalQuantity}un</td>
+                  <td>{row.quantity}un</td>
+                  <td>{formateNumber(row.daily)}</td>
+                  <td>{formateNumber(row.week)}</td>
+                  <td>{formateNumber(row.biweekly)}</td>
+                  <td>{formateNumber(row.twentyOneDays)}</td>
+                  <td>{formateNumber(row.priceMonth)}</td>
+                  {location === "/ferramentas" && (
+                    <td style={{width: "10%"}}>
+                      <MdDelete
+                        style={{ color: "red", marginRight: "5px" }}
+                        onClick={(e) => openModal(e, row.id, row.name)}  // Passa o ID e nome da ferramenta para o modal
+                      />
+                      <GrView style={{marginRight: "5px" }} onClick={() => navigate(`/ferramentas/${row.id}`)} />
+                      <FaPen style={{marginRight: "5px" }} onClick={(e) => selected(e, row.id)} />
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <ConfirmDeleteModal
+            open={openModalDelete}
+            onClose={() => setOpenModalDelete(false)}
+            itemName={toolName}  // Passa o nome da ferramenta para o modal
+            onConfirm={() => handleDeleteTool(toolToDelete)}  // Chama a função de deletar com o ID
+            remove={true}
+          />
+          <div className={styles.pagination}>
+            <button onClick={handlePrevious} disabled={currentPage === 1}>
+              Anterior
+            </button>
+            <span>
+              Página {currentPage} de {totalPages}
+            </span>
+            <button onClick={handleNext} disabled={currentPage === totalPages}>
+              Próxima
+            </button>
+          </div>
+        </div>
+      )}
     </>
-   
   );
 };
 
