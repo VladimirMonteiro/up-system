@@ -14,7 +14,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate()
- 
+
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -31,16 +31,10 @@ const Home = () => {
 
     fetchClients();
   }, []);
-  return loading ? (
-    <>
-      <Navbar />
-      <Loading table={true} />
-    </>
-  ) : (
+  return (
     <div className="mainContainerFlex">
       <Navbar />
-
-      <section className={styles.sectionContainer}>
+      {loading ? <Loading /> : (<section className={styles.sectionContainer}>
         <h1 className={styles.welcomeTitle}>Seja bem-vindo 👋</h1>
 
         <div className={styles.cardsContainer}>
@@ -59,10 +53,12 @@ const Home = () => {
         </div>
 
         <h2 className={styles.sub}>📅 Locações prestes a expirar</h2>
-        <RentsTable rents={rentsExpiring}/>
-      </section>
+        <RentsTable rents={rentsExpiring} />
+      </section>)}
+
+
     </div>
-  );
+  )
 };
 
 export default Home;
