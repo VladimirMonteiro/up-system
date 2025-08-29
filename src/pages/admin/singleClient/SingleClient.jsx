@@ -59,9 +59,18 @@ export default function SingleClient() {
             <p>{clientRents.filter(r => r.stateRent === "PENDENT").length}</p>
           </div>
           <div className={styles.card}>
-            <h3>Total Gasto</h3>
-            <p>
-              R$ {clientRents.reduce((total, rent) => total + (rent.price || 0), 0).toFixed(2)}
+            <h3>Total Pago pelo cliente</h3>
+            <p style={{ color: "green" }}>
+              R$ {clientRents.reduce((total, rent) => rent.stateRent === "PAID" ? total + (rent.price || 0) : total, 0).toFixed(2)}
+            </p>
+          </div>
+          <div className={styles.card}>
+            <h3>Saldo devedor</h3>
+            <p style={{ color: "red" }}>
+              R$ {clientRents
+                .reduce((total, rent) => rent.stateRent === "PENDENT" ? total + (rent.price || 0) : total, 0)
+                .toFixed(2)}
+
             </p>
           </div>
         </div>
