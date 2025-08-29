@@ -3,11 +3,10 @@
     width: 100%;
     height: auto;
     display: flex;
-    justify-content: center;
     align-items: center;
     background-color: #f2f2f2;
     padding: 10px;
-    flex-direction: column;
+    flex-direction: row;
   }
   
   /* Contêiner para o conteúdo do PDF */
@@ -21,7 +20,7 @@
     font-size: 12px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     margin: 0 auto; /* Centraliza o conteúdo dentro da área */
   }
   
