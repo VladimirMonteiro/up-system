@@ -32,54 +32,52 @@ export default function SingleClient() {
     }
     getClient();
   }, [id]);
-
-  if (loading) return <Loading />;
-  if (error) return <div className={styles.error}>{error}</div>;
-  if (!client) return <div className={styles.error}>Cliente não encontrado.</div>;
-
   return (
     <div className="mainContainerFlex">
       <MyMenu />
+      {loading ? <Loading /> : (
 
-      <section className={styles.containerSection}>
-        <div className={styles.headerSection}>
-          <h1>{client.name}</h1>
-          <p className={styles.details}>
-            Email: {client.email || "Não informado"} | Telefone: {client.phones[0] || "Não informado"}
-          </p>
-        </div>
-
-        <div className={styles.infoCards}>
-          <div className={styles.card}>
-            <h3>Total de Locações</h3>
-            <p>{clientRents.length}</p>
-          </div>
-          <div className={styles.card}>
-            <h3>Locações Pendentes</h3>
-            <p>{clientRents.filter(r => r.stateRent === "PENDENT").length}</p>
-          </div>
-          <div className={styles.card}>
-            <h3>Total Pago pelo cliente</h3>
-            <p style={{ color: "green" }}>
-              R$ {clientRents.reduce((total, rent) => rent.stateRent === "PAID" ? total + (rent.price || 0) : total, 0).toFixed(2)}
+        <section className={styles.containerSection}>
+          <div className={styles.headerSection}>
+            <h1>{client.name}</h1>
+            <p className={styles.details}>
+              Email: {client.email || "Não informado"} | Telefone: {client.phones[0] || "Não informado"}
             </p>
           </div>
-          <div className={styles.card}>
-            <h3>Saldo devedor</h3>
-            <p style={{ color: "red" }}>
-              R$ {clientRents
-                .reduce((total, rent) => rent.stateRent === "PENDENT" ? total + (rent.price || 0) : total, 0)
-                .toFixed(2)}
 
-            </p>
+          <div className={styles.infoCards}>
+            <div className={styles.card}>
+              <h3>Total de Locações</h3>
+              <p>{clientRents.length}</p>
+            </div>
+            <div className={styles.card}>
+              <h3>Locações Pendentes</h3>
+              <p>{clientRents.filter(r => r.stateRent === "PENDENT").length}</p>
+            </div>
+            <div className={styles.card}>
+              <h3>Total Pago pelo cliente</h3>
+              <p style={{ color: "green" }}>
+                R$ {clientRents.reduce((total, rent) => rent.stateRent === "PAID" ? total + (rent.price || 0) : total, 0).toFixed(2)}
+              </p>
+            </div>
+            <div className={styles.card}>
+              <h3>Saldo devedor</h3>
+              <p style={{ color: "red" }}>
+                R$ {clientRents
+                  .reduce((total, rent) => rent.stateRent === "PENDENT" ? total + (rent.price || 0) : total, 0)
+                  .toFixed(2)}
+
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className={styles.tableSection}>
-          <h2>Locações do Cliente</h2>
-          <RentsTable rents={clientRents} singleClient={client} />
-        </div>
-      </section>
+          <div className={styles.tableSection}>
+            <h2>Locações do Cliente</h2>
+            <RentsTable rents={clientRents} singleClient={client} />
+          </div>
+        </section>
+      )}
+
     </div>
   );
 }
