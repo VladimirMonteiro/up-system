@@ -44,6 +44,11 @@ const MyMenu = () => {
       icon: <ContainerOutlined />,
       label: <NavLink to="/alugueis">Alugueis</NavLink>,
     },
+     {
+      key: "5",
+      icon: <ContainerOutlined />,
+      label: <NavLink to="/orçamentos">Orçamentos</NavLink>,
+    },
     {
       key: "sub1",
       label: "Financeiro",
