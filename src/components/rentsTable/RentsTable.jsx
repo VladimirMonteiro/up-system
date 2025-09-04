@@ -127,12 +127,12 @@ const RentsTable = ({ selected, rents, singleClient }) => {
 
   const completeRent = async (id) => {
     try {
-      await api.put(`/rent/completed/${id}`);
+      await api.put(`/rent/completed/${id}`, {});
       setOpenModalCompleteRent(false);
 
       setData((prevData) =>
         prevData.map((rent) =>
-          rent.id === id ? { ...rent, stateRent: "PAID" } : rent
+          rent.id === id ? { ...rent, paymentStatus: "PAID", stateRent: "DELIVERED" } : rent
         )
       );
     } catch (error) {
@@ -196,7 +196,8 @@ const RentsTable = ({ selected, rents, singleClient }) => {
   };
 
   const getRowClass = (row) => {
-    if (row.stateRent === "PAID") return styles.rowPaid;
+    if (row.stateRent === "DELIVERED") return styles.rowPaid;
+    if (row.stateRent === "PENDENT") return styles.rowOverdue;
 
     const status = getDeliveryStatus(row.deliveryDate);
 
@@ -205,6 +206,25 @@ const RentsTable = ({ selected, rents, singleClient }) => {
 
     return "";
   };
+  const getRowClassPaymentStatus = (row) => {
+    if (row.paymentStatus === "PAID") {
+      return styles.rowPaid
+    }
+    if (row.paymentStatus === "PARTIALLY_PAID") {
+      return styles.rowNear
+    }
+    if (row.paymentStatus === "UNPAID") {
+      return styles.rowOverdue;
+    }
+
+    return "";
+  };
+
+  const getPaymentStatus = (payment) => {
+    if (payment === "PAID") return "PAGO"
+    if (payment === "UNPAID") return "NÃO PAGO"
+    if (payment === "PARTIALLY_PAID") return "PARC PAGO"
+  }
 
 
   return (
@@ -257,7 +277,8 @@ const RentsTable = ({ selected, rents, singleClient }) => {
                 <th>Data inicial</th>
                 <th>Data final</th>
                 <th>Valor</th>
-                <th>Status</th>
+                <th>Pagamento</th>
+                <th>Devolução equip</th>
                 {(location === "/alugueis" || location === `/clientes/${client?.id}` || location === "/inicial") && <th>Ações</th>}
               </tr>
             </thead>
@@ -277,7 +298,7 @@ const RentsTable = ({ selected, rents, singleClient }) => {
                   <tr
                     key={row.id}
                     onClick={location === "/alugar" ? () => selected(row) : undefined}
-                    className={`${styles.tableRow} ${getRowClass(row)}`}
+
                   >
 
 
@@ -287,8 +308,9 @@ const RentsTable = ({ selected, rents, singleClient }) => {
                     <td>{row.initialDate}</td>
                     <td>{row.deliveryDate}</td>
                     <td>{formateNumber(row.price)}</td>
+                    <td><span className={`${styles.tableRow} ${getRowClassPaymentStatus(row)}`}>{getPaymentStatus(row.paymentStatus)}</span></td>
                     <td>
-                      {row.stateRent === "PAID" ? "FINALIZADO" : "PENDENTE"}
+                      <span className={`${styles.tableRow} ${getRowClass(row)}`}>{row.stateRent === "DELIVERED" ? "ENTREGUE" : "PENDENTE"}</span>
                     </td>
                     {(location === "/alugueis" || location === `/clientes/${client?.id}` || location === "/inicial") && (
                       <td>
@@ -299,8 +321,8 @@ const RentsTable = ({ selected, rents, singleClient }) => {
                             openModalClient(e, row.id, row.client?.name)
                           }
                         />
-                        {/**  <FaPen style={{ marginRight: "5px" }} onClick={(e) => selected(e, row.id)} />*/}
-                       
+                      <FaPen style={{ marginRight: "5px" }} onClick={(e) => selected(e, row.id)} />
+
                         <FaPaste style={{ marginRight: "5px" }} onClick={() => openPdf(row)} />
                         <MdOutlineDoneOutline
                           color="green"
