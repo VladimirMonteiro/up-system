@@ -31,6 +31,9 @@ const Home = () => {
 
     fetchClients();
   }, []);
+  const updateRent = async(e, id) => {
+    navigate(`/alugueis/${id}`)
+  }
   return (
     <div className="mainContainerFlex">
       <Navbar />
@@ -53,7 +56,7 @@ const Home = () => {
         </div>
 
         <h2 className={styles.sub}>📅 Locações prestes a expirar</h2>
-        <RentsTable rents={rentsExpiring} />
+        <RentsTable rents={rentsExpiring} selected={updateRent} />
       </section>)}
 
 

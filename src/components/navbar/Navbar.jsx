@@ -55,11 +55,11 @@ const MyMenu = () => {
       icon: <LineChartOutlined />,
       children: [
         {
-          key: "5",
+          key: "6",
           label: <NavLink to="/faturamentos">Faturamentos</NavLink>,
         },
         {
-          key: "6",
+          key: "7",
           label: <NavLink to="/gastos">Gastos</NavLink>,
         },
       ],

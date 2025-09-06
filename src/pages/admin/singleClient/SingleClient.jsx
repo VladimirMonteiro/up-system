@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../../../utils/api";
 import Loading from "../../../components/loading/Loading";
 import MyMenu from "../../../components/navbar/Navbar";
@@ -12,6 +12,8 @@ export default function SingleClient() {
   const [clientRents, setClientRents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     async function getClient() {
@@ -32,6 +34,10 @@ export default function SingleClient() {
     }
     getClient();
   }, [id]);
+
+  const updateRent = async(e, id) => {
+    navigate(`/alugueis/${id}`)
+  }
   return (
     <div className="mainContainerFlex">
       <MyMenu />
@@ -73,7 +79,7 @@ export default function SingleClient() {
 
           <div className={styles.tableSection}>
             <h2>Locações do Cliente</h2>
-            <RentsTable rents={clientRents} singleClient={client} />
+            <RentsTable rents={clientRents} singleClient={client} selected={updateRent}/>
           </div>
         </section>
       )}
