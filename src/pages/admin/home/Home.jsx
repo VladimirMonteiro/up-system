@@ -56,7 +56,9 @@ const Home = () => {
         </div>
 
         <h2 className={styles.sub}>📅 Locações prestes a expirar</h2>
-        <RentsTable rents={rentsExpiring} selected={updateRent} />
+        <div style={{width: "100%"}}>
+          <RentsTable rents={rentsExpiring} selected={updateRent}/>
+        </div>
       </section>)}
 
 
