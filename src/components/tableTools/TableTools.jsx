@@ -132,13 +132,13 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
                   <td>{formateNumber(row.twentyOneDays)}</td>
                   <td>{formateNumber(row.priceMonth)}</td>
                   {location === "/ferramentas" && (
-                    <td style={{width: "10%"}}>
+                    <td style={{ width: "10%" }}>
                       <MdDelete
                         style={{ color: "red", marginRight: "5px" }}
                         onClick={(e) => openModal(e, row.id, row.name)}  // Passa o ID e nome da ferramenta para o modal
                       />
-                      <GrView style={{marginRight: "5px" }} onClick={() => navigate(`/ferramentas/${row.id}`)} />
-                      <FaPen style={{marginRight: "5px" }} onClick={(e) => selected(e, row.id)} />
+                      <GrView style={{ marginRight: "5px" }} onClick={() => navigate(`/ferramentas/${row.id}`)} />
+                      <FaPen style={{ marginRight: "5px" }} onClick={(e) => selected(e, row.id)} />
                     </td>
                   )}
                 </tr>

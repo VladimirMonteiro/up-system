@@ -120,7 +120,7 @@ const MyMenu = () => {
         selectedKeys={[selectedKey]} // Atualizando a seleção com base na rota
         openKeys={openKeys}
         items={items}
-        style={{ height: "100vh" }}
+        style={{ height: "100%" }}
         onClick={handleClick} // Atualiza o item selecionado
         onOpenChange={handleOpenChange} // Controla os submenus abertos
       />

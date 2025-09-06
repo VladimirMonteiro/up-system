@@ -1,276 +1,293 @@
-/* Estilos específicos para o UpdateRent */
-.updateRentSection {
-  padding: 10px;
-  width: 100%;
-  margin: 0 auto;
+.section {
+  background: #ffffff;
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 2rem auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.updateRentTitle {
-  text-align: center;
-  color: #333;
-  font-size: 26px;
-  margin-bottom: 25px;
+.titleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.inputContainer2 input[name= "client"]:disabled {
-  cursor: not-allowed;
-  color: cornflowerblue;
+.titleContainer h3 {
+  color: #4a5568;
+}
+
+.titleContainer h3 span {
+  padding: 8px;
+  border-radius: 5px;
   font-weight: bold;
 }
 
-.inputContainer2 input {
-  width: 40%;
-  margin-right: 20px;
-  height: 37px;
+.title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #1a202c;
 }
 
+.subTitle {
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: #2d3748;
+}
 
-.updateRentForm {
-  width: 100%;
+.form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 1.5rem;
 }
 
-/* Estilo dos grupos de campos */
+.formRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
 .formGroup {
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.formLabel {
-  font-size: 17px;
-  color: #555;
-  margin-bottom: 10px;
-  margin-right: 10px;
+.label {
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+  color: #4a5568;
 }
 
-.clientSelect, .quantityInput, .priceInput, .readOnlyInput {
-  padding: 7px;
-  font-size: 15px;
+.input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #cbd5e0;
   border-radius: 6px;
-  border: 1px solid #ddd;
-  background-color: #fff;
-  width: 100%;
-  box-sizing: border-box;
-  transition: border-color 0.3s ease;
+  font-size: 1rem;
+  background: #f7fafc;
 }
 
-.clientSelect:focus, .quantityInput:focus, .priceInput:focus, .readOnlyInput:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-/* Estilos para botões */
-.deleteButton {
-  padding: 7px;
-  background-color: #007bff;
+.selectButton {
+  background-color: #3182ce;
   color: white;
+  padding: 0.6rem 1.2rem;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 15px;
-  transition: background-color 0.3s;
-  margin-left: 15px;
 }
 
+.selectButton:hover {
+  background-color: #2b6cb0;
+}
+
+.itemsSection {
+  margin-top: 2rem;
+}
+
+.itemList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.itemCard {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  background: #edf2f7;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  align-items: flex-start;
+}
+
+.inputGroup {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+}
 
 .deleteButton {
-  background-color: #dc3545;
+  background-color: #e53e3e;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  align-self: flex-end;
 }
 
 .deleteButton:hover {
-  background-color: #c82333;
+  background-color: #c53030;
 }
 
-/* Lista de itens */
-.rentItemsList {
-  list-style-type: none;
-  padding: 0;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+.emptyMessage {
+  font-style: italic;
+  color: #718096;
 }
 
-.rentItem {
-  padding: 10px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  margin-bottom: 15px;
-  border-radius: 6px;
+.totalRow {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: space-between;
-  margin: 5px;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
-.rentItem:nth-child(even) {
-  background-color: #f7f7f7;
-}
-
-/* Grupo de inputs dentro de cada item */
-.inputGroup {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
-}
-
-.itemLabel {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 8px;
-}
-
-.quantityInput, .priceInput, .readOnlyInput {
-  margin-right: 5px;
-  width: 110px;
-}
-
-.deleteButton {
-  width: 90px;
-}
-
-.noItemsMessage {
-  font-size: 16px;
-  color: #777;
-  text-align: center;
-}
-
-/* Estilos para o checkbox */
-.checkboxGroup {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 15px;
-}
-
-.checkboxInput {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-}
-
-.checkboxLabel {
-  font-size: 16px;
-  color: #555;
-}
-
-.btnSubmit {
-  width: 300px;
-  background-color: #28a745;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 5px 1px;
-  font-size: 16px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  border: none;
-  color: white;
-}
-
-.btnSubmit:hover {
-  background-color: #23b845;
-
-}
-
-
-/* Estilo geral do contêiner */
-.dateInputContainer {
-  width: 30%;
-  display: flex;
-  gap: 8px; /* Espaço entre o label e o input */
-  margin: 16px 0; /* Margem externa */
-  font-family: Arial, sans-serif;
-}
-
-/* Estilo do label */
-.dateInputContainer label {
-  font-size: 16px;
-  color: #333; /* Cor do texto */
-  font-weight: bold;
-}
-
-/* Estilo do input de data */
-.updateRentSection input[type="date"] {
-  padding: 5px 12px;
-  font-size: 16px;
-  border: 2px solid #ddd; /* Borda sutil */
-  border-radius: 8px; /* Bordas arredondadas */
-  outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s; /* Animação suave */
-  background-color: #f9f9f9; /* Cor de fundo */
-  color: #333;
-}
-
-/* Efeito ao passar o mouse sobre o input */
-.updateRentSection input[type="date"]:hover {
-  border-color: #80bdff;
-}
-
-/* Efeito quando o input está focado */
-.updateRentSection input[type="date"]:focus {
-  border-color: #4d90fe;
-  box-shadow: 0 0 5px rgba(77, 144, 254, 0.5);
-}
-
-/* Estilo quando o input estiver desabilitado */
-.updateRentSection input[type="date"]:disabled {
-  background-color: #e9ecef;
-  color: #6c757d;
-  cursor: not-allowed;
-}
-
-/* Contêiner do Total Geral */
-.totalContainer {
-  display: flex;
-  flex-direction: column;
-  margin: 25px 0;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Rótulo do Total Geral */
 .totalLabel {
-  font-size: 16px;
-  color: #333;
-  font-weight: 500;
-  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #2d3748;
 }
 
-/* Input de Total Geral */
 .totalInput {
-  padding: 12px;
-  font-size: 20px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  background-color: #fff;
-  color: #007bff;
   font-weight: bold;
+  font-size: 1.1rem;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 0.6rem;
+  border-radius: 6px;
+  min-width: 120px;
+  text-align: right;
+}
+
+.submitRow {
   text-align: center;
-  max-width: 280px;
-  transition: all 0.3s ease;
-  cursor: not-allowed; /* Indica que o campo é apenas leitura */
+  margin-top: 2rem;
 }
 
-/* Efeito visual para o campo */
-.totalInput:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
+.submitButton {
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: #38a169;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  cursor: pointer;
 }
 
-/* Quando o input é somente leitura */
-.totalInput[readonly] {
-  background-color: #e9ecef; /* Cor mais suave quando está em modo leitura */
-  cursor: not-allowed; /* Previne a interação com o campo */
+.submitButton:hover {
+  background-color: #2f855a;
 }
 
-/* Efeito de hover sutil */
-.totalInput:hover {
-  border-color: #80bdff;
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  background-color: #f5f5f7;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.totalItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 150px;
+}
+
+.totalLabel {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.3rem;
+}
+
+.totalValue {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #222;
+}
+
+.totalValuePaid {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #2e7d32; /* verde */
+}
+
+.negativeBalance {
+  color: #d32f2f; /* vermelho */
+}
+
+.positiveBalance {
+  color: #388e3c; /* verde */
 }
 
 
+.closeModalButton {
+  margin-top: 1rem;
+  background-color: #4a5568;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.statusContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
 
+.deliveryStatus {
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+}
+
+.statusTag {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.statusDelivered {
+  background-color: #e0f8e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.statusPending {
+  background-color: #fff3e0;
+  color: #ef6c00;
+  border: 1px solid #ffb74d;
+}
+.toggleStatusButton {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s ease;
+}
+
+.toggleStatusButton:hover {
+  background-color: #1565c0;
+}
+
+
+.rowPaid {
+  background-color: rgba(46, 204, 112, 0.45); /* verde */
+}
+
+.rowNear {
+  background-color: rgba(241, 196, 15, 0.35); /* amarelo */
+}
+
+.rowOverdue {
+  background-color: rgba(255, 0, 0, 0.2); /* vermelho */
+}
