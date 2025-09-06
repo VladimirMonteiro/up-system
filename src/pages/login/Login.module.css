@@ -1,122 +1,122 @@
-/* Container principal */
-.mainContainer {
-     background-image: url('../../assets/backgroundLogin.png');
-    background-repeat: no-repeat;
-    background-size: cover;
-       height: 100vh;
+.loginPage {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.imgContainer {
-    width: 250px;
-    height: 250px;
-    padding: 10px;
+.leftPanel {
+  flex: 1;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
-.imgContainer img {
-    width: 100%;
+.leftPanel .logo {
+  max-width: 180px;
+  margin-bottom: 2rem;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  
-   
+.leftPanel h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
-/* Container do formulário */
-.containerForm {
-    background-color: #ffffff;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
+.leftPanel p {
+  font-size: 1.1rem;
+  line-height: 1.4;
+  max-width: 300px;
 }
 
-/* Título do formulário */
-.containerForm h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
+.rightPanel {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7f9fc;
 }
 
-/* Título principal */
-.container h1 {
-    font-size: 36px;
-    color: yellow;
-    margin-bottom: 20px;
+.formWrapper {
+  background-color: white;
+  padding: 3rem 2rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
 }
 
-/* Estilos dos campos de input */
-.inputContainer {
-    margin-bottom: 20px;
-    text-align: left;
+.formWrapper h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
 }
 
-/* Estilo dos labels */
-.inputContainer label {
-    font-size: 14px;
-    font-weight: bold;
-    color: #555;
-    display: block;
-    margin-bottom: 5px;
+.inputGroup {
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Estilo dos inputs */
-.inputContainer input {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    transition: border 0.3s ease;
+.inputGroup label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #444;
 }
 
-/* Estilo de foco nos inputs */
-.inputContainer input:focus {
-    border-color: #007bff;
-    outline: none;
+.inputWithIcon {
+  display: flex;
+  align-items: center;
+  background: #f0f2f5;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  transition: border-color 0.3s;
 }
 
-/* Estilo para mensagens de erro */
-.container p {
-    font-size: 12px;
-    margin-top: 5px;
-    color: red;
+.inputWithIcon:focus-within {
+  border-color: #2a5298;
+  box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.2);
 }
 
-/* Botão de submit */
-.container [type="submit"] {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.inputWithIcon input {
+  border: none;
+  outline: none;
+  background: transparent;
+  flex: 1;
+  font-size: 1rem;
+  padding-left: 0.5rem;
 }
 
-.container input[type="submit"]:hover {
-    background-color: #0056b3;
+.icon {
+  color: #2a5298;
+  font-size: 1.1rem;
 }
 
-/* Responsividade */
-@media (max-width: 600px) {
-    .container {
-        padding: 10px;
-    }
+.error {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 0.4rem;
+}
 
-    .containerForm {
-        padding: 30px;
-    }
+.submitBtn {
+  width: 100%;
+  padding: 0.9rem;
+  background-color: #2a5298;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
 
-    h1 {
-        font-size: 28px;
-    }
+.submitBtn:hover {
+  background-color: #1e3c72;
 }
