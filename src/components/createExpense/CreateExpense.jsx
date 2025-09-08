@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from '../createEarning/CreateEarning.module.css'
+
 
 import { handlePriceChange } from '../../utils/handlePriceChange';
 
@@ -57,17 +57,17 @@ const CreateExpense = ({ handleCreateExpense, errors }) => {
     }
 
     return (
-        <div className={styles.mainContainer}>
+        <div>
             <h2>Adicionar gasto</h2>
-            <form className={styles.containerForm} onSubmit={handleSubmit}>
-                <div className={styles.containerInput}>
+            <form onSubmit={handleSubmit}>
+                <div >
                     <label htmlFor="description">Descrição </label>
                     <input type="text" placeholder="Descrição..." id="description" name='description' onChange={e => setDescription(e.target.value)} value={description} />
                     {errors && errors.length > 0 && (
                         <p style={{ color: "red", margin: '5px 0', fontSize: '15px' }}>{errors.filter(error => error.includes("descrição"))}</p>
                     )}
                 </div>
-                <div className={styles.containerInput}>
+                <div >
                     <label htmlFor="price">Valor: </label>
                     <input type="text" placeholder="Valor..." id="value" name='value' onChange={e => handlePriceChange(e, setValue)} value={value} />
                     {errors && errors.length > 0 && (
@@ -84,7 +84,7 @@ const CreateExpense = ({ handleCreateExpense, errors }) => {
                     )}
 
                 </div>
-                <div className={styles.containerInput}>
+                <div>
                     <label htmlFor="dateOfEarn">Data pagamento: </label>
                     <input type="date" placeholder="Opcional" id="dateOfSpent" name='dateOfSpent' onChange={e => setDateOfSpent(e.target.value)} value={dateOfSpent} />
                     {errors && errors.length > 0 && (

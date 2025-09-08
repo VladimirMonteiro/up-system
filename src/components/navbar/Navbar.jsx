@@ -79,10 +79,12 @@ const MyMenu = () => {
         return "3";
       case "/alugueis":
         return "4";
+      case "/orçamentos":
+        return "5"
       case "/faturamentos":
-        return "5";
-      case "/gastos":
         return "6";
+      case "/gastos":
+        return "7";
       default:
         return ""; // Se não houver correspondência, não seleciona nenhum
     }
