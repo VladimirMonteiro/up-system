@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
 import styles from "./UpdateRent.module.css"; // Importando o CSS Module
 import api from "../../utils/api";
-import { handlePriceChange } from "../../utils/handlePriceChange";
 import Modal from "../modal/Modal";
 import TableTools from "../tableTools/TableTools"; // Componente que lista as ferramentas
 import { formateNumber } from "../../utils/formatNumber";
 import ComponentMessage from "../componentMessage/ComponentMessage";
-import EarningTable from "../earningTable/EarningTable";
 import RentPaymentsTable from "../rentPaymentsTable/RentPaymentsTable";
 import { formatCurrency, formatInputToCurrency, parseCurrencyToFloat } from "../../utils/formatCurrency";
 
@@ -22,6 +20,8 @@ const UpdateRent = ({ rent }) => {
   const [payments, setPayments] = useState([])
   const [paymentStatus, setPaymentStatus] = useState("")
   const [stateRent, setStateRent] = useState("")
+
+  console.log(rent)
 
   useEffect(() => {
     if (rent) {

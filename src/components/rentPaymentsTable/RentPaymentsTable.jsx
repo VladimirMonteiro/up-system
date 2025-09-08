@@ -48,9 +48,10 @@ const RentPaymentsTable = ({ payments, setPayments, rentId }) => {
         setOpenDeleteModal(true);
     };
 
+
     const handleDeletePayment = async () => {
         try {
-            const response = await api.delete(`earning/delete/${paymentToDelete}`);
+            const response = await api.delete(`earning/delete/${paymentToDelete}/${rentId}`);
             console.log(response.data);
 
             setPayments((prev) =>

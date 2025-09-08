@@ -190,6 +190,7 @@ const RentsTable = ({ selected, rents, singleClient }) => {
     return "";
 
   }
+  console.log(data)
   const getRowClassPaymentStatus = (row) => {
     if (row.paymentStatus === "PAID") {
       return styles.rowPaid
