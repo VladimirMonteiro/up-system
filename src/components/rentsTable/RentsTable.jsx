@@ -179,14 +179,17 @@ const RentsTable = ({ selected, rents, singleClient }) => {
   const getRowClass = (row) => {
     if (row.stateRent === "DELIVERED") return styles.rowPaid;
     if (row.stateRent === "PENDENT") return styles.rowOverdue;
+  };
 
-    const status = getDeliveryStatus(row.deliveryDate);
+  const getDeliveryStatusStyle = (row) => {
+     const status = getDeliveryStatus(row.deliveryDate);
 
     if (status === "near") return styles.rowNear;
     if (status === "overdue") return styles.rowOverdue;
 
     return "";
-  };
+
+  }
   const getRowClassPaymentStatus = (row) => {
     if (row.paymentStatus === "PAID") {
       return styles.rowPaid
@@ -303,7 +306,7 @@ const RentsTable = ({ selected, rents, singleClient }) => {
                     <td>{row.client?.name || client.name}</td>
                     <td>{row.client?.addresses?.[0]?.street || client.addresses[0].street}</td>
                     <td>{row.initialDate}</td>
-                    <td>{row.deliveryDate}</td>
+                    <td className={`${getDeliveryStatusStyle(row)}`}>{row.deliveryDate}</td>
                     <td>{formateNumber(row.price)}</td>
                     <td><span className={`${styles.tableRow} ${getRowClassPaymentStatus(row)}`}>{getPaymentStatus(row.paymentStatus)}</span></td>
                     <td>
