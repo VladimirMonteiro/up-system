@@ -19,7 +19,6 @@ const RentsTable = ({ selected, rents, singleClient }) => {
   const [notFound, setNotFound] = useState(false);
   const [success, setSuccess] = useState(null);
   const [filteredTools, setFilteredTools] = useState([]);
-  const [selectedFilter, setSelectedFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [openModal, setOpenModal] = useState(false);
   const [openModalCompleteRent, setOpenModalCompleteRent] = useState(false);
@@ -30,6 +29,8 @@ const RentsTable = ({ selected, rents, singleClient }) => {
   const rowsPerPage = 10;
   const location = useLocation().pathname;
   const navigate = useNavigate();
+  const [paymentStatus, setPaymentStatus] = useState("")
+  const [stateRent, setStateRent] = useState("")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,52 +53,32 @@ const RentsTable = ({ selected, rents, singleClient }) => {
     fetchData();
   }, [rents, singleClient]);
 
-  const handleSearch = (searchTerm) => {
-    const filteredData = data.filter((rent) =>
-      Object.values(rent.client || {}).some(
-        (value) =>
-          value &&
-          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
+  const selectedFilterSearch = async (e) => {
+  e.preventDefault();
 
-    if (filteredData.length === 0) {
+  try {
+    const response = await api.get("rent/filter", {
+      params: {
+        clientName: clientName.trim() !== "" ? clientName : null,
+        paymentStatus: paymentStatus !== "" ? paymentStatus : null,
+        stateRent: stateRent !== "" ? stateRent : null,
+      },
+    });
+
+    setData(response.data);
+
+    if (response.data.length === 0) {
       setNotFound(true);
     } else {
-      setFilteredTools(filteredData);
       setNotFound(false);
     }
-    setCurrentPage(1);
-  };
 
-  const selectedFilterSearch = (e) => {
-    e.preventDefault();
-    let filtered;
-    switch (selectedFilter) {
-      case "finalizado":
-        filtered = data.filter((rent) => rent.stateRent === "PAID");
-        break;
-      case "vencendo":
-        filtered = data.filter(
-          (rent) => getDeliveryStatus(rent.deliveryDate) === "near"
-        );
-        break;
-      case "atrasado":
-        filtered = data.filter(
-          (rent) =>
-            getDeliveryStatus(rent.deliveryDate) === "overdue" &&
-            rent.stateRent !== "PAID"
-        );
-        break;
-      default:
-        filtered = data;
-        break;
-    }
-
-    setFilteredTools(filtered);
-    setNotFound(filtered.length === 0);
     setCurrentPage(1);
-  };
+  } catch (error) {
+    console.error("Erro ao buscar aluguéis filtrados:", error);
+  }
+};
+
 
   const totalPages = Math.ceil(
     (filteredTools.length > 0 ? filteredTools : data).length / rowsPerPage
@@ -240,32 +221,48 @@ const RentsTable = ({ selected, rents, singleClient }) => {
               onClose={() => setSuccess(null)}
             />
           )}
-          <form
-            className={styles.searchContainer}
-            onSubmit={selectedFilterSearch}
-          >
-            <input
-              type="text"
-              id="search"
-              placeholder="Digite para buscar..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                handleSearch(e.target.value);
-              }}
-            />
-            <select
-              name="filter"
-              id="filter"
-              onChange={(e) => setSelectedFilter(e.target.value)}
-              value={selectedFilter}
-            >
-              <option value="">Filtro</option>
-              <option value="finalizado">Finalizado</option>
-              <option value="vencendo">Vencendo</option>
-              <option value="atrasado">Atrasado</option>
-            </select>
-            <input type="submit" value="Pesquisar" />
+          <form className={styles.searchContainer} onSubmit={selectedFilterSearch}>
+            <div className={styles.inputGroup}>
+              <input
+                type="text"
+                id="search"
+                placeholder="Digite para buscar..."
+                value={clientName}
+                onChange={(e) => {
+                  setClientName(e.target.value);
+                }}
+                className={styles.input}
+              />
+
+              <select
+                name="paymentStatus"
+                id="paymentStatus"
+                onChange={(e) => setPaymentStatus(e.target.value)}
+                value={paymentStatus}
+                className={styles.select}
+              >
+                <option value="">Status de Pagamento</option>
+                <option value="PAID">Pago</option>
+                <option value="PARTIALLY_PAID">Parcialmente pago</option>
+                <option value="UNPAID">Não pago</option>
+              </select>
+
+              <select
+                name="stateRent"
+                id="stateRent"
+                onChange={(e) => setStateRent(e.target.value)}
+                value={stateRent}
+                className={styles.select}
+              >
+                <option value="">Estado do Aluguel</option>
+                <option value="DELIVERED">Entregue</option>
+                <option value="PENDENT">Pendent</option>
+              </select>
+
+              <button type="submit" className={styles.button}>
+                Pesquisar
+              </button>
+            </div>
           </form>
 
           <table className={styles.table}>
@@ -321,7 +318,7 @@ const RentsTable = ({ selected, rents, singleClient }) => {
                             openModalClient(e, row.id, row.client?.name)
                           }
                         />
-                      <FaPen style={{ marginRight: "5px" }} onClick={(e) => selected(e, row.id)} />
+                        <FaPen style={{ marginRight: "5px" }} onClick={(e) => selected(e, row.id)} />
 
                         <FaPaste style={{ marginRight: "5px" }} onClick={() => openPdf(row)} />
                         <MdOutlineDoneOutline

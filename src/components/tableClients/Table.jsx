@@ -106,15 +106,15 @@ const Table = ({ selected, loading, setLoadingClients, clients }) => {
       {loading || loadingTable ? (<Loading table={true}/>) : (
         <div className={styles.tableContainer}>
         {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
-        <div className={styles.searchContainer}>
+        <div className={styles.inputGroup}>
           <input type="text" id="search" placeholder="Digite para buscar..." value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
               handleSearch(e.target.value);
-            }} />
-          <input type="submit" value="Pesquisar" />
+            }} className={styles.input} />
+          <input type="submit" value="Pesquisar" className={styles.button} />
         </div>
-        <table className={styles.table}>
+        <table className={styles.table} >
           <thead>
             <tr>
               <th>ID</th>

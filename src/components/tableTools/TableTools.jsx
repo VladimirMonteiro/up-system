@@ -86,7 +86,7 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
       {loadingTable ? (<Loading table={true} />) : (
         <div className={styles.tableContainer}>
           {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
-          <div className={styles.searchContainer}>
+          <div className={styles.inputGroup}>
             <input
               type="text"
               id="search"
@@ -96,8 +96,9 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
                 setSearchTerm(e.target.value);
                 handleSearch(e.target.value);
               }}
+              className={styles.input}
             />
-            <input type="submit" value="Pesquisar" />
+            <input type="submit" value="Pesquisar" className={styles.button} />
           </div>
           <table className={styles.table}>
             <thead>
