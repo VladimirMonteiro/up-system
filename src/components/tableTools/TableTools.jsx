@@ -1,40 +1,54 @@
 import api from '../../utils/api';
 import styles from '../tableClients/Table.module.css';
-import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 import { GrView } from "react-icons/gr";
 import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
 import { formateNumber } from '../../utils/formatNumber';
-import Loading from '../loading/Loading'
+import Loading from '../loading/Loading';
 import ComponentMessage from '../componentMessage/ComponentMessage';
-import { useNavigate } from 'react-router-dom';
 
-
-const TableTools = ({ selected, tools, loading, setLoading }) => {
+const TableTools = ({ selected, tools, loading, setLoading, isOpen }) => {
   const [data, setData] = useState(tools || []);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredTools, setFilteredTools] = useState([]);
-  const [success, setSuccess] = useState(null)
+  const [success, setSuccess] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loadingTable, setLoadingTable] = useState(true)
+  const [loadingTable, setLoadingTable] = useState(true);
   const rowsPerPage = 13;
   const location = useLocation().pathname;
   const [openModalDelete, setOpenModalDelete] = useState(false);
-  const [toolToDelete, setToolToDelete] = useState(null);  // Para armazenar o ID da ferramenta
-  const [toolName, setToolName] = useState('');  // Para armazenar o nome da ferramenta
-  const dynamicId = window.location.pathname
+  const [toolToDelete, setToolToDelete] = useState(null);
+  const [toolName, setToolName] = useState('');
+  const dynamicId = window.location.pathname;
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
+  // 🔎 ref para o input de pesquisa
+  const searchInputRef = useRef(null);
+
+  // 🔥 foca no input sempre que o modal abre
+  useEffect(() => {
+    if (isOpen) {
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if (searchInputRef.current) {
+            searchInputRef.current.focus();
+            searchInputRef.current.select?.();
+          }
+        }, 50);
+      });
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         const response = await api.get("tools");
         setData(response.data);
-        setLoadingTable(false)
+        setLoadingTable(false);
       } catch (error) {
         console.log(error);
       }
@@ -44,9 +58,9 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
 
   const openModal = (e, id, name) => {
     e.preventDefault();
-    setToolToDelete(id);  // Salva o ID da ferramenta que será deletada
-    setToolName(name);  // Salva o nome da ferramenta
-    setOpenModalDelete(true);  // Abre o modal de confirmação
+    setToolToDelete(id);
+    setToolName(name);
+    setOpenModalDelete(true);
   };
 
   const handleSearch = (searchTerm) => {
@@ -56,7 +70,7 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
       )
     );
     setFilteredTools(filteredData);
-    setCurrentPage(1);  // Reinicia para a primeira página
+    setCurrentPage(1);
   };
 
   const totalPages = Math.ceil(data.length / rowsPerPage);
@@ -72,10 +86,9 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
   const handleDeleteTool = async (id) => {
     try {
       const response = await api.delete(`tools/delete/${id}`);
-      console.log(response.data);
       setData((prevData) => prevData.filter((tool) => tool.id !== id));
-      setOpenModalDelete(false);  // Fecha o modal após a deleção
-      setSuccess(response.data.message)
+      setOpenModalDelete(false);
+      setSuccess(response.data.message);
     } catch (error) {
       console.log(error);
     }
@@ -83,11 +96,20 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
 
   return (
     <>
-      {loadingTable ? (<Loading table={true} />) : (
+      {loadingTable ? (
+        <Loading table={true} />
+      ) : (
         <div className={styles.tableContainer}>
-          {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
+          {success && (
+            <ComponentMessage
+              message={success}
+              type="success"
+              onClose={() => setSuccess(null)}
+            />
+          )}
           <div className={styles.inputGroup}>
             <input
+              ref={searchInputRef} // 👈 foca automaticamente
               type="text"
               id="search"
               placeholder="Digite para buscar..."
@@ -97,6 +119,8 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
                 handleSearch(e.target.value);
               }}
               className={styles.input}
+              autoComplete="off"
+              tabIndex={0}
             />
             <input type="submit" value="Pesquisar" className={styles.button} />
           </div>
@@ -110,7 +134,7 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
                 <th>Diária</th>
                 <th>Semanal</th>
                 <th>Quinzena</th>
-                <th>3 semanas (21) dias</th>
+                <th>3 semanas (21 dias)</th>
                 <th>Mensal</th>
                 {location === "/ferramentas" && <th>Ações</th>}
               </tr>
@@ -120,7 +144,6 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
                 <tr
                   key={row.id}
                   onClick={location === "/alugar" || `/alugar/${dynamicId}` ? () => selected(row) : undefined}
-
                   style={row.quantity === 0 ? { backgroundColor: '#ffcccc' } : {}}
                 >
                   <td>{row.id}</td>
@@ -136,7 +159,7 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
                     <td style={{ width: "10%" }}>
                       <MdDelete
                         style={{ color: "red", marginRight: "5px" }}
-                        onClick={(e) => openModal(e, row.id, row.name)}  // Passa o ID e nome da ferramenta para o modal
+                        onClick={(e) => openModal(e, row.id, row.name)}
                       />
                       <GrView style={{ marginRight: "5px" }} onClick={() => navigate(`/ferramentas/${row.id}`)} />
                       <FaPen style={{ marginRight: "5px" }} onClick={(e) => selected(e, row.id)} />
@@ -149,8 +172,8 @@ const TableTools = ({ selected, tools, loading, setLoading }) => {
           <ConfirmDeleteModal
             open={openModalDelete}
             onClose={() => setOpenModalDelete(false)}
-            itemName={toolName}  // Passa o nome da ferramenta para o modal
-            onConfirm={() => handleDeleteTool(toolToDelete)}  // Chama a função de deletar com o ID
+            itemName={toolName}
+            onConfirm={() => handleDeleteTool(toolToDelete)}
             remove={true}
           />
           <div className={styles.pagination}>

@@ -182,6 +182,7 @@ const RentsTable = ({ selected, rents, singleClient }) => {
   };
 
   const getDeliveryStatusStyle = (row) => {
+    if(row.paymentStatus === "PAID" && row.stateRent === "DELIVERED") return ""
      const status = getDeliveryStatus(row.deliveryDate);
 
     if (status === "near") return styles.rowNear;
@@ -328,7 +329,7 @@ const RentsTable = ({ selected, rents, singleClient }) => {
                         <MdOutlineDoneOutline
                           color="green"
                           onClick={
-                            row.stateRent === "PENDENT"
+                            row.stateRent !== "PENDENT" && row.paymentStatus !== "PAID"
                               ? (e) =>
                                 openModalFinishRent(
                                   e,
