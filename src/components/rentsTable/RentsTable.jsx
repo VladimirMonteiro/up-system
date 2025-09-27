@@ -54,30 +54,30 @@ const RentsTable = ({ selected, rents, singleClient }) => {
   }, [rents, singleClient]);
 
   const selectedFilterSearch = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const response = await api.get("rent/filter", {
-      params: {
-        clientName: clientName.trim() !== "" ? clientName : null,
-        paymentStatus: paymentStatus !== "" ? paymentStatus : null,
-        stateRent: stateRent !== "" ? stateRent : null,
-      },
-    });
+    try {
+      const response = await api.get("rent/filter", {
+        params: {
+          clientName: clientName.trim() !== "" ? clientName : null,
+          paymentStatus: paymentStatus !== "" ? paymentStatus : null,
+          stateRent: stateRent !== "" ? stateRent : null,
+        },
+      });
 
-    setData(response.data);
+      setData(response.data);
 
-    if (response.data.length === 0) {
-      setNotFound(true);
-    } else {
-      setNotFound(false);
+      if (response.data.length === 0) {
+        setNotFound(true);
+      } else {
+        setNotFound(false);
+      }
+
+      setCurrentPage(1);
+    } catch (error) {
+      console.error("Erro ao buscar aluguéis filtrados:", error);
     }
-
-    setCurrentPage(1);
-  } catch (error) {
-    console.error("Erro ao buscar aluguéis filtrados:", error);
-  }
-};
+  };
 
 
   const totalPages = Math.ceil(
@@ -182,7 +182,6 @@ const RentsTable = ({ selected, rents, singleClient }) => {
   };
 
   const getDeliveryStatusStyle = (row) => {
-    if(row.paymentStatus === "PAID" && row.stateRent === "DELIVERED") return ""
      const status = getDeliveryStatus(row.deliveryDate);
 
     if (status === "near") return styles.rowNear;
@@ -329,7 +328,7 @@ const RentsTable = ({ selected, rents, singleClient }) => {
                         <MdOutlineDoneOutline
                           color="green"
                           onClick={
-                            row.stateRent !== "PENDENT" && row.paymentStatus !== "PAID"
+                            row.stateRent === "PENDENT"
                               ? (e) =>
                                 openModalFinishRent(
                                   e,
