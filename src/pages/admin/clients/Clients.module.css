@@ -1,6 +1,7 @@
 .containerSection {
-    margin-top: 25px;
+    margin-top: 15px;
     width: 100%;
+    padding: 10px 0;
 }
 
 .containerSection h1 {

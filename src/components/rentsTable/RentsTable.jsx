@@ -19,7 +19,6 @@ const RentsTable = ({ selected, rents, singleClient }) => {
   const [notFound, setNotFound] = useState(false);
   const [success, setSuccess] = useState(null);
   const [filteredTools, setFilteredTools] = useState([]);
-  const [selectedFilter, setSelectedFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [openModal, setOpenModal] = useState(false);
   const [openModalCompleteRent, setOpenModalCompleteRent] = useState(false);
@@ -30,6 +29,8 @@ const RentsTable = ({ selected, rents, singleClient }) => {
   const rowsPerPage = 10;
   const location = useLocation().pathname;
   const navigate = useNavigate();
+  const [paymentStatus, setPaymentStatus] = useState("")
+  const [stateRent, setStateRent] = useState("")
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,52 +53,32 @@ const RentsTable = ({ selected, rents, singleClient }) => {
     fetchData();
   }, [rents, singleClient]);
 
-  const handleSearch = (searchTerm) => {
-    const filteredData = data.filter((rent) =>
-      Object.values(rent.client || {}).some(
-        (value) =>
-          value &&
-          value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-
-    if (filteredData.length === 0) {
-      setNotFound(true);
-    } else {
-      setFilteredTools(filteredData);
-      setNotFound(false);
-    }
-    setCurrentPage(1);
-  };
-
-  const selectedFilterSearch = (e) => {
+  const selectedFilterSearch = async (e) => {
     e.preventDefault();
-    let filtered;
-    switch (selectedFilter) {
-      case "finalizado":
-        filtered = data.filter((rent) => rent.stateRent === "PAID");
-        break;
-      case "vencendo":
-        filtered = data.filter(
-          (rent) => getDeliveryStatus(rent.deliveryDate) === "near"
-        );
-        break;
-      case "atrasado":
-        filtered = data.filter(
-          (rent) =>
-            getDeliveryStatus(rent.deliveryDate) === "overdue" &&
-            rent.stateRent !== "PAID"
-        );
-        break;
-      default:
-        filtered = data;
-        break;
-    }
 
-    setFilteredTools(filtered);
-    setNotFound(filtered.length === 0);
-    setCurrentPage(1);
+    try {
+      const response = await api.get("rent/filter", {
+        params: {
+          clientName: clientName.trim() !== "" ? clientName : null,
+          paymentStatus: paymentStatus !== "" ? paymentStatus : null,
+          stateRent: stateRent !== "" ? stateRent : null,
+        },
+      });
+
+      setData(response.data);
+
+      if (response.data.length === 0) {
+        setNotFound(true);
+      } else {
+        setNotFound(false);
+      }
+
+      setCurrentPage(1);
+    } catch (error) {
+      console.error("Erro ao buscar aluguéis filtrados:", error);
+    }
   };
+
 
   const totalPages = Math.ceil(
     (filteredTools.length > 0 ? filteredTools : data).length / rowsPerPage
@@ -127,12 +108,12 @@ const RentsTable = ({ selected, rents, singleClient }) => {
 
   const completeRent = async (id) => {
     try {
-      await api.put(`/rent/completed/${id}`);
+      await api.put(`/rent/completed/${id}`, {});
       setOpenModalCompleteRent(false);
 
       setData((prevData) =>
         prevData.map((rent) =>
-          rent.id === id ? { ...rent, stateRent: "PAID" } : rent
+          rent.id === id ? { ...rent, paymentStatus: "PAID", stateRent: "DELIVERED" } : rent
         )
       );
     } catch (error) {
@@ -184,27 +165,66 @@ const RentsTable = ({ selected, rents, singleClient }) => {
     return new Date(year, month - 1, day);
   };
 
-  const getDeliveryStatus = (deliveryDate) => {
-    const currentDate = new Date();
-    const delivery = parseDate(deliveryDate);
-    const timeDiff = delivery - currentDate;
-    const dayDiff = timeDiff / (1000 * 3600 * 24);
+  // Função para calcular o status da entrega
+const getDeliveryStatus = (deliveryDate, paymentStatus, stateRent) => {
+  const currentDate = new Date();
+  const delivery = parseDate(deliveryDate);
 
-    if (dayDiff < 0) return "overdue";
-    else if (dayDiff <= 2) return "near";
-    return "onTime";
-  };
+  const timeDiff = delivery.getTime() - currentDate.getTime();
+  const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24)); // arredonda p/ baixo
+
+  // Se já passou da data e não foi pago/entregue
+  if (dayDiff < 0 && (paymentStatus !== "PAID" || stateRent !== "DELIVERED")) {
+    return "overdue";
+  }
+
+  // Se faltar 2 dias ou menos e ainda não pago/entregue
+  if (dayDiff <= 2 && (paymentStatus !== "PAID" || stateRent !== "DELIVERED")) {
+    return "near";
+  }
+
+  // Caso contrário está em dia
+  return "onTime";
+};
+
+// Função para aplicar estilo baseado no status
+
+
 
   const getRowClass = (row) => {
-    if (row.stateRent === "PAID") return styles.rowPaid;
+    if (row.stateRent === "DELIVERED") return styles.rowPaid;
+    if (row.stateRent === "PENDENT") return styles.rowOverdue;
+    return ""
+  };
 
-    const status = getDeliveryStatus(row.deliveryDate);
+  const getDeliveryStatusStyle = (row) => {
+  const status = getDeliveryStatus(row.deliveryDate, row.paymentStatus, row.stateRent);
 
-    if (status === "near") return styles.rowNear;
-    if (status === "overdue") return styles.rowOverdue;
+  if (status === "near") return styles.rowNear;
+  if (status === "overdue") return styles.rowOverdue;
+
+  return ""; // nenhum estilo extra
+};
+  console.log(data)
+  const getRowClassPaymentStatus = (row) => {
+    if (row.paymentStatus === "PAID") {
+      return styles.rowPaid
+    }
+    if (row.paymentStatus === "PARTIALLY_PAID") {
+      return styles.rowNear
+    }
+    if (row.paymentStatus === "UNPAID") {
+      return styles.rowOverdue;
+    }
 
     return "";
   };
+
+  const getPaymentStatus = (payment) => {
+    if (payment === "PAID") return "PAGO"
+    if (payment === "UNPAID") return "NÃO PAGO"
+    if (payment === "PARTIALLY_PAID") return "PARC PAGO"
+  }
 
 
   return (
@@ -220,32 +240,48 @@ const RentsTable = ({ selected, rents, singleClient }) => {
               onClose={() => setSuccess(null)}
             />
           )}
-          <form
-            className={styles.searchContainer}
-            onSubmit={selectedFilterSearch}
-          >
-            <input
-              type="text"
-              id="search"
-              placeholder="Digite para buscar..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                handleSearch(e.target.value);
-              }}
-            />
-            <select
-              name="filter"
-              id="filter"
-              onChange={(e) => setSelectedFilter(e.target.value)}
-              value={selectedFilter}
-            >
-              <option value="">Filtro</option>
-              <option value="finalizado">Finalizado</option>
-              <option value="vencendo">Vencendo</option>
-              <option value="atrasado">Atrasado</option>
-            </select>
-            <input type="submit" value="Pesquisar" />
+          <form className={styles.searchContainer} onSubmit={selectedFilterSearch}>
+            <div className={styles.inputGroup}>
+              <input
+                type="text"
+                id="search"
+                placeholder="Digite para buscar..."
+                value={clientName}
+                onChange={(e) => {
+                  setClientName(e.target.value);
+                }}
+                className={styles.input}
+              />
+
+              <select
+                name="paymentStatus"
+                id="paymentStatus"
+                onChange={(e) => setPaymentStatus(e.target.value)}
+                value={paymentStatus}
+                className={styles.select}
+              >
+                <option value="">Status de Pagamento</option>
+                <option value="PAID">Pago</option>
+                <option value="PARTIALLY_PAID">Parcialmente pago</option>
+                <option value="UNPAID">Não pago</option>
+              </select>
+
+              <select
+                name="stateRent"
+                id="stateRent"
+                onChange={(e) => setStateRent(e.target.value)}
+                value={stateRent}
+                className={styles.select}
+              >
+                <option value="">Estado do Aluguel</option>
+                <option value="DELIVERED">Entregue</option>
+                <option value="PENDENT">Pendent</option>
+              </select>
+
+              <button type="submit" className={styles.button}>
+                Pesquisar
+              </button>
+            </div>
           </form>
 
           <table className={styles.table}>
@@ -257,7 +293,8 @@ const RentsTable = ({ selected, rents, singleClient }) => {
                 <th>Data inicial</th>
                 <th>Data final</th>
                 <th>Valor</th>
-                <th>Status</th>
+                <th>Pagamento</th>
+                <th>Devolução equip</th>
                 {(location === "/alugueis" || location === `/clientes/${client?.id}` || location === "/inicial") && <th>Ações</th>}
               </tr>
             </thead>
@@ -277,7 +314,7 @@ const RentsTable = ({ selected, rents, singleClient }) => {
                   <tr
                     key={row.id}
                     onClick={location === "/alugar" ? () => selected(row) : undefined}
-                    className={`${styles.tableRow} ${getRowClass(row)}`}
+
                   >
 
 
@@ -285,10 +322,11 @@ const RentsTable = ({ selected, rents, singleClient }) => {
                     <td>{row.client?.name || client.name}</td>
                     <td>{row.client?.addresses?.[0]?.street || client.addresses[0].street}</td>
                     <td>{row.initialDate}</td>
-                    <td>{row.deliveryDate}</td>
+                    <td className={`${getDeliveryStatusStyle(row)}`}>{row.deliveryDate}</td>
                     <td>{formateNumber(row.price)}</td>
+                    <td><span className={`${styles.tableRow} ${getRowClassPaymentStatus(row)}`}>{getPaymentStatus(row.paymentStatus)}</span></td>
                     <td>
-                      {row.stateRent === "PAID" ? "FINALIZADO" : "PENDENTE"}
+                      <span className={`${styles.tableRow} ${getRowClass(row)}`}>{row.stateRent === "DELIVERED" ? "ENTREGUE" : "PENDENTE"}</span>
                     </td>
                     {(location === "/alugueis" || location === `/clientes/${client?.id}` || location === "/inicial") && (
                       <td>
@@ -299,8 +337,8 @@ const RentsTable = ({ selected, rents, singleClient }) => {
                             openModalClient(e, row.id, row.client?.name)
                           }
                         />
-                        {/**  <FaPen style={{ marginRight: "5px" }} onClick={(e) => selected(e, row.id)} />*/}
-                       
+                        <FaPen style={{ marginRight: "5px" }} onClick={(e) => selected(e, row.id)} />
+
                         <FaPaste style={{ marginRight: "5px" }} onClick={() => openPdf(row)} />
                         <MdOutlineDoneOutline
                           color="green"

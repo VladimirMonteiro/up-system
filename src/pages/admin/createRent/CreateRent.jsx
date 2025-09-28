@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { handlePriceChange } from '../../../utils/handlePriceChange'
 
 import Navbar from '../../../components/navbar/Navbar'
@@ -42,7 +41,7 @@ const CreateRent = () => {
     const modalFinishRent = (e) => {
         e.preventDefault()
 
-        if (listItems.length == 0) {
+        if (listItems.length === 0) {
             alert("Adicione pelo menos um item à locação!")
             return
         }
@@ -239,7 +238,7 @@ const CreateRent = () => {
                                         />
 
                                         <input
-                                        className={styles.inputUpdate}
+                                            className={styles.inputUpdate}
                                             type="number"
                                             value={item.price}
                                             onChange={e => handleChangeItem(index, 'price', parseFloat(e.target.value))}
@@ -268,13 +267,23 @@ const CreateRent = () => {
 
             <Modal isOpen={isClientModalOpen} onClose={closeClientModal} height={'90vh'} overflow={"scroll"}>
                 <h2>Selecione um Cliente</h2>
-                <Table selected={handleSelectClient} loading={loadingClients} setLoadingClients={setLoadingClients} />
+                <Table
+                    selected={handleSelectClient}
+                    loading={loadingClients}
+                    setLoadingClients={setLoadingClients}
+                    isOpen={isClientModalOpen} // 🔹 foca input cliente
+                />
                 <button onClick={closeClientModal}>Fechar</button>
             </Modal>
 
             <Modal isOpen={isToolModalOpen} onClose={closeToolModal} height={"90vh"} overflow={"scroll"}>
                 <h2>Selecione uma Ferramenta</h2>
-                <TableTools selected={handleSelectTool} loading={loading} setLoading={setLoading} />
+                <TableTools
+                    selected={handleSelectTool}
+                    loading={loading}
+                    setLoading={setLoading}
+                    isOpen={isToolModalOpen} // 🔹 foca input ferramenta
+                />
                 <button onClick={closeToolModal}>Fechar</button>
             </Modal>
         </section>

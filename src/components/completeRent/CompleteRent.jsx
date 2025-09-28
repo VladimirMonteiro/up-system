@@ -36,17 +36,21 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
 
   
     const newRent = {
-      client,
-      items: updatedListItems,
-      price: (
-        updatedListItems.reduce((total, item) => total + item.price * item.quantity, 0)
-        + (freight ? parseFloat(freight) : 0)
-      ).toFixed(2),
-      initialDate,
-      deliveryDate,
-      obs,
-      freight: freight ? parseFloat(freight) : 0
-    };
+  client: {
+    id: client.id,
+    type: client.cnpj ? "clientPJ" : "clientFS"   // 👈 obrigatório pro Jackson saber o subtipo
+  },
+  items: updatedListItems,
+  price: (
+    updatedListItems.reduce((total, item) => total + item.price * item.quantity, 0)
+    + (freight ? parseFloat(freight) : 0)
+  ).toFixed(2),
+  initialDate,
+  deliveryDate,
+  obs,
+  freight: freight ? parseFloat(freight) : 0
+};
+
     
 
     if( isNaN(newRent.price)) {

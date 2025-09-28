@@ -14,7 +14,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate()
- 
+
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -31,16 +31,13 @@ const Home = () => {
 
     fetchClients();
   }, []);
-  return loading ? (
-    <>
-      <Navbar />
-      <Loading table={true} />
-    </>
-  ) : (
+  const updateRent = async(e, id) => {
+    navigate(`/alugueis/${id}`)
+  }
+  return (
     <div className="mainContainerFlex">
       <Navbar />
-
-      <section className={styles.sectionContainer}>
+      {loading ? <Loading /> : (<section className={styles.sectionContainer}>
         <h1 className={styles.welcomeTitle}>Seja bem-vindo 👋</h1>
 
         <div className={styles.cardsContainer}>
@@ -59,10 +56,14 @@ const Home = () => {
         </div>
 
         <h2 className={styles.sub}>📅 Locações prestes a expirar</h2>
-        <RentsTable rents={rentsExpiring}/>
-      </section>
+        <div style={{width: "100%"}}>
+          <RentsTable rents={rentsExpiring} selected={updateRent}/>
+        </div>
+      </section>)}
+
+
     </div>
-  );
+  )
 };
 
 export default Home;

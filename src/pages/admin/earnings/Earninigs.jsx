@@ -3,8 +3,7 @@ import styles from './Earning.module.css'
 
 
 import EarningTable from "../../../components/earningTable/EarningTable"
-import CreateEarning from "../../../components/createEarning/CreateEarning"
-import { useState, useEffect} from "react"
+import { useState, useEffect } from "react"
 import api from "../../../utils/api"
 import ComponentMessage from "../../../components/componentMessage/ComponentMessage"
 import Modal from "../../../components/modal/Modal"
@@ -14,7 +13,7 @@ const Earnings = () => {
 
     const [earnings, setEarnings] = useState([])
     const [earnSelected, setEarnSelected] = useState({})
-    
+
     const [modal, setModal] = useState(false)
     const [rents, setRents] = useState([])
 
@@ -42,19 +41,6 @@ const Earnings = () => {
         setModal(true)
     }
 
-    const createEarning = async(newEarning) => {
-        try {
-            const response = await api.post(`/earning/create`, newEarning)
-            setEarnings((prevEarnings) => [...prevEarnings, newEarning])
-            setSuccess(response.data.message)
-            setErrors(null)
-            
-        } catch (error) {
-            setErrors(error.response.data.errors)
-            return error
-        }
-    }
-
     const findById = async (e, id) => {
         openModal(e)
         try {
@@ -62,7 +48,7 @@ const Earnings = () => {
             setEarnSelected(response.data)
 
         } catch (error) {
-            console.log(error)  
+            console.log(error)
         }
     }
 
@@ -83,27 +69,25 @@ const Earnings = () => {
             setModal(false)
         } catch (error) {
             setUpdateErrors(error.response.data.errors)
-            
+
         }
     }
 
     return (
         <div className="mainContainerFlex">
-            
-                <Navbar />
-                {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
-                <section className={styles.containerSection}>
-                    <h1>Faturamentos</h1>
-                    <div className={styles.components}>
-                    <CreateEarning rents={rents} handleCreateEarning={createEarning} errors={errors}/>
-                    <EarningTable earnings={earnings} selected={findById}/>
+
+            <Navbar />
+            {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
+            <section className={styles.containerSection}>
+                <h1>Faturamentos</h1>
+                <div className={styles.components}>
+                    <EarningTable earnings={earnings} selected={findById} />
                     <Modal isOpen={modal} onClose={() => setModal(false)} width={'500px'} height={'auto'}>
-                        <UpdateEarning rents={rents} errors={updateErrors} earn={earnSelected} handleUpdatedEarn={updateEarn}/>
+                        <UpdateEarning rents={rents} errors={updateErrors} earn={earnSelected} handleUpdatedEarn={updateEarn} />
                     </Modal>
-                    </div>
-            
-                </section>
-            
+                </div>
+            </section>
+
         </div>
     )
 }

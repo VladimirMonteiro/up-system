@@ -1,15 +1,22 @@
 .containerSection {
-    margin-top: 25px;
-    width: 100%;
-    padding:  0 2%  ;
+  flex: 1;
+  padding: 24px;
+  background: #f9fafc;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .containerSection h1 {
-    text-align: center;
-    margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #001529;
+  margin-bottom: 8px;
 }
 
 .components {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }

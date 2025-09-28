@@ -34,43 +34,42 @@ const SingleTool = () => {
     fetchData();
   }, [id]);
 
-  if (loading) return <Loading />;
-  if (error) return <div className={styles.error}>{error}</div>;
-  if (!tool) return <div className={styles.error}>Ferramenta não encontrada.</div>;
-
   return (
     <div className="mainContainerFlex">
       <MyMenu />
-      <section className={styles.containerSection}>
-        <div className={styles.headerSection}>
-          <h1>{tool.name}</h1>
-          <p className={styles.category}>{tool.category || "Categoria não definida"}</p>
-        </div>
+      {loading ?
+        <Loading /> : (
+          <section className={styles.containerSection}>
+            <div className={styles.headerSection}>
+              <h1>{tool.name}</h1>
+              <p className={styles.category}>{tool.category || "Categoria não definida"}</p>
+            </div>
 
-        <div className={styles.infoCards}>
-          <div className={styles.card}>
-            <h3>Quantidade Disponível</h3>
-            <p>{tool.quantity ?? 0}</p>
-          </div>
-          <div className={styles.card}>
-            <h3>Preço Diário</h3>
-            <p>R$ {tool.daily ?? "0,00"}</p>
-          </div>
-          <div className={styles.card}>
-            <h3>Status</h3>
-            <p>{tool.status || "Indefinido"}</p>
-          </div>
-          <div className={styles.card}>
-            <h3>Total de Aluguéis</h3>
-            <p>{rents.length}</p>
-          </div>
-        </div>
+            <div className={styles.infoCards}>
+              <div className={styles.card}>
+                <h3>Quantidade Disponível</h3>
+                <p>{tool.quantity ?? 0}</p>
+              </div>
+              <div className={styles.card}>
+                <h3>Preço Diário</h3>
+                <p>R$ {tool.daily ?? "0,00"}</p>
+              </div>
+              <div className={styles.card}>
+                <h3>Status</h3>
+                <p>{tool.status || "Indefinido"}</p>
+              </div>
+              <div className={styles.card}>
+                <h3>Total de Aluguéis</h3>
+                <p>{rents.length}</p>
+              </div>
+            </div>
 
-        <div className={styles.tableSection}>
-          <h2>Locações que possuem este equipamento</h2>
-          <RentsTable rents={rents} />
-        </div>
-      </section>
+            <div className={styles.tableSection}>
+              <h2>Locações que possuem este equipamento</h2>
+              <RentsTable rents={rents} />
+            </div>
+          </section>
+        )}
     </div>
   );
 };

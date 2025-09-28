@@ -1,6 +1,6 @@
 import styles from "./LocData.module.css";
 
-const LocData = ({title, name, cpfOrCnpj, address, neighborhood, city, state, phone, servicePhone, email}) => {
+const LocData = ({title, name, cpfOrCnpj, address, complement ,neighborhood, city, state, phone, servicePhone, email}) => {
   return (
     <div className={styles.dataContainer}>
       <p style={{fontWeight: 'bold'}}>{title}</p>
@@ -18,6 +18,8 @@ const LocData = ({title, name, cpfOrCnpj, address, neighborhood, city, state, ph
         <div className={styles.line2}>
           <span>Endereço:</span>
           <p>{address}</p>
+          <span>Complemento: </span>
+          <p>{complement}</p>
         </div>
         <div className={styles.line3}>
           <div>

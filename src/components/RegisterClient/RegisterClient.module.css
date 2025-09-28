@@ -1,114 +1,142 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.25rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.header p {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 0.2rem;
+}
+
+.tabContainer {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.tab {
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.tab:hover {
+  background: #f1f5f9;
+}
+
+.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.success {
+  background: #dcfce7;
+  color: #15803d;
+  padding: 0.5rem;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.errorClient {
+     background: #fcdcdc;
+  color: red;
+  padding: 0.5rem;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+}
+
 .form {
-    padding: 5px;
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-
-.formContainer {
-    width: 100%;
-
-}
-.formContainer {
-    width: 100%;
-
+.sectionTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0.25rem;
+  color: #334155;
 }
 
-.inputContainer {
-    width: 22%;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    /* Espaçamento entre o label e o input */
-    margin: 5px 0;
-    /* Margem externa */
-    font-family: Arial, sans-serif;
-    margin: 8px;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
 }
 
-/* Estilo do label */
-.inputContainer2 label {
-    font-size: 16px;
-    color: #333;
-    font-weight: bold;
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-/* Estilo para inputs de texto e número */
-.inputContainer input[type="text"],
-.inputContainer input[type="submit"],
-.inputContainer button {
-    padding: 8px 12px;
-    font-size: 16px;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
-    background-color: #f9f9f9;
-    color: #333;
+.inputGroup label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
 }
 
-/* Efeito hover para inputs */
-.inputContainer input[type="text"]:hover,
-.inputContainer input[type="submit"]:hover,
-.inputContainer button:hover {
-    border-color: #80bdff;
+.inputGroup input {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #f9fafb;
+  font-size: 0.85rem;
+  transition: border 0.2s;
 }
 
-/* Efeito foco para inputs */
-.inputContainer input[type="text"]:focus,
-.inputContainer input[type="submit"]:focus,
-.inputContainer button:focus {
-    border-color: #4d90fe;
-    box-shadow: 0 0 5px rgba(77, 144, 254, 0.5);
+.inputGroup input:focus {
+  border-color: #2563eb;
+  outline: none;
+  background: #ffffff;
 }
 
-/* Estilo do botão */
-.inputContainer button {
-    background-color: #4d90fe;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.3s, transform 0.2s;
+.submitBtn {
+  width: 100%;
+  padding: 0.65rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+  margin-top: 0.75rem;
 }
 
-/* Efeito hover no botão */
-.inputContainer button:hover {
-    background-color: #357ae8;
-    transform: translateY(-2px);
+.submitBtn:hover {
+  background: #1d4ed8;
 }
 
-/* Efeito ativo no botão */
-.inputContainer button:active {
-    background-color: #2a65c0;
-    transform: translateY(0);
-}
-
-/* Estilo do botão submit */
-.inputContainer input[type="submit"] {
-    
-    background-color: #28a745;
-    color: white;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-
-}
-
-/* Efeito hover no botão submit */
-.inputContainer input[type="submit"]:hover {
-    background-color: #218838;
-    transform: translateY(-2px);
-}
-
-/* Efeito ativo no botão submit */
-.inputContainer input[type="submit"]:active {
-    background-color: #1e7e34;
-    transform: translateY(0);
-}
-
-.containerBtn {
-    display: flex;
-    justify-content: center;
+.errorMsg {
+    color: red;
+    font-size: 0.8em;
 }

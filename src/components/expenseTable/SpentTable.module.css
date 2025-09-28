@@ -1,0 +1,138 @@
+.tableContainer {
+  width: 100%;
+  background: #fff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 🔹 Barra de pesquisa */
+.searchContainer {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.searchContainer input,
+.searchContainer select,
+.searchContainer button {
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.searchContainer button {
+  background: #001529;
+  color: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.searchContainer button:hover {
+  background: #1677ff;
+}
+
+/* 🔹 Tabela */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table thead {
+  background: #f1f5f9;
+}
+
+.table th, .table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table tbody tr:hover {
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+.fixedRow {
+  background: #fff2f0 !important;
+}
+
+/* 🔹 Ícones */
+.actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.deleteIcon {
+  color: #dc2626;
+  cursor: pointer;
+}
+.editIcon {
+  color: #2563eb;
+  cursor: pointer;
+}
+
+/* 🔹 Paginação */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.pagination button:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 🔹 Caixa total */
+.totalBox {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+.totalBox span {
+  color: #dc2626;
+}
+
+/* 🔹 Botão relatório */
+.reportBox {
+  display: flex;
+  justify-content: center;
+}
+.btnReport {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #1677ff;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btnReport:hover {
+  background: #145cc8;
+}
+
+.noResults {
+  text-align: center;
+  color: #dc2626;
+  font-size: 14px;
+  margin: 12px 0;
+}
