@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./CreateExpense.module.css";
+import styles from "./createExpense.module.css";
 import { handlePriceChange } from "../../utils/handlePriceChange";
 
 const CreateExpense = ({ handleCreateExpense, errors }) => {
