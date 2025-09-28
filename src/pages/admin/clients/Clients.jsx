@@ -12,7 +12,7 @@ import ComponentMessage from "../../../components/componentMessage/ComponentMess
 const Clients = () => {
   const [modalClients, setModalClients] = useState(false);
   const [client, setClient] = useState({});
-  const [clients, setClients] = useState([]); // sempre array
+  const [clients, setClients] = useState([]);
   const [loadingClient, setLoadingClient] = useState(true);
   const [success, setSuccess] = useState(null);
   const [errors, setErrors] = useState(null);
@@ -22,7 +22,6 @@ const Clients = () => {
   const [modalUpdateClients, setModalUpdateClients] = useState(false);
   const [modalUpdateClientsPj, setModalUpdateClientsPj] = useState(false);
 
-  // carregar clientes ao montar
   useEffect(() => {
     const loadClients = async () => {
       try {
@@ -38,15 +37,6 @@ const Clients = () => {
     loadClients();
   }, []);
 
-  const openModalClient = () => setModalClients(true);
-  const closeModalClient = () => setModalClients(false);
-
-  const openModalUpdateClientFs = () => setModalUpdateClients(true);
-  const closeModalUpdateClientFs = () => setModalUpdateClients(false);
-
-  const openModalUpdateClientPj = () => setModalUpdateClientsPj(true);
-  const closeModalUpdateClientPj = () => setModalUpdateClientsPj(false);
-
   const handleUpdateClient = async (e, id) => {
     try {
       const response = await api.get(`clients/${id}`);
@@ -54,7 +44,7 @@ const Clients = () => {
         setClient(response.data);
         response.data.cnpj
           ? setModalUpdateClientsPj(true)
-          : openModalUpdateClientFs();
+          : setModalUpdateClients(true);
       }
     } catch (error) {
       console.error("Erro ao obter cliente:", error);
@@ -66,21 +56,23 @@ const Clients = () => {
     try {
       const response = await api.post("clients/createFs", client);
 
-      const newClient =
-        response.data?.client || response.data?.content || response.data;
+      if (!response.data?.errors) {
+        const newClient =
+          response.data?.client || response.data?.content || response.data;
 
-      setClients((prev) =>
-        Array.isArray(prev) ? [...prev, newClient] : [newClient]
-      );
+        setClients((prev) =>
+          Array.isArray(prev) ? [...prev, newClient] : [newClient]
+        );
 
-      setSuccess(response.data?.message || "Cliente cadastrado com sucesso!");
-      setErrors(null);
-          window.scrollTo({ top: 0, behavior: "instant" }); // 🔹 sobe para o topo
-
-      closeModalClient();
+        setSuccess(response.data?.message || "Cliente cadastrado com sucesso!");
+        setErrors(null);
+      } else {
+        setErrors(response.data.errors);
+      }
+      return response.data;
     } catch (error) {
-      setErrors(error.response?.data?.errors || "Erro inesperado");
-      console.error("Erro ao criar cliente (FS):", error);
+      setErrors(error.response?.data?.errors || ["Erro inesperado"]);
+      return { errors: true };
     }
   };
 
@@ -89,19 +81,24 @@ const Clients = () => {
     try {
       const response = await api.post("clients/createPj", client);
 
-      const newClient =
-        response.data?.client || response.data?.content || response.data;
+      if (!response.data?.errors) {
+        const newClient =
+          response.data?.client || response.data?.content || response.data;
 
-      setClients((prev) =>
-        Array.isArray(prev) ? [...prev, newClient] : [newClient]
-      );
+        setClients((prev) =>
+          Array.isArray(prev) ? [...prev, newClient] : [newClient]
+        );
 
-      setSuccess(response.data?.message || "Cliente cadastrado com sucesso!");
-      setErrorsPj(null);
-      closeModalClient();
+        setSuccess(response.data?.message || "Cliente cadastrado com sucesso!");
+        setErrorsPj(null);
+        setModalClients(false);
+      } else {
+        setErrorsPj(response.data.errors);
+      }
+      return response.data;
     } catch (error) {
-      setErrorsPj(error.response?.data?.errors || "Erro inesperado");
-      console.error("Erro ao criar cliente (PJ):", error);
+      setErrorsPj(error.response?.data?.errors || ["Erro inesperado"]);
+      return { errors: true };
     }
   };
 
@@ -113,16 +110,19 @@ const Clients = () => {
         updateClient
       );
 
-      setClients((prev) =>
-        prev.map((c) => (c.id === id ? response.data : c))
-      );
+      if (!response.data?.errors) {
+        setClients((prev) =>
+          prev.map((c) => (c.id === id ? response.data : c))
+        );
 
-      setSuccess(response.data?.message || "Cliente atualizado!");
-      setErrorsUpdate(null);
-      closeModalUpdateClientFs();
+        setSuccess(response.data?.message || "Cliente atualizado!");
+        setErrorsUpdate(null);
+        setModalUpdateClients(false);
+      } else {
+        setErrorsUpdate(response.data.errors);
+      }
     } catch (error) {
-      setErrorsUpdate(error.response?.data?.errors || "Erro inesperado");
-      console.error("Erro ao atualizar cliente FS:", error);
+      setErrorsUpdate(error.response?.data?.errors || ["Erro inesperado"]);
     }
   };
 
@@ -134,16 +134,19 @@ const Clients = () => {
         updateClient
       );
 
-      setClients((prev) =>
-        prev.map((c) => (c.id === id ? response.data : c))
-      );
+      if (!response.data?.errors) {
+        setClients((prev) =>
+          prev.map((c) => (c.id === id ? response.data : c))
+        );
 
-      setSuccess(response.data?.message || "Cliente atualizado!");
-      setErrorsUpdatePj(null);
-      closeModalUpdateClientPj();
+        setSuccess(response.data?.message || "Cliente atualizado!");
+        setErrorsUpdatePj(null);
+        setModalUpdateClientsPj(false);
+      } else {
+        setErrorsUpdatePj(response.data.errors);
+      }
     } catch (error) {
-      setErrorsUpdatePj(error.response?.data?.errors || "Erro inesperado");
-      console.error("Erro ao atualizar cliente PJ:", error);
+      setErrorsUpdatePj(error.response?.data?.errors || ["Erro inesperado"]);
     }
   };
 
@@ -170,15 +173,16 @@ const Clients = () => {
         />
 
         <div className={styles.containerBtn}>
-          <button onClick={openModalClient}>Cadastrar Cliente</button>
+          <button onClick={() => setModalClients(true)}>Cadastrar Cliente</button>
         </div>
 
         {/* Cadastro */}
         <Modal
           isOpen={modalClients}
-          onClose={closeModalClient}
-          width="1400px"
-          height="auto"
+          onClose={() => setModalClients(false)}
+          width="1000px"
+          height="90vh"
+          overflow="scroll"
         >
           <RegisterClient
             createClientFs={handleCreateClientFs}
@@ -189,7 +193,12 @@ const Clients = () => {
         </Modal>
 
         {/* Update FS */}
-        <Modal isOpen={modalUpdateClients} onClose={closeModalUpdateClientFs}>
+        <Modal
+          isOpen={modalUpdateClients}
+          onClose={() => setModalUpdateClients(false)}
+          height="90vh"
+          overflow="scroll"
+        >
           <UpdateClientFs
             clientId={client?.id}
             clientFs={client}
@@ -201,8 +210,9 @@ const Clients = () => {
         {/* Update PJ */}
         <Modal
           isOpen={modalUpdateClientsPj}
-          onClose={closeModalUpdateClientPj}
-          height="auto"
+          onClose={() => setModalUpdateClientsPj(false)}
+          height="90vh"
+          overflow="scroll"
         >
           <UpdateClientPj
             clientId={client?.id}
