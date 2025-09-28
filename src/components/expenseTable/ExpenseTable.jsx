@@ -1,263 +1,254 @@
-import api from '../../utils/api';
-import styles from '../tableClients/Table.module.css';
-import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import api from "../../utils/api";
+import styles from "./SpentTable.module.css";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
-import ComponentMessage from '../componentMessage/ComponentMessage';
-import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
-import { formateNumber } from '../../utils/formatNumber';
-import Loading from '../loading/Loading';
+import ComponentMessage from "../componentMessage/ComponentMessage";
+import ConfirmDeleteModal from "../modalConfirmDelete/ConfirmDeleteModal";
+import { formateNumber } from "../../utils/formatNumber";
+import Loading from "../loading/Loading";
 
 const SpentTable = ({ selected, expenses }) => {
-    const [data, setData] = useState(expenses || []);  // Certifique-se de inicializar com um array vazio
-    const [searchTerm, setSearchTerm] = useState('');
-    const [searchStatus, setSearchStatus] = useState(false); // Controle para mostrar "Nenhum pagamento encontrado"
-    const [filteredTools, setFilteredTools] = useState([]);
-    const [success, setSuccess] = useState(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [loading, setLoading] = useState(true);
-    const rowsPerPage = 10;
-    const location = useLocation().pathname;
-    const navigate = useNavigate();
+  const [data, setData] = useState(expenses || []);
+  const [filteredTools, setFilteredTools] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [searchStatus, setSearchStatus] = useState(false);
+  const [success, setSuccess] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    const [openModalDelete, setOpenModalDelete] = useState(false);
-    const [toolToDelete, setToolToDelete] = useState(null);
-    const [toolName, setToolName] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10;
 
-    const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+  const location = useLocation().pathname;
+  const navigate = useNavigate();
 
-    const year = new Date().getFullYear();
-    const years = [year - 2, year - 1, year];
+  const [openModalDelete, setOpenModalDelete] = useState(false);
+  const [toolToDelete, setToolToDelete] = useState(null);
+  const [toolName, setToolName] = useState("");
 
-    const [selectedYear, setSelectedYear] = useState('');
-    const [selectedMonth, setSelectedMonth] = useState('');
+  const months = [
+    "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+    "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+  ];
+  const year = new Date().getFullYear();
+  const years = [year - 2, year - 1, year];
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await api.get("/spent");
-                setData(response.data);
-                setFilteredTools(response.data);  // Inicializando com todos os dados
-                setLoading(false);
-            } catch (error) {
-                console.error("Erro ao buscar dados:", error);
-                setLoading(false);  // Certifique-se de parar o loading
-            }
-        };
-        if (!expenses || expenses.length === 0) {
-            fetchData();  // Somente faz a requisição se não houver dados iniciais
-        } else {
-            setFilteredTools(expenses);  // Usa os dados passados via props
-            setLoading(false);
-        }
-    }, [expenses]);  // Dependência de expenses
-
-    const openModal = (e, id, name) => {
-        e.preventDefault();
-        setToolToDelete(id);
-        setToolName(name);
-        setOpenModalDelete(true);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get("/spent");
+        setData(response.data);
+        setFilteredTools(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+        setLoading(false);
+      }
     };
 
-    const handleSearch = (e) => {
-        e.preventDefault();
+    if (!expenses || expenses.length === 0) {
+      fetchData();
+    } else {
+      setFilteredTools(expenses);
+      setLoading(false);
+    }
+  }, [expenses]);
 
-        let filteredData = data;
+  const handleSearch = (e) => {
+    e.preventDefault();
 
-        // Filtro por nome da descrição
-        if (searchTerm) {
-            filteredData = filteredData.filter((data) =>
-                data.description.toLowerCase().startsWith(searchTerm.toLowerCase())
-            );
-        }
+    let filtered = data;
 
-        // Filtro por ano selecionado
-        if (selectedYear) {
-            filteredData = filteredData.filter((data) =>
-                data.dateOfSpent.split("/")[2] === selectedYear
-            );
-        }
+    if (searchTerm) {
+      filtered = filtered.filter((d) =>
+        d.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
 
-        // Filtro por mês selecionado
-        if (selectedMonth) {
-            filteredData = filteredData.filter((data) =>
-                parseInt(data.dateOfSpent.split("/")[1]) === parseInt(selectedMonth)
-            );
-        }
+    if (selectedYear) {
+      filtered = filtered.filter(
+        (d) => d.dateOfSpent.split("/")[2] === selectedYear
+      );
+    }
 
-        setFilteredTools(filteredData);
-        setSearchStatus(filteredData.length === 0);  // Se não houver resultados, ativar status
-        setCurrentPage(1);  // Reinicia a página
-    };
+    if (selectedMonth) {
+      filtered = filtered.filter(
+        (d) => parseInt(d.dateOfSpent.split("/")[1]) === parseInt(selectedMonth)
+      );
+    }
 
-    const totalPages = Math.ceil(filteredTools.length / rowsPerPage);
-    const startIndex = (currentPage - 1) * rowsPerPage;
-    const currentData = filteredTools.slice(startIndex, startIndex + rowsPerPage);
+    setFilteredTools(filtered);
+    setSearchStatus(filtered.length === 0);
+    setCurrentPage(1);
+  };
 
-    const handlePrevious = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-    const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const totalPages = Math.ceil(filteredTools.length / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const currentData = filteredTools.slice(startIndex, startIndex + rowsPerPage);
 
-    const handleDeleteTool = async (id) => {
-        try {
-            const response = await api.delete(`spent/delete/${id}`);
-            console.log(response.data);
-            setData((prevData) => prevData.filter((tool) => tool.id !== id));
-            setFilteredTools((prevData) => prevData.filter((tool) => tool.id !== id));  // Atualiza após remoção
-            setOpenModalDelete(false);
-            setSuccess(response.data.message);
-        } catch (error) {
-            console.error("Erro ao excluir:", error);
-        }
-    };
+  const handlePrevious = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
 
-    const handleReportSpent = (e) => {
-        e.preventDefault();
+  const handleDeleteTool = async (id) => {
+    try {
+      const response = await api.delete(`spent/delete/${id}`);
+      setData((prev) => prev.filter((tool) => tool.id !== id));
+      setFilteredTools((prev) => prev.filter((tool) => tool.id !== id));
+      setOpenModalDelete(false);
+      setSuccess(response.data.message);
+    } catch (error) {
+      console.error("Erro ao excluir:", error);
+    }
+  };
 
-        if (!selectedMonth) {
-            alert("Selecione o mês.");
-            return;
-        }
+  const handleReportSpent = (e) => {
+    e.preventDefault();
+    if (!selectedMonth) {
+      alert("Selecione o mês.");
+      return;
+    }
+    if (!selectedYear) {
+      alert("Selecione o ano.");
+      return;
+    }
 
-        if (!selectedYear) {
-            alert("Selecione o ano.");
-            return;
-        }
+    let reportDataSpent = filteredTools.length ? filteredTools : data;
+    navigate("/emitir-relatorio", { state: { reportDataSpent, selectedMonth, selectedYear } });
+  };
 
-        let reportDataSpent = filteredTools.length ? filteredTools : data;
-        console.log(data)
+  const openModal = (e, id, description) => {
+    e.stopPropagation();
+    setToolToDelete(id);
+    setToolName(description);
+    setOpenModalDelete(true);
+  };
 
-        navigate("/emitir-relatorio", { state: { reportDataSpent, selectedMonth, selectedYear } });
-    };
+  return (
+    <>
+      {loading ? (
+        <Loading table={true} width={"60%"} />
+      ) : (
+        <div className={styles.tableContainer}>
+          {success && (
+            <ComponentMessage
+              message={success}
+              type="success"
+              onClose={() => setSuccess(null)}
+            />
+          )}
 
-    return (
-        <>
-            {loading ? <Loading table={true} width={"45%"} /> : (
-                <div className={styles.tableContainer} style={{ width: "55%" }}>
-                    {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
-                    <form className={styles.searchContainer} onSubmit={handleSearch}>
-                        <label htmlFor="search">Pesquisar</label>
-                        <input style={{ margin: "10px" }}
-                            type="text"
-                            id="search"
-                            placeholder="Digite para buscar..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+          <form className={styles.searchContainer} onSubmit={handleSearch}>
+            <input
+              type="text"
+              placeholder="Pesquisar descrição..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
+              <option value="">Ano</option>
+              {years.map((y) => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+            <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
+              <option value="">Mês</option>
+              {months.map((m, i) => (
+                <option key={i} value={i + 1}>{m}</option>
+              ))}
+            </select>
+            <button type="submit">Pesquisar</button>
+          </form>
+
+          {searchStatus ? (
+            <p className={styles.noResults}>Nenhum pagamento encontrado</p>
+          ) : (
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Descrição</th>
+                  <th>Valor</th>
+                  <th>Tipo</th>
+                  <th>Data</th>
+                  {location === "/gastos" && <th>Ações</th>}
+                </tr>
+              </thead>
+              <tbody>
+                {currentData.map((row, index) => (
+                  <tr
+                    key={index}
+                    onClick={location === "/alugar" ? () => selected(row) : undefined}
+                  >
+                    <td>{row.id}</td>
+                    <td>{row.description}</td>
+                    <td>{formateNumber(row.value)}</td>
+                    <td>{row.fixed ? "FIXO" : "NÃO FIXO"}</td>
+                    <td>{row.dateOfSpent}</td>
+                    {location === "/gastos" && (
+                      <td>
+                        <MdDelete
+                          style={{ color: "red", cursor: "pointer" }}
+                          onClick={(e) => openModal(e, row.id, row.description)}
                         />
-                        <select style={{ margin: "10px" }}
-                            name="year"
-                            id="year"
-                            value={selectedYear}
-                            onChange={(e) => setSelectedYear(e.target.value)}
-                        >
-                            <option value="">Ano</option>
-                            {years.map((year) => (
-                                <option key={year} value={year}>{year}</option>
-                            ))}
-                        </select>
-                        <select style={{ margin: "10px" }}
-                            name="month"
-                            id="month"
-                            value={selectedMonth}
-                            onChange={(e) => setSelectedMonth(e.target.value)}
-                        >
-                            <option value="">Mês</option>
-                            {months.map((month, key) => (
-                                <option key={key} value={key + 1}>{month}</option>
-                            ))}
-                        </select>
-                        <input type="submit" value="Pesquisar" />
-                    </form>
-
-                    {searchStatus && (
-                        <p style={{ textAlign: "center", margin: "20px 0", color: "red" }}>
-                            Nenhum pagamento encontrado
-                        </p>
+                        <FaPen
+                          style={{ cursor: "pointer", marginLeft: "10px" }}
+                          onClick={(e) => selected(e, row.id)}
+                        />
+                      </td>
                     )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
 
-                    {!searchStatus && (
-                        <table className={styles.table}>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Descrição</th>
-                                    <th>Valor</th>
-                                    <th>Tipo</th>
-                                    <th>Data de pagamento</th>
-                                    {location === "/gastos" && <th>Ações</th>}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {currentData.map((row) => (
-                                    <tr
-                                        key={row.id}
-                                        onClick={location === "/alugar" ? () => selected(row) : undefined}
-                                        style={row.fixed === true ? { backgroundColor: '#ffccc' } : {}}
-                                    >
-                                        <td>{row.id}</td>
-                                        <td>{row.description}</td>
-                                        <td>{formateNumber(row.value)}</td>
-                                        <td>{row.fixed ? "FIXO" : "NÃO FIXO"}</td>
-                                        <td>{row.dateOfSpent}</td>
-                                        {location === "/gastos" && (
-                                            <td>
-                                                <MdDelete
-                                                    style={{ color: "red" }}
-                                                    onClick={(e) => openModal(e, row.id, row.description)}
-                                                />
-                                                <FaPen onClick={(e) => selected(e, row.id)} />
-                                            </td>
-                                        )}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    )}
+          <ConfirmDeleteModal
+            open={openModalDelete}
+            onClose={() => setOpenModalDelete(false)}
+            itemName={toolName}
+            onConfirm={() => handleDeleteTool(toolToDelete)}
+            remove={true}
+          />
 
-                    <ConfirmDeleteModal open={openModalDelete} onClose={() => setOpenModalDelete(false)} itemName={toolName} onConfirm={() => handleDeleteTool(toolToDelete)} remove={true} />
+          {totalPages > 1 && (
+            <div className={styles.pagination}>
+              <button onClick={handlePrevious} disabled={currentPage === 1}>
+                Anterior
+              </button>
+              <span>
+                Página {currentPage} de {totalPages}
+              </span>
+              <button onClick={handleNext} disabled={currentPage === totalPages}>
+                Próxima
+              </button>
+            </div>
+          )}
 
-                    <div className={styles.pagination}>
-                        <button onClick={handlePrevious} disabled={currentPage === 1}>
-                            Anterior
-                        </button>
-                        <span>
-                            Página {currentPage} de {totalPages}
-                        </span>
-                        <button onClick={handleNext} disabled={currentPage === totalPages}>
-                            Próxima
-                        </button>
-                    </div>
+          {filteredTools.length > 0 && !searchStatus && (
+            <div className={styles.totalBox}>
+              <p>
+                Gasto total:{" "}
+                <span>
+                  {formateNumber(
+                    filteredTools.reduce((acc, item) => acc + (item.value || 0), 0)
+                  )}
+                </span>
+              </p>
+            </div>
+          )}
 
-                    <div>
-                        {filteredTools.length > 0 && !searchStatus && (
-                            <div style={{ textAlign: "center", margin: "50px 0" }}>
-                                <p style={{ fontSize: "20px" }}>
-                                    Gasto total: {" "}
-                                    <span style={{ color: "red" }}>
-                                        {formateNumber(filteredTools.reduce((accumulator, currentItem) => {
-                                            return accumulator + (currentItem.value || 0);
-                                        }, 0))}
-                                    </span>
-                                </p>
-                            </div>
-                        )}
-
-                        {searchStatus && (
-                            <div style={{ textAlign: "center", margin: "50px 0" }}>
-                                <p style={{ fontSize: "20px", color: "red" }}>
-                                    Nenhum pagamento encontrado
-                                </p>
-                            </div>
-                        )}
-                    </div>
-                    <div style={{ textAlign: "center", width: "100%" }}>
-                        <input className={styles.btnReport} type="submit" value={"Gerar relatório"} onClick={handleReportSpent} />
-                    </div>
-                </div>
-            )}
-        </>
-    );
+          <div className={styles.reportBox}>
+            <button onClick={handleReportSpent} className={styles.btnReport}>
+              Gerar relatório
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default SpentTable;

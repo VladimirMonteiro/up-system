@@ -165,31 +165,46 @@ const RentsTable = ({ selected, rents, singleClient }) => {
     return new Date(year, month - 1, day);
   };
 
-  const getDeliveryStatus = (deliveryDate) => {
-    const currentDate = new Date();
-    const delivery = parseDate(deliveryDate);
-    const timeDiff = delivery - currentDate;
-    const dayDiff = timeDiff / (1000 * 3600 * 24);
+  // Função para calcular o status da entrega
+const getDeliveryStatus = (deliveryDate, paymentStatus, stateRent) => {
+  const currentDate = new Date();
+  const delivery = parseDate(deliveryDate);
 
-    if (dayDiff < 0) return "overdue";
-    else if (dayDiff <= 2) return "near";
-    return "onTime";
-  };
+  const timeDiff = delivery.getTime() - currentDate.getTime();
+  const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24)); // arredonda p/ baixo
+
+  // Se já passou da data e não foi pago/entregue
+  if (dayDiff < 0 && (paymentStatus !== "PAID" || stateRent !== "DELIVERED")) {
+    return "overdue";
+  }
+
+  // Se faltar 2 dias ou menos e ainda não pago/entregue
+  if (dayDiff <= 2 && (paymentStatus !== "PAID" || stateRent !== "DELIVERED")) {
+    return "near";
+  }
+
+  // Caso contrário está em dia
+  return "onTime";
+};
+
+// Função para aplicar estilo baseado no status
+
+
 
   const getRowClass = (row) => {
     if (row.stateRent === "DELIVERED") return styles.rowPaid;
     if (row.stateRent === "PENDENT") return styles.rowOverdue;
+    return ""
   };
 
   const getDeliveryStatusStyle = (row) => {
-     const status = getDeliveryStatus(row.deliveryDate);
+  const status = getDeliveryStatus(row.deliveryDate, row.paymentStatus, row.stateRent);
 
-    if (status === "near") return styles.rowNear;
-    if (status === "overdue") return styles.rowOverdue;
+  if (status === "near") return styles.rowNear;
+  if (status === "overdue") return styles.rowOverdue;
 
-    return "";
-
-  }
+  return ""; // nenhum estilo extra
+};
   console.log(data)
   const getRowClassPaymentStatus = (row) => {
     if (row.paymentStatus === "PAID") {
