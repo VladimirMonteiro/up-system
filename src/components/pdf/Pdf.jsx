@@ -79,11 +79,6 @@ const PdfPage = () => {
   const getMonth = (date) => dateFormatter(date).split("/")[1];
   const getYear = (date) => dateFormatter(date).split("/")[2];
 
-  console.log(initialDate)
-  console.log(rentId)
-  console.log(freight)
-  console.log(obs)
-
   return (
     <>
       <div className={styles.generateButtonContainer}>
@@ -126,9 +121,8 @@ const PdfPage = () => {
             title={"Dados do Locatário"}
             name={client?.name}
             cpfOrCnpj={client.cpf ? client.cpf : client.cnpj}
-            address={
-              client.addresses[0].street + ", Nº " + client.addresses[0].number
-            }
+            address={client.addresses[0].street + ", Nº " + client.addresses[0].number}
+            complement={client.addresses[0].complement}
             neighborhood={client.addresses[0].neighborhood}
             city={client.addresses[0].city}
             state={client.addresses[0].state}

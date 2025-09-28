@@ -55,7 +55,16 @@ const MyMenu = () => {
     { key: "2", icon: <ToolOutlined />, label: <NavLink to="/ferramentas">Ferramentas</NavLink> },
     { key: "3", icon: <UserOutlined />, label: <NavLink to="/clientes">Clientes</NavLink> },
     { key: "4", icon: <ContainerOutlined />, label: <NavLink to="/alugueis">Aluguéis</NavLink> },
-    { key: "5", icon: <ContainerOutlined />, label: <NavLink to="/orçamentos">Orçamentos</NavLink> },
+    {
+      key: "5",
+      icon: <ContainerOutlined />,
+      label: (
+        <span className="menu-disabled">
+          Orçamentos <span className="soon-tag">Em breve</span>
+        </span>
+      ),
+      disabled: true, // 🔒 Ant Design já bloqueia clique
+    },
     {
       key: "sub1",
       label: "Financeiro",
