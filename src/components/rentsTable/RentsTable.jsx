@@ -1,7 +1,7 @@
 import api from "../../utils/api";
 import styles from "../tableClients/Table.module.css";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
@@ -53,31 +53,24 @@ const RentsTable = ({ selected, rents, singleClient }) => {
     fetchData();
   }, [rents, singleClient]);
 
-  const selectedFilterSearch = async (e) => {
-    e.preventDefault();
+ const selectedFilterSearch = async () => {
+  try {
+    setLoading(true);
+    const url = `/rent/filter?clientName=${encodeURIComponent(clientName || "")}&paymentStatus=${paymentStatus || ""}&stateRent=${stateRent || ""}`;
 
-    try {
-      const response = await api.get("rent/filter", {
-        params: {
-          clientName: clientName.trim() !== "" ? clientName : null,
-          paymentStatus: paymentStatus !== "" ? paymentStatus : null,
-          stateRent: stateRent !== "" ? stateRent : null,
-        },
-      });
+    const response = await api.get(url);
+    setData(response.data || []);
+    setNotFound((response.data || []).length === 0);
+    setCurrentPage(1); // resetar paginação local
+  } catch (error) {
+    console.error("Erro ao buscar aluguéis filtrados:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
-      setData(response.data);
 
-      if (response.data.length === 0) {
-        setNotFound(true);
-      } else {
-        setNotFound(false);
-      }
 
-      setCurrentPage(1);
-    } catch (error) {
-      console.error("Erro ao buscar aluguéis filtrados:", error);
-    }
-  };
 
 
   const totalPages = Math.ceil(
