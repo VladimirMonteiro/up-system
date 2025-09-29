@@ -260,7 +260,7 @@ const getDeliveryStatus = (deliveryDate, paymentStatus, stateRent) => {
                 value={paymentStatus}
                 className={styles.select}
               >
-                <option value="">Status de Pagamento</option>
+                <option value={null}>Status de Pagamento</option>
                 <option value="PAID">Pago</option>
                 <option value="PARTIALLY_PAID">Parcialmente pago</option>
                 <option value="UNPAID">Não pago</option>
@@ -273,7 +273,7 @@ const getDeliveryStatus = (deliveryDate, paymentStatus, stateRent) => {
                 value={stateRent}
                 className={styles.select}
               >
-                <option value="">Estado do Aluguel</option>
+                <option value={null}>Estado do Aluguel</option>
                 <option value="DELIVERED">Entregue</option>
                 <option value="PENDENT">Pendent</option>
               </select>
