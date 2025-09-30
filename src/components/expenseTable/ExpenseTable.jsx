@@ -129,7 +129,7 @@ const SpentTable = ({ selected, expenses }) => {
   return (
     <>
       {loading ? (
-        <Loading table={true} width={"60%"} />
+        <Loading table={true}/>
       ) : (
         <div className={styles.tableContainer}>
           {success && (

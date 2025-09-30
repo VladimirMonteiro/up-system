@@ -230,7 +230,7 @@ const getDeliveryStatus = (deliveryDate, paymentStatus, stateRent) => {
   return (
     <>
       {loading ? (
-        <Loading table={true} />
+        <Loading table={true}  />
       ) : (
         <div className={styles.tableContainer}>
           {success && (

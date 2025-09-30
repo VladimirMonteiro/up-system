@@ -123,7 +123,7 @@ const EarningTable = ({ selected, earnings }) => {
             {filteredTools.length > 0 && (
                 <EarningChart data={filteredTools} />
             )}
-            {loading ? <Loading table={true} width={"45%"} /> : (
+            {loading ? <Loading table={true}/> : (
                 <div className={styles.tableContainer} style={{ width: "100%" }}>
                     {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
                     <form className={styles.itemGroup} onSubmit={handleSearch}>
