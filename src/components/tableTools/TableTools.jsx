@@ -1,6 +1,6 @@
 import api from '../../utils/api';
 import styles from '../tableClients/Table.module.css';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
@@ -10,89 +10,108 @@ import { formateNumber } from '../../utils/formatNumber';
 import Loading from '../loading/Loading';
 import ComponentMessage from '../componentMessage/ComponentMessage';
 
-const TableTools = ({ selected, tools, loading, setLoading, isOpen }) => {
-  const [data, setData] = useState(tools || []);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredTools, setFilteredTools] = useState([]);
+// ... imports iguais
+
+const TableTools = ({ selected, isOpen }) => {
+  const [data, setData] = useState([]);
   const [success, setSuccess] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [loadingTable, setLoadingTable] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const rowsPerPage = 13;
+
   const location = useLocation().pathname;
+  const navigate = useNavigate();
+
   const [openModalDelete, setOpenModalDelete] = useState(false);
   const [toolToDelete, setToolToDelete] = useState(null);
   const [toolName, setToolName] = useState('');
-  const dynamicId = window.location.pathname;
 
-  const navigate = useNavigate();
-
-  // 🔎 ref para o input de pesquisa
   const searchInputRef = useRef(null);
 
-  // 🔥 foca no input sempre que o modal abre
+  // foco no input quando isOpen
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && searchInputRef.current) {
       requestAnimationFrame(() => {
         setTimeout(() => {
-          if (searchInputRef.current) {
+          try {
             searchInputRef.current.focus();
             searchInputRef.current.select?.();
-          }
+          } catch (_) {}
         }, 50);
       });
     }
   }, [isOpen]);
 
+  // busca no backend
+  const fetchData = async (page = 1, term = '') => {
+    setLoadingTable(true);
+    try {
+      const params = {
+        page: Math.max(page - 1, 0),
+        size: rowsPerPage,
+      };
+      if (term && term.trim() !== '') params.search = term.trim();
+
+      const response = await api.get('tools', { params });
+      const content = response.data?.content ?? response.data ?? [];
+      const tp = typeof response.data?.totalPages !== 'undefined'
+        ? response.data.totalPages
+        : Math.max(1, Math.ceil((response.data?.length ?? content.length) / rowsPerPage));
+
+      setData(Array.isArray(content) ? content : []);
+      setTotalPages(tp);
+      setCurrentPage(page);
+    } catch (error) {
+      console.error("Erro ao buscar ferramentas:", error);
+    } finally {
+      setLoadingTable(false);
+    }
+  };
+
+  // primeira carga (sem filtro)
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await api.get("tools");
-        setData(response.data);
-        setLoadingTable(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, [tools]);
+    fetchData(1, '');
+  }, []);
+
+  // paginação
+  const handlePrevious = () => {
+    if (currentPage > 1) fetchData(currentPage - 1, searchTerm);
+  };
+  const handleNext = () => {
+    if (currentPage < totalPages) fetchData(currentPage + 1, searchTerm);
+  };
 
   const openModal = (e, id, name) => {
-    e.preventDefault();
+    e.stopPropagation?.();
+    e.preventDefault?.();
     setToolToDelete(id);
     setToolName(name);
     setOpenModalDelete(true);
   };
 
-  const handleSearch = (searchTerm) => {
-    const filteredData = data.filter((tool) =>
-      Object.values(tool).some((value) =>
-        value && value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    );
-    setFilteredTools(filteredData);
-    setCurrentPage(1);
-  };
-
-  const totalPages = Math.ceil(data.length / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const currentData = (filteredTools.length > 0 ? filteredTools : data).slice(
-    startIndex,
-    startIndex + rowsPerPage
-  );
-
-  const handlePrevious = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-  const handleNext = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-
   const handleDeleteTool = async (id) => {
     try {
       const response = await api.delete(`tools/delete/${id}`);
-      setData((prevData) => prevData.filter((tool) => tool.id !== id));
       setOpenModalDelete(false);
-      setSuccess(response.data.message);
+      setSuccess(response?.data?.message ?? "Removido com sucesso");
+      await fetchData(currentPage, searchTerm);
+      if (currentPage > totalPages && totalPages > 0) {
+        fetchData(Math.max(totalPages, 1), searchTerm);
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Erro ao deletar:", error);
     }
   };
+
+  // 🔎 agora a pesquisa só dispara aqui
+  const onSubmitSearch = (e) => {
+    e?.preventDefault();
+    fetchData(1, searchTerm);
+  };
+
+  const rowSelectable = location === "/alugar" || location.startsWith("/alugar/");
 
   return (
     <>
@@ -107,23 +126,22 @@ const TableTools = ({ selected, tools, loading, setLoading, isOpen }) => {
               onClose={() => setSuccess(null)}
             />
           )}
-          <div className={styles.inputGroup}>
+
+          <form className={styles.inputGroup} onSubmit={onSubmitSearch}>
             <input
-              ref={searchInputRef} // 👈 foca automaticamente
+              ref={searchInputRef}
               type="text"
               id="search"
               placeholder="Digite para buscar..."
               value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                handleSearch(e.target.value);
-              }}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className={styles.input}
               autoComplete="off"
               tabIndex={0}
             />
             <input type="submit" value="Pesquisar" className={styles.button} />
-          </div>
+          </form>
+
           <table className={styles.table}>
             <thead>
               <tr>
@@ -140,35 +158,40 @@ const TableTools = ({ selected, tools, loading, setLoading, isOpen }) => {
               </tr>
             </thead>
             <tbody>
-              {currentData.map((row) => (
-                <tr
-                  key={row.id}
-                  onClick={location === "/alugar" || `/alugar/${dynamicId}` ? () => selected(row) : undefined}
-                  style={row.quantity === 0 ? { backgroundColor: '#ffcccc' } : {}}
-                >
-                  <td>{row.id}</td>
-                  <td>{row.name}</td>
-                  <td>{row.totalQuantity}un</td>
-                  <td>{row.quantity}un</td>
-                  <td>{formateNumber(row.daily)}</td>
-                  <td>{formateNumber(row.week)}</td>
-                  <td>{formateNumber(row.biweekly)}</td>
-                  <td>{formateNumber(row.twentyOneDays)}</td>
-                  <td>{formateNumber(row.priceMonth)}</td>
-                  {location === "/ferramentas" && (
-                    <td style={{ width: "10%" }}>
-                      <MdDelete
-                        style={{ color: "red", marginRight: "5px" }}
-                        onClick={(e) => openModal(e, row.id, row.name)}
-                      />
-                      <GrView style={{ marginRight: "5px" }} onClick={() => navigate(`/ferramentas/${row.id}`)} />
-                      <FaPen style={{ marginRight: "5px" }} onClick={(e) => selected(e, row.id)} />
-                    </td>
-                  )}
-                </tr>
-              ))}
+              {data.length === 0 ? (
+                <tr><td colSpan={location === "/ferramentas" ? 10 : 9} style={{ textAlign: 'center' }}>Nenhuma ferramenta encontrada.</td></tr>
+              ) : (
+                data.map((row) => (
+                  <tr
+                    key={row.id}
+                    onClick={rowSelectable ? () => selected(row) : undefined}
+                    style={row.quantity === 0 ? { backgroundColor: '#ffcccc' } : {}}
+                  >
+                    <td>{row.id}</td>
+                    <td>{row.name}</td>
+                    <td>{row.totalQuantity}un</td>
+                    <td>{row.quantity}un</td>
+                    <td>{formateNumber(row.daily)}</td>
+                    <td>{formateNumber(row.week)}</td>
+                    <td>{formateNumber(row.biweekly)}</td>
+                    <td>{formateNumber(row.twentyOneDays)}</td>
+                    <td>{formateNumber(row.priceMonth)}</td>
+                    {location === "/ferramentas" && (
+                      <td style={{ width: "10%" }}>
+                        <MdDelete
+                          style={{ color: "red", marginRight: "5px", cursor: 'pointer' }}
+                          onClick={(e) => openModal(e, row.id, row.name)}
+                        />
+                        <GrView style={{ marginRight: "5px", cursor: 'pointer' }} onClick={() => navigate(`/ferramentas/${row.id}`)} />
+                        <FaPen style={{ marginRight: "5px", cursor: 'pointer' }} onClick={(e) => selected(e, row.id)} />
+                      </td>
+                    )}
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
+
           <ConfirmDeleteModal
             open={openModalDelete}
             onClose={() => setOpenModalDelete(false)}
@@ -176,6 +199,7 @@ const TableTools = ({ selected, tools, loading, setLoading, isOpen }) => {
             onConfirm={() => handleDeleteTool(toolToDelete)}
             remove={true}
           />
+
           <div className={styles.pagination}>
             <button onClick={handlePrevious} disabled={currentPage === 1}>
               Anterior
@@ -183,7 +207,7 @@ const TableTools = ({ selected, tools, loading, setLoading, isOpen }) => {
             <span>
               Página {currentPage} de {totalPages}
             </span>
-            <button onClick={handleNext} disabled={currentPage === totalPages}>
+            <button onClick={handleNext} disabled={currentPage === totalPages || totalPages === 0}>
               Próxima
             </button>
           </div>

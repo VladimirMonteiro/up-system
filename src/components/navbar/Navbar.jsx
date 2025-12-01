@@ -67,11 +67,18 @@ const MyMenu = () => {
     },
     {
       key: "sub1",
-      label: "Financeiro",
+      label: "Relatórios",
       icon: <LineChartOutlined />,
       children: [
         { key: "6", label: <NavLink to="/faturamentos">Faturamentos</NavLink> },
         { key: "7", label: <NavLink to="/gastos">Gastos</NavLink> },
+        { key: "8",   label: (
+        <span className="menu-disabled">
+          Fretes <span className="soon-tag">Em breve</span>
+        </span>
+      ),
+      disabled: true, // 🔒 Ant Design já bloqueia clique },
+    }
       ],
     },
   ];
