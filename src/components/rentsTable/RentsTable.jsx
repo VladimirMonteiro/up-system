@@ -277,82 +277,120 @@ const getDeliveryStatus = (deliveryDate, paymentStatus, stateRent) => {
             </div>
           </form>
 
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Endereço</th>
-                <th>Data inicial</th>
-                <th>Data final</th>
-                <th>Valor</th>
-                <th>Pagamento</th>
-                <th>Devolução equip</th>
-                {(location === "/alugueis" || location === `/clientes/${client?.id}` || location === "/inicial") && <th>Ações</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {notFound ? (
-                <tr style={{ border: "none" }}>
-                  <td
-                    style={{ border: "none" }}
-                    colSpan="7"
-                    className={styles.messageNotFound}
-                  >
-                    Nenhuma Locação encontrada
-                  </td>
-                </tr>
-              ) : (
-                currentData.map((row) => (
-                  <tr
-                    key={row.id}
-                    onClick={location === "/alugar" ? () => selected(row) : undefined}
+  <table className={styles.table}>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Cliente</th>
+      <th>Endereço</th>
+      <th>Data inicial</th>
+      <th>Data final</th>
+      <th>Valor</th>
+      <th>Pagamento</th>
+      <th>Devolução equip</th>
+      {(location === "/alugueis" ||
+        location === `/clientes/${client?.id}` ||
+        location === "/inicial") && <th>Ações</th>}
+    </tr>
+  </thead>
 
-                  >
+  <tbody>
+    {notFound ? (
+      <tr style={{ border: "none" }}>
+        <td
+          style={{ border: "none" }}
+          colSpan="7"
+          className={styles.messageNotFound}
+        >
+          Nenhuma Locação encontrada
+        </td>
+      </tr>
+    ) : (
+      currentData.map((row) => (
+        <tr
+          key={row.id}
+          onClick={location === "/alugar" ? () => selected(row) : undefined}
+        >
+          <td>{row.id}</td>
 
+          {/* Nome do cliente */}
+          <td>{row.client?.name ?? client?.name ?? "—"}</td>
 
-                    <td>{row.id}</td>
-                    <td>{row.client?.name || client.name}</td>
-                    <td>{row.client?.addresses?.[0]?.street || client.addresses[0].street}</td>
-                    <td>{row.initialDate}</td>
-                    <td className={`${getDeliveryStatusStyle(row)}`}>{row.deliveryDate}</td>
-                    <td>{formateNumber(row.price)}</td>
-                    <td><span className={`${styles.tableRow} ${getRowClassPaymentStatus(row)}`}>{getPaymentStatus(row.paymentStatus)}</span></td>
-                    <td>
-                      <span className={`${styles.tableRow} ${getRowClass(row)}`}>{row.stateRent === "DELIVERED" ? "ENTREGUE" : "PENDENTE"}</span>
-                    </td>
-                    {(location === "/alugueis" || location === `/clientes/${client?.id}` || location === "/inicial") && (
-                      <td>
-                        <MdDelete
-                          style={{ marginRight: "5px" }}
-                          color="red"
-                          onClick={(e) =>
-                            openModalClient(e, row.id, row.client?.name)
-                          }
-                        />
-                        <FaPen style={{ marginRight: "5px" }} onClick={(e) => selected(e, row.id)} />
+          {/* Endereço */}
+          <td>
+            {row.client?.addresses?.[0]?.street ??
+              client?.addresses?.[0]?.street ??
+              "Endereço não informado"}
+          </td>
 
-                        <FaPaste style={{ marginRight: "5px" }} onClick={() => openPdf(row)} />
-                        <MdOutlineDoneOutline
-                          color="green"
-                          onClick={
-                            row.stateRent === "PENDENT"
-                              ? (e) =>
-                                openModalFinishRent(
-                                  e,
-                                  row.id,
-                                  row.client?.name
-                                )
-                              : null
-                          }
-                        />
-                      </td>
-                    )}
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+          <td>{row.initialDate}</td>
+
+          {/* Data final com estilo */}
+          <td className={`${getDeliveryStatusStyle(row)}`}>
+            {row.deliveryDate}
+          </td>
+
+          <td>{formateNumber(row.price)}</td>
+
+          {/* Pagamento */}
+          <td>
+            <span
+              className={`${styles.tableRow} ${getRowClassPaymentStatus(row)}`}
+            >
+              {getPaymentStatus(row.paymentStatus)}
+            </span>
+          </td>
+
+          {/* Estado da locação */}
+          <td>
+            <span className={`${styles.tableRow} ${getRowClass(row)}`}>
+              {row.stateRent === "DELIVERED" ? "ENTREGUE" : "PENDENTE"}
+            </span>
+          </td>
+
+          {(location === "/alugueis" ||
+            location === `/clientes/${client?.id}` ||
+            location === "/inicial") && (
+            <td>
+              <MdDelete
+                style={{ marginRight: "5px" }}
+                color="red"
+                onClick={(e) =>
+                  openModalClient(e, row.id, row.client?.name)
+                }
+              />
+
+              <FaPen
+                style={{ marginRight: "5px" }}
+                onClick={(e) => selected(e, row.id)}
+              />
+
+              <FaPaste
+                style={{ marginRight: "5px" }}
+                onClick={() => openPdf(row)}
+              />
+
+              <MdOutlineDoneOutline
+                color="green"
+                onClick={
+                  row.stateRent === "PENDENT"
+                    ? (e) =>
+                        openModalFinishRent(
+                          e,
+                          row.id,
+                          row.client?.name
+                        )
+                    : null
+                }
+              />
+            </td>
+          )}
+        </tr>
+      ))
+    )}
+  </tbody>
+</table>
+
           <ConfirmDeleteModal
             open={openModal}
             itemName={clientName}
