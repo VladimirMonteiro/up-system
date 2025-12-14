@@ -1,16 +1,14 @@
-import api from '../../utils/api';
-import styles from '../tableClients/Table.module.css';
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import api from "../../utils/api";
+import styles from "../tableClients/Table.module.css";
+import { useState, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
 import { FaPen } from "react-icons/fa";
 import { GrView } from "react-icons/gr";
-import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
-import { formateNumber } from '../../utils/formatNumber';
-import Loading from '../loading/Loading';
-import ComponentMessage from '../componentMessage/ComponentMessage';
-
-// ... imports iguais
+import ConfirmDeleteModal from "../modalConfirmDelete/ConfirmDeleteModal";
+import { formateNumber } from "../../utils/formatNumber";
+import Loading from "../loading/Loading";
+import ComponentMessage from "../componentMessage/ComponentMessage";
 
 const TableTools = ({ selected, isOpen }) => {
   const [data, setData] = useState([]);
@@ -18,19 +16,19 @@ const TableTools = ({ selected, isOpen }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loadingTable, setLoadingTable] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const rowsPerPage = 13;
 
-  const location = useLocation().pathname;
+  const pathname = useLocation().pathname;
   const navigate = useNavigate();
 
   const [openModalDelete, setOpenModalDelete] = useState(false);
   const [toolToDelete, setToolToDelete] = useState(null);
-  const [toolName, setToolName] = useState('');
+  const [toolName, setToolName] = useState("");
 
   const searchInputRef = useRef(null);
 
-  // foco no input quando isOpen
+  // Foco no input quando abrir a pesquisa
   useEffect(() => {
     if (isOpen && searchInputRef.current) {
       requestAnimationFrame(() => {
@@ -44,21 +42,25 @@ const TableTools = ({ selected, isOpen }) => {
     }
   }, [isOpen]);
 
-  // busca no backend
-  const fetchData = async (page = 1, term = '') => {
+  // Busca no backend
+  const fetchData = async (page = 1, term = "") => {
     setLoadingTable(true);
     try {
       const params = {
         page: Math.max(page - 1, 0),
         size: rowsPerPage,
       };
-      if (term && term.trim() !== '') params.search = term.trim();
+      if (term.trim() !== "") params.search = term.trim();
 
-      const response = await api.get('tools', { params });
+      const response = await api.get("tools", { params });
+
       const content = response.data?.content ?? response.data ?? [];
-      const tp = typeof response.data?.totalPages !== 'undefined'
-        ? response.data.totalPages
-        : Math.max(1, Math.ceil((response.data?.length ?? content.length) / rowsPerPage));
+      const tp =
+        response.data?.totalPages ??
+        Math.max(
+          1,
+          Math.ceil((response.data?.length ?? content.length) / rowsPerPage)
+        );
 
       setData(Array.isArray(content) ? content : []);
       setTotalPages(tp);
@@ -70,12 +72,12 @@ const TableTools = ({ selected, isOpen }) => {
     }
   };
 
-  // primeira carga (sem filtro)
+  // Primeira carga
   useEffect(() => {
-    fetchData(1, '');
+    fetchData(1, "");
   }, []);
 
-  // paginação
+  // Paginação
   const handlePrevious = () => {
     if (currentPage > 1) fetchData(currentPage - 1, searchTerm);
   };
@@ -83,6 +85,7 @@ const TableTools = ({ selected, isOpen }) => {
     if (currentPage < totalPages) fetchData(currentPage + 1, searchTerm);
   };
 
+  // Modal delete
   const openModal = (e, id, name) => {
     e.stopPropagation?.();
     e.preventDefault?.();
@@ -96,7 +99,9 @@ const TableTools = ({ selected, isOpen }) => {
       const response = await api.delete(`tools/delete/${id}`);
       setOpenModalDelete(false);
       setSuccess(response?.data?.message ?? "Removido com sucesso");
+
       await fetchData(currentPage, searchTerm);
+
       if (currentPage > totalPages && totalPages > 0) {
         fetchData(Math.max(totalPages, 1), searchTerm);
       }
@@ -105,13 +110,16 @@ const TableTools = ({ selected, isOpen }) => {
     }
   };
 
-  // 🔎 agora a pesquisa só dispara aqui
+  // Pesquisa
   const onSubmitSearch = (e) => {
-    e?.preventDefault();
+    e.preventDefault();
     fetchData(1, searchTerm);
   };
 
-  const rowSelectable = location === "/alugar" || location.startsWith("/alugar/");
+  // 🔥 Corrigido: caminhos permitidos para selecionar linha
+  const rowSelectable = ["/alugar", "/criar-orcamento"].some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
+  );
 
   return (
     <>
@@ -152,20 +160,30 @@ const TableTools = ({ selected, isOpen }) => {
                 <th>Diária</th>
                 <th>Semanal</th>
                 <th>Quinzena</th>
-                <th>3 semanas (21 dias)</th>
+                <th>3 semanas</th>
                 <th>Mensal</th>
-                {location === "/ferramentas" && <th>Ações</th>}
+                {pathname === "/ferramentas" && <th>Ações</th>}
               </tr>
             </thead>
+
             <tbody>
               {data.length === 0 ? (
-                <tr><td colSpan={location === "/ferramentas" ? 10 : 9} style={{ textAlign: 'center' }}>Nenhuma ferramenta encontrada.</td></tr>
+                <tr>
+                  <td
+                    colSpan={pathname === "/ferramentas" ? 10 : 9}
+                    style={{ textAlign: "center" }}
+                  >
+                    Nenhuma ferramenta encontrada.
+                  </td>
+                </tr>
               ) : (
                 data.map((row) => (
                   <tr
                     key={row.id}
                     onClick={rowSelectable ? () => selected(row) : undefined}
-                    style={row.quantity === 0 ? { backgroundColor: '#ffcccc' } : {}}
+                    style={
+                      row.quantity === 0 ? { backgroundColor: "#ffcccc" } : {}
+                    }
                   >
                     <td>{row.id}</td>
                     <td>{row.name}</td>
@@ -176,14 +194,25 @@ const TableTools = ({ selected, isOpen }) => {
                     <td>{formateNumber(row.biweekly)}</td>
                     <td>{formateNumber(row.twentyOneDays)}</td>
                     <td>{formateNumber(row.priceMonth)}</td>
-                    {location === "/ferramentas" && (
+
+                    {pathname === "/ferramentas" && (
                       <td style={{ width: "10%" }}>
                         <MdDelete
-                          style={{ color: "red", marginRight: "5px", cursor: 'pointer' }}
+                          style={{
+                            color: "red",
+                            marginRight: "5px",
+                            cursor: "pointer",
+                          }}
                           onClick={(e) => openModal(e, row.id, row.name)}
                         />
-                        <GrView style={{ marginRight: "5px", cursor: 'pointer' }} onClick={() => navigate(`/ferramentas/${row.id}`)} />
-                        <FaPen style={{ marginRight: "5px", cursor: 'pointer' }} onClick={(e) => selected(e, row.id)} />
+                        <GrView
+                          style={{ marginRight: "5px", cursor: "pointer" }}
+                          onClick={() => navigate(`/ferramentas/${row.id}`)}
+                        />
+                        <FaPen
+                          style={{ marginRight: "5px", cursor: "pointer" }}
+                          onClick={(e) => selected(e, row.id)}
+                        />
                       </td>
                     )}
                   </tr>
@@ -192,6 +221,7 @@ const TableTools = ({ selected, isOpen }) => {
             </tbody>
           </table>
 
+          {/* Modal de confirmação */}
           <ConfirmDeleteModal
             open={openModalDelete}
             onClose={() => setOpenModalDelete(false)}
@@ -200,6 +230,7 @@ const TableTools = ({ selected, isOpen }) => {
             remove={true}
           />
 
+          {/* Paginação */}
           <div className={styles.pagination}>
             <button onClick={handlePrevious} disabled={currentPage === 1}>
               Anterior
@@ -207,7 +238,10 @@ const TableTools = ({ selected, isOpen }) => {
             <span>
               Página {currentPage} de {totalPages}
             </span>
-            <button onClick={handleNext} disabled={currentPage === totalPages || totalPages === 0}>
+            <button
+              onClick={handleNext}
+              disabled={currentPage === totalPages || totalPages === 0}
+            >
               Próxima
             </button>
           </div>

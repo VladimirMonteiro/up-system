@@ -35,14 +35,17 @@ const MyMenu = () => {
       case "/alugueis":
         setSelectedKey("4");
         break;
-      case "/orçamentos":
+      case "/criar-orcamento":
         setSelectedKey("5");
         break;
-      case "/faturamentos":
+      case "/orcamentos":
         setSelectedKey("6");
         break;
-      case "/gastos":
+      case "/faturamentos":
         setSelectedKey("7");
+        break;
+      case "/gastos":
+        setSelectedKey("8");
         break;
       default:
         setSelectedKey("");
@@ -55,24 +58,20 @@ const MyMenu = () => {
     { key: "2", icon: <ToolOutlined />, label: <NavLink to="/ferramentas">Ferramentas</NavLink> },
     { key: "3", icon: <UserOutlined />, label: <NavLink to="/clientes">Clientes</NavLink> },
     { key: "4", icon: <ContainerOutlined />, label: <NavLink to="/alugueis">Aluguéis</NavLink> },
-    {
-      key: "5",
-      icon: <ContainerOutlined />,
-      label: (
-        <span className="menu-disabled">
-          Orçamentos <span className="soon-tag">Em breve</span>
-        </span>
-      ),
-      disabled: true, // 🔒 Ant Design já bloqueia clique
+    { key: "sub1", icon: <ContainerOutlined />, label: "Orçamentos",
+      children: [
+        { key: "5", label: <NavLink to="/criar-orcamento">Criar orçamento</NavLink> },
+        { key: "6", label: <NavLink to="/orcamentos">Orçamentos</NavLink> }
+      ]
     },
     {
-      key: "sub1",
+      key: "sub2",
       label: "Relatórios",
       icon: <LineChartOutlined />,
       children: [
-        { key: "6", label: <NavLink to="/faturamentos">Faturamentos</NavLink> },
-        { key: "7", label: <NavLink to="/gastos">Gastos</NavLink> },
-        { key: "8",   label: (
+        { key: "7", label: <NavLink to="/faturamentos">Faturamentos</NavLink> },
+        { key: "8", label: <NavLink to="/gastos">Gastos</NavLink> },
+        { key: "9",   label: (
         <span className="menu-disabled">
           Fretes <span className="soon-tag">Em breve</span>
         </span>

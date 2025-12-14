@@ -18,6 +18,8 @@ import SingleRent from "./pages/singleRent/SingleRent";
 import SingleClient from "./pages/admin/singleClient/SingleClient";
 import SingleTool from "./pages/admin/singleTool/SingleTool";
 import Budgets from "./pages/admin/budgets/Budgets";
+import CreateBudget from "./pages/admin/createBudget/CreateBudget";
+import BudgetPdf from "./components/pdf/BudgetPdf";
 
 // Componente HeaderControl (que usa useLocation para renderizar o HeaderDefault)
 const HeaderControl = () => {
@@ -50,8 +52,10 @@ function App() {
             <Route path="/faturamentos" element={<Protected><Earnings /></Protected>} />
             <Route path="/gastos" element={<Protected><Expenses /></Protected>} />
             <Route path="/pdf" element={<Protected><PdfPage /></Protected>} />
+             <Route path="/orcamento-pdf" element={<Protected><BudgetPdf /></Protected>} />
             <Route path="/emitir-relatorio" element={<Protected><ReportPDF /></Protected>} />
             <Route path="/orçamentos" element={<Protected><Budgets/> </Protected>} />
+            <Route path="/criar-orcamento" element={<Protected><CreateBudget /></Protected>} />
           </Routes>
         </Router>
       </AuthProvider>

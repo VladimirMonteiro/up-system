@@ -1,0 +1,95 @@
+/* src/components/QuotationSummary.module.css */
+
+.summaryPanel {
+    width: 300px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    align-self: flex-start;
+    position: sticky;
+    top: 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.summaryTitle {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 10px;
+}
+
+.summaryItem {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #555;
+}
+
+.summaryLabel {
+    flex-grow: 1;
+}
+
+.summaryValue {
+    font-weight: bold;
+    color: #333;
+}
+
+.totalGeneral {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 0;
+    border-top: 2px solid #ddd;
+    border-bottom: 2px solid #ddd;
+    margin: 10px 0;
+}
+
+.totalLabel {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.totalValue {
+    font-size: 24px;
+    font-weight: bolder;
+    color: #007bff;
+}
+
+.conditionsTitle {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.conditionsText {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.4;
+}
+
+.actionButton {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.actionButton:hover {
+    background-color: #0056b3;
+}
