@@ -52,9 +52,9 @@ function App() {
             <Route path="/faturamentos" element={<Protected><Earnings /></Protected>} />
             <Route path="/gastos" element={<Protected><Expenses /></Protected>} />
             <Route path="/pdf" element={<Protected><PdfPage /></Protected>} />
-             <Route path="/orcamento-pdf" element={<Protected><BudgetPdf /></Protected>} />
+            <Route path="/orcamento-pdf" element={<Protected><BudgetPdf /></Protected>} />
             <Route path="/emitir-relatorio" element={<Protected><ReportPDF /></Protected>} />
-            <Route path="/orçamentos" element={<Protected><Budgets/> </Protected>} />
+            <Route path="/orcamentos" element={<Protected><Budgets/> </Protected>} />
             <Route path="/criar-orcamento" element={<Protected><CreateBudget /></Protected>} />
           </Routes>
         </Router>
