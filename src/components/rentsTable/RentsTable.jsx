@@ -1,15 +1,16 @@
 import api from '../../utils/api';
 import styles from '../tableClients/Table.module.css';
 
-import { useState, useEffect, useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { MdDelete } from "react-icons/md";
-import { FaPen, FaPaste } from "react-icons/fa";
-import { MdOutlineDoneOutline } from "react-icons/md";
-import ConfirmDeleteModal from "../modalConfirmDelete/ConfirmDeleteModal";
-import { formateNumber } from "../../utils/formatNumber";
-import ComponentMessage from "../componentMessage/ComponentMessage";
-import Loading from "../loading/Loading";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { MdDelete, MdOutlineDoneOutline } from 'react-icons/md';
+import { FaPen, FaPaste } from 'react-icons/fa';
+
+import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
+import { formateNumber } from '../../utils/formatNumber';
+import ComponentMessage from '../componentMessage/ComponentMessage';
+import Loading from '../loading/Loading';
 
 const RentsTable = ({ selected, rents, singleClient }) => {
   const [data, setData] = useState([]);
@@ -210,175 +211,170 @@ const RentsTable = ({ selected, rents, singleClient }) => {
   if (loading) return <Loading table />;
 
   return (
-  <div className={styles.tableContainer}>
-    {success && (
-      <ComponentMessage
-        message={success}
-        type="success"
-        onClose={() => setSuccess(null)}
-      />
-    )}
+    <div className={styles.tableContainer}>
+      {success && (
+        <ComponentMessage message={success} type='success' onClose={() => setSuccess(null)} />
+      )}
 
-          <form className={styles.searchContainer} onSubmit={selectedFilterSearch}>
-            <div className={styles.inputGroup}>
-              <input
-                type="text"
-                id="search"
-                placeholder="Digite para buscar..."
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-                className={styles.input}
-              />
-              <select
-                name="paymentStatus"
-                id="paymentStatus"
-                onChange={(e) => setPaymentStatus(e.target.value)}
-                value={paymentStatus}
-                className={styles.select}
-              >
-                <option value={null}>Status de Pagamento</option>
-                <option value="PAID">Pago</option>
-                <option value="PARTIALLY_PAID">Parcialmente pago</option>
-                <option value="UNPAID">Não pago</option>
-              </select>
-              <select
-                name="stateRent"
-                id="stateRent"
-                onChange={(e) => setStateRent(e.target.value)}
-                value={stateRent}
-                className={styles.select}
-              >
-                <option value={null}>Estado do Aluguel</option>
-                <option value="DELIVERED">Entregue</option>
-                <option value="PENDENT">Pendente</option>
-              </select>
-              <button type="submit" className={styles.button}>
-                Pesquisar
-              </button>
-            </div>
-          </form>
+      {/* FILTRO */}
+      <form className={styles.searchContainer} onSubmit={handleFilterSubmit}>
+        <div className={styles.inputGroup}>
+          <input
+            type='text'
+            placeholder='Digite para buscar...'
+            value={clientName}
+            onChange={(e) => setClientName(e.target.value)}
+            className={styles.input}
+          />
 
-    {/* TABELA */}
-    <table className={styles.table}>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Cliente</th>
-          <th>Início</th>
-          <th>Entrega</th>
-          <th>Valor</th>
-          <th>Pagamento</th>
-          <th>Estado</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
+          <select
+            value={paymentStatus}
+            onChange={(e) => setPaymentStatus(e.target.value)}
+            className={styles.select}
+          >
+            <option value=''>Status de Pagamento</option>
+            <option value='PAID'>Pago</option>
+            <option value='PARTIALLY_PAID'>Parcialmente pago</option>
+            <option value='UNPAID'>Não pago</option>
+          </select>
 
-      <tbody>
-        {notFound ? (
+          <select
+            value={stateRent}
+            onChange={(e) => setStateRent(e.target.value)}
+            className={styles.select}
+          >
+            <option value=''>Estado do Aluguel</option>
+            <option value='DELIVERED'>Entregue</option>
+            <option value='PENDENT'>Pendente</option>
+          </select>
+
+          <button type='submit' className={styles.button}>
+            Pesquisar
+          </button>
+
+          {isFiltering && (
+            <button type='button' className={styles.buttonSecondary} onClick={clearFilters}>
+              Limpar
+            </button>
+          )}
+        </div>
+      </form>
+
+      {/* TABELA */}
+      <table className={styles.table}>
+        <thead>
           <tr>
-            <td colSpan="8" className={styles.messageNotFound}>
-              Nenhuma locação encontrada
-            </td>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Início</th>
+            <th>Entrega</th>
+            <th>Valor</th>
+            <th>Pagamento</th>
+            <th>Estado</th>
+            <th>Ações</th>
           </tr>
-        ) : (
-          data.map((row) => (
-            <tr key={row.id}>
-              <td>{row.id}</td>
-              <td>{row.client?.name || client?.name}</td>
-              <td>{row.initialDate}</td>
-              <td>{row.deliveryDate}</td>
-              <td>{formateNumber(row.price)}</td>
+        </thead>
 
-              <td>
-                <span
-                  className={`${styles.tableRow} ${
-                    row.paymentStatus === "PAID"
-                      ? styles.rowPaid
-                      : row.paymentStatus === "PARTIALLY_PAID"
-                      ? styles.rowNear
-                      : styles.rowOverdue
-                  }`}
-                >
-                  {getPaymentStatus(row.paymentStatus)}
-                </span>
-              </td>
-
-              <td>
-                <span
-                  className={`${styles.tableRow} ${
-                    row.stateRent === "DELIVERED"
-                      ? styles.rowPaid
-                      : styles.rowOverdue
-                  }`}
-                >
-                  {row.stateRent === "DELIVERED" ? "ENTREGUE" : "PENDENTE"}
-                </span>
-              </td>
-
-              <td className={styles.actions}>
-                <MdDelete
-                  color="red"
-                  onClick={() => {
-                    setRentToDeleteId(row.id);
-                    setClientName(row.client?.name);
-                    setOpenModal(true);
-                  }}
-                />
-
-                <FaPen onClick={(e) => selected(e, row.id)} />
-
-                <FaPaste onClick={() => openPdf(row)} />
-
-                <MdOutlineDoneOutline
-                  color="green"
-                  onClick={() => {
-                    setRentToCompleteId(row.id);
-                    setOpenModalCompleteRent(true);
-                  }}
-                />
+        <tbody>
+          {notFound ? (
+            <tr>
+              <td colSpan='8' className={styles.messageNotFound}>
+                Nenhuma locação encontrada
               </td>
             </tr>
-          ))
-        )}
-      </tbody>
-    </table>
+          ) : (
+            data.map((row) => (
+              <tr key={row.id}>
+                <td>{row.id}</td>
+                <td>{row.client?.name || client?.name}</td>
+                <td>{row.initialDate}</td>
+                <td>{row.deliveryDate}</td>
+                <td>{formateNumber(row.price)}</td>
 
-    {/* PAGINAÇÃO */}
-    <div className={styles.pagination}>
-      <button onClick={handlePrevious} disabled={currentPage === 0}>
-        Anterior
-      </button>
+                <td>
+                  <span
+                    className={`${styles.tableRow} ${
+                      row.paymentStatus === 'PAID'
+                        ? styles.rowPaid
+                        : row.paymentStatus === 'PARTIALLY_PAID'
+                        ? styles.rowNear
+                        : styles.rowOverdue
+                    }`}
+                  >
+                    {getPaymentStatus(row.paymentStatus)}
+                  </span>
+                </td>
 
-      <span>
-        Página {currentPage + 1} de {totalPages}
-      </span>
+                <td>
+                  <span
+                    className={`${styles.tableRow} ${
+                      row.stateRent === 'DELIVERED' ? styles.rowPaid : styles.rowOverdue
+                    }`}
+                  >
+                    {row.stateRent === 'DELIVERED' ? 'ENTREGUE' : 'PENDENTE'}
+                  </span>
+                </td>
 
-      <button
-        onClick={handleNext}
-        disabled={currentPage + 1 >= totalPages}
-      >
-        Próxima
-      </button>
+                <td className={styles.actions}>
+                  <MdDelete
+                    color='red'
+                    onClick={() => {
+                      setRentToDeleteId(row.id);
+                      setClientName(row.client?.name);
+                      setOpenModal(true);
+                    }}
+                  />
+
+                  <FaPen onClick={(e) => selected(e, row.id)} />
+
+                  <FaPaste onClick={() => openPdf(row)} />
+
+                  <MdOutlineDoneOutline
+                    color='green'
+                    onClick={() => {
+                      setRentToCompleteId(row.id);
+                      setOpenModalCompleteRent(true);
+                    }}
+                  />
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+
+      {/* PAGINAÇÃO */}
+      <div className={styles.pagination}>
+        <button onClick={handlePrevious} disabled={currentPage === 0}>
+          Anterior
+        </button>
+
+        <span>
+          Página {currentPage + 1} de {totalPages}
+        </span>
+
+        <button onClick={handleNext} disabled={currentPage + 1 >= totalPages}>
+          Próxima
+        </button>
+      </div>
+
+      {/* MODAIS */}
+      <ConfirmDeleteModal
+        open={openModal}
+        itemName={clientName}
+        onClose={() => setOpenModal(false)}
+        onConfirm={() => handleDeleteRent(rentToDeleteId)}
+        remove
+      />
+
+      <ConfirmDeleteModal
+        open={openModalCompleteRent}
+        itemName={clientName}
+        onClose={() => setOpenModalCompleteRent(false)}
+        onConfirm={() => completeRent(rentToCompleteId)}
+      />
     </div>
-
-    {/* MODAIS */}
-    <ConfirmDeleteModal
-      open={openModal}
-      itemName={clientName}
-      onClose={() => setOpenModal(false)}
-      onConfirm={() => handleDeleteRent(rentToDeleteId)}
-      remove
-    />
-
-    <ConfirmDeleteModal
-      open={openModalCompleteRent}
-      itemName={clientName}
-      onClose={() => setOpenModalCompleteRent(false)}
-      onConfirm={() => completeRent(rentToCompleteId)}
-    />
-  </div>
-);
-
+  );
 };
 
 export default RentsTable;
