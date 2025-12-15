@@ -31,11 +31,13 @@ const Rents = () => {
       <div className="mainContainerFlex">
         <Navbar />
         <section className={styles.containerSection}>
-          <h1>Aluguéis</h1>
-          <RentsTable selected={updateRent}/>
-        <Modal isOpen={rentModal} onClose={closeRentModal} height={"auto"}>
-          <UpdateRent rent={rent}/>
-        </Modal>
+          <div className="content">
+            <h1>Aluguéis</h1>
+            <RentsTable selected={updateRent}/>
+                    <Modal isOpen={rentModal} onClose={closeRentModal} height={"auto"}>
+            <UpdateRent rent={rent}/>
+                    </Modal>
+          </div>
         </section>
       </div>
   );

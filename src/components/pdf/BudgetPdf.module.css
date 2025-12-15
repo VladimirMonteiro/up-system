@@ -1,0 +1,177 @@
+/* --- Estilos do Botão PDF (Mantenha FORA do container do PDF) --- */
+.pdfButtonContainer {
+    max-width: 800px;
+    margin: 15px auto 5px auto; /* Reduzido */
+    text-align: right;
+}
+
+.pdfButton {
+    background-color: #28a745;
+    color: white;
+    padding: 8px 12px; /* Reduzido */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em; /* Reduzido */
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.pdfButton:hover {
+    background-color: #218838;
+}
+
+/* ---------------------------------------------------------------------- */
+/* --- Otimização Máxima para PDF (Foco no container com a ref) --- */
+/* ---------------------------------------------------------------------- */
+
+.budgetContainer {
+    max-width: 760px; /* Levemente mais estreito */
+    margin: 5px auto; /* Redução máxima das margens externas */
+    padding: 15px; /* Padding interno reduzido */
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    box-shadow: none; /* Remove a sombra para economizar recursos e espaço */
+    font-family: Arial, sans-serif;
+    color: #333;
+    font-size: 0.85em; /* Tamanho de fonte base mais reduzido */
+}
+
+/* Cabeçalho */
+.header {
+    text-align: center;
+    border-bottom: 2px solid #0056b3; /* Borda mais fina */
+    padding-bottom: 3px; /* Reduzido */
+    margin-bottom: 10px; /* Reduzido */
+}
+
+.logo {
+    color: #0056b3;
+    font-size: 1.6em; /* Reduzido */
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 0.65em; /* Reduzido */
+    color: #666;
+    margin-top: 2px;
+}
+
+/* Seções */
+.section {
+    margin-bottom: 15px; /* Reduzido */
+    padding: 8px; /* Reduzido */
+    border: 1px solid #eee;
+}
+
+.sectionTitle {
+    background-color: #f4f4f4;
+    color: #0056b3;
+    padding: 4px 8px; /* Reduzido */
+    margin: -8px -8px 8px -8px; /* Ajuste o margin/padding da section */
+    font-size: 0.95em; /* Reduzido */
+    border-bottom: 1px solid #ddd;
+}
+
+/* Grid de Dados (Detalhes e Cliente) */
+.dataGrid {
+    display: grid;
+    grid-template-columns: 160px 1fr; /* Largura da label mais reduzida */
+    gap: 2px 8px; /* Espaçamento reduzido */
+    font-size: 0.8em; /* Reduzido */
+}
+
+.dataGrid p {
+    margin: 0; /* Garante remoção de margem */
+    line-height: 1.2; /* Espaçamento entre linhas mais apertado */
+}
+
+.finalPrice {
+    font-size: 1em; /* Reduzido */
+    font-weight: bold;
+    color: #0056b3;
+}
+
+.obsLabel,
+.obsText {
+    grid-column: 1 / span 2;
+    padding-top: 3px;
+}
+
+.addressList p {
+    margin: 0;
+    padding-left: 5px;
+    font-style: italic;
+    font-size: 0.75em; /* Reduzido */
+}
+
+
+/* Tabela de Itens */
+.itemTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75em; /* Redução máxima */
+}
+
+.itemTable th,
+.itemTable td {
+    border: 1px solid #ddd;
+    padding: 4px; /* Reduzido */
+    line-height: 1.1; /* Espaçamento entre linhas mais apertado */
+}
+
+.itemTable th {
+    background-color: #eaf3ff;
+    color: #333;
+    text-align: center;
+}
+
+/* T foot */
+.itemTable tfoot td {
+    font-weight: bold;
+    background-color: #f9f9f9;
+}
+
+.tableFooterLabel {
+    font-size: 0.9em;
+}
+
+.tableFooterValue {
+    font-size: 0.9em;
+    color: #0056b3;
+    text-align: right !important;
+}
+
+/* Resumo Final */
+.summaryBox {
+    border: 1px solid #0056b3; /* Borda mais fina */
+    padding: 8px; /* Reduzido */
+    background-color: #eaf3ff;
+    max-width: 300px; /* Reduzido */
+    margin-left: auto;
+}
+
+.summaryDetail,
+.summaryTotal {
+    padding: 2px 0; /* Reduzido */
+    margin: 0;
+}
+
+.summaryTotal {
+    border-top: 1px dashed #0056b3;
+    margin-top: 5px;
+    padding-top: 5px;
+    font-size: 1em; /* Reduzido */
+}
+
+.summaryFinalValue {
+    font-size: 1.2em; /* Reduzido */
+}
+
+/* Termos e Condições */
+.termsList {
+    font-size: 0.75em; /* Redução máxima */
+    padding-left: 15px;
+    list-style-type: square;
+    margin: 0;
+}

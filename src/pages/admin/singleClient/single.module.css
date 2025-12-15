@@ -6,6 +6,7 @@
   gap: 2rem;
   background: #f9fafb;
   min-height: 100vh;
+  overflow: scroll;
 }
 
 .headerSection {

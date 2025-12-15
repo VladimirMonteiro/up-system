@@ -30,7 +30,8 @@ const Table = forwardRef(({ selected, loading, setLoadingClients, isOpen }, ref)
   const [clientToDelete, setClientToDelete] = useState(null);
   const [clientName, setClientName] = useState("");
 
-  const location = useLocation().pathname;
+  
+  const pathname = useLocation().pathname;
   const navigate = useNavigate();
 
   const searchInputRef = useRef(null);
@@ -171,6 +172,10 @@ const Table = forwardRef(({ selected, loading, setLoadingClients, isOpen }, ref)
     }
   };
 
+    const rowSelectable = ["/alugar", "/criar-orcamento"].some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
+  );
+
   return (
     <>
       {loading || loadingTable ? (
@@ -227,7 +232,7 @@ const Table = forwardRef(({ selected, loading, setLoadingClients, isOpen }, ref)
                   <tr
                     key={row.id}
                     onClick={
-                      location === "/alugar" ? () => selected(row) : undefined
+                      rowSelectable ? () => selected(row) : undefined
                     }
                   >
                     <td>{row.id}</td>

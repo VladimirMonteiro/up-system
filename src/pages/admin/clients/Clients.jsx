@@ -152,6 +152,7 @@ const Clients = () => {
 
   return (
     <div className="mainContainerFlex">
+    
       <Navbar />
 
       {success && (
@@ -163,63 +164,60 @@ const Clients = () => {
       )}
 
       <section className={styles.containerSection}>
-        <h1>Clientes</h1>
-
-        <Table
-          selected={handleUpdateClient}
-          clients={clients}
-          loading={loadingClient}
-          setLoadingClients={setLoadingClient}
-        />
-
-        <div className={styles.containerBtn}>
-          <button onClick={() => setModalClients(true)}>Cadastrar Cliente</button>
+        <div className="content">
+          <h1>Clientes</h1>
+          <Table
+            selected={handleUpdateClient}
+            clients={clients}
+            loading={loadingClient}
+            setLoadingClients={setLoadingClient}
+          />
+          <div className={styles.containerBtn}>
+            <button onClick={() => setModalClients(true)}>Cadastrar Cliente</button>
+          </div>
+          {/* Cadastro */}
+          <Modal
+            isOpen={modalClients}
+            onClose={() => setModalClients(false)}
+            width="1000px"
+            height="90vh"
+            overflow="scroll"
+          >
+            <RegisterClient
+              createClientFs={handleCreateClientFs}
+              errors={errors}
+              createClientPj={handleCreateClientPj}
+              errorsPj={errorsPj}
+            />
+          </Modal>
+          {/* Update FS */}
+          <Modal
+            isOpen={modalUpdateClients}
+            onClose={() => setModalUpdateClients(false)}
+            height="90vh"
+            overflow="scroll"
+          >
+            <UpdateClientFs
+              clientId={client?.id}
+              clientFs={client}
+              errors={errorsUpdate}
+              updateClientFs={updateClientFs}
+            />
+          </Modal>
+          {/* Update PJ */}
+          <Modal
+            isOpen={modalUpdateClientsPj}
+            onClose={() => setModalUpdateClientsPj(false)}
+            height="90vh"
+            overflow="scroll"
+          >
+            <UpdateClientPj
+              clientId={client?.id}
+              errors={errorsUpdatePj}
+              updateClientPj={updateClientPj}
+            />
+          </Modal>
         </div>
-
-        {/* Cadastro */}
-        <Modal
-          isOpen={modalClients}
-          onClose={() => setModalClients(false)}
-          width="1000px"
-          height="90vh"
-          overflow="scroll"
-        >
-          <RegisterClient
-            createClientFs={handleCreateClientFs}
-            errors={errors}
-            createClientPj={handleCreateClientPj}
-            errorsPj={errorsPj}
-          />
-        </Modal>
-
-        {/* Update FS */}
-        <Modal
-          isOpen={modalUpdateClients}
-          onClose={() => setModalUpdateClients(false)}
-          height="90vh"
-          overflow="scroll"
-        >
-          <UpdateClientFs
-            clientId={client?.id}
-            clientFs={client}
-            errors={errorsUpdate}
-            updateClientFs={updateClientFs}
-          />
-        </Modal>
-
-        {/* Update PJ */}
-        <Modal
-          isOpen={modalUpdateClientsPj}
-          onClose={() => setModalUpdateClientsPj(false)}
-          height="90vh"
-          overflow="scroll"
-        >
-          <UpdateClientPj
-            clientId={client?.id}
-            errors={errorsUpdatePj}
-            updateClientPj={updateClientPj}
-          />
-        </Modal>
       </section>
     </div>
   );

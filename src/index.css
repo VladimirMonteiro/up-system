@@ -6,6 +6,7 @@
   
 }
 
+
 .mainContainerFlex {
   display: grid;
   grid-template-columns: 257px 1fr; /* Primeira coluna fixa em 257px, segunda coluna ocupa o resto do espaço */
@@ -18,7 +19,8 @@
 .content {
   background-color: white; /* Cor de fundo do conteúdo principal (você pode alterar) */
   padding: 20px; /* Adicione o espaçamento interno que desejar */
-  overflow-y: hidden;
+    overflow-y: scroll;
+  height: calc(100vh - 70px); /* Opcional: para garantir que a altura do container ocupe toda a altura da tela */
 }
 
 

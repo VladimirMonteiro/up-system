@@ -95,24 +95,25 @@ const Expenses = () => {
             )}
 
             <section className={styles.containerSection}>
-                <h1>Gastos</h1>
-                <div className={styles.components}>
-                    <CreateExpense handleCreateExpense={handleCreateSpent} errors={errors} />
-                    <ExpenseTable selected={handleFindSpentById} expenses={expenses} />
+                <div className="content">
+                    <h1>Gastos</h1>
+                    <div className={styles.components}>
+                        <CreateExpense handleCreateExpense={handleCreateSpent} errors={errors} />
+                        <ExpenseTable selected={handleFindSpentById} expenses={expenses} />
+                    </div>
+                    <Modal
+                        isOpen={openModal}
+                        onClose={() => setOpenModal(false)}
+                        width={"500px"}
+                        height={"auto"}
+                    >
+                        <UpdateExpense
+                            expense={selectedExpense}
+                            handleUpdateSpent={handleUpdateSpent}
+                            errors={errorsUpdate}
+                        />
+                    </Modal>
                 </div>
-
-                <Modal
-                    isOpen={openModal}
-                    onClose={() => setOpenModal(false)}
-                    width={"500px"}
-                    height={"auto"}
-                >
-                    <UpdateExpense
-                        expense={selectedExpense}
-                        handleUpdateSpent={handleUpdateSpent}
-                        errors={errorsUpdate}
-                    />
-                </Modal>
             </section>
         </div>
     );

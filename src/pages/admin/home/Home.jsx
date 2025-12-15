@@ -38,26 +38,26 @@ const Home = () => {
     <div className="mainContainerFlex">
       <Navbar />
       {loading ? <Loading /> : (<section className={styles.sectionContainer}>
-        <h1 className={styles.welcomeTitle}>Seja bem-vindo 👋</h1>
-
-        <div className={styles.cardsContainer}>
-          <div className={styles.singleCard}>
-            <h2>Aluguéis ativos</h2>
-            <p>{quantities.rent}</p>
+        <div className="content">
+          <h1 className={styles.welcomeTitle}>Seja bem-vindo 👋</h1>
+          <div className={styles.cardsContainer}>
+            <div className={styles.singleCard}>
+              <h2>Aluguéis ativos</h2>
+              <p>{quantities.rent}</p>
+            </div>
+            <div className={styles.singleCard}>
+              <h2>Clientes</h2>
+              <p>{quantities.client}</p>
+            </div>
+            <div className={styles.singleCard}>
+              <h2>Equipamentos</h2>
+              <p>{quantities.tool}</p>
+            </div>
           </div>
-          <div className={styles.singleCard}>
-            <h2>Clientes</h2>
-            <p>{quantities.client}</p>
+          <h2 className={styles.sub}>📅 Locações prestes a expirar</h2>
+          <div style={{width: "100%"}}>
+            <RentsTable rents={rentsExpiring} selected={updateRent}/>
           </div>
-          <div className={styles.singleCard}>
-            <h2>Equipamentos</h2>
-            <p>{quantities.tool}</p>
-          </div>
-        </div>
-
-        <h2 className={styles.sub}>📅 Locações prestes a expirar</h2>
-        <div style={{width: "100%"}}>
-          <RentsTable rents={rentsExpiring} selected={updateRent}/>
         </div>
       </section>)}
 

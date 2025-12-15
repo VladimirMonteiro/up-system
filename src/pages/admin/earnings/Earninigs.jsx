@@ -79,12 +79,14 @@ const Earnings = () => {
             <Navbar />
             {success && <ComponentMessage message={success} type="success" onClose={() => setSuccess(null)} />}
             <section className={styles.containerSection}>
-                <h1>Faturamentos</h1>
-                <div className={styles.components}>
-                    <EarningTable earnings={earnings} selected={findById} />
-                    <Modal isOpen={modal} onClose={() => setModal(false)} width={'500px'} height={'auto'}>
-                        <UpdateEarning rents={rents} errors={updateErrors} earn={earnSelected} handleUpdatedEarn={updateEarn} />
-                    </Modal>
+                <div className="content">
+                    <h1>Faturamentos</h1>
+                    <div className={styles.components}>
+                        <EarningTable earnings={earnings} selected={findById} />
+                        <Modal isOpen={modal} onClose={() => setModal(false)} width={'500px'} height={'auto'}>
+                            <UpdateEarning rents={rents} errors={updateErrors} earn={earnSelected} handleUpdatedEarn={updateEarn} />
+                        </Modal>
+                    </div>
                 </div>
             </section>
 
