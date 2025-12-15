@@ -30,13 +30,13 @@ const QuotationSummary = ({ totals, client, tools, discount, freight }) => {
         budgetItems: tools.map((t) => ({
           toolId: t.id,
           quantity: Number(t.quantity),
-          price: Number(t.price),
+          price: Number(t.price),git
         })),
       };
 
       console.log("📦 Enviando para backend:", payload);
 
-      const response = await api.post("http://localhost:8080/budgets", payload);
+      const response = await api.post("/budgets", payload);
 
         console.log("Resposta:", response.data);
         
