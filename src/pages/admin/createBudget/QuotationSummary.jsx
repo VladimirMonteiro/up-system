@@ -30,7 +30,7 @@ const QuotationSummary = ({ totals, client, tools, discount, freight }) => {
         budgetItems: tools.map((t) => ({
           toolId: t.id,
           quantity: Number(t.quantity),
-          price: Number(t.price),git
+          price: Number(t.price)
         })),
       };
 
