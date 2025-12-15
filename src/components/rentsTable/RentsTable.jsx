@@ -1,16 +1,15 @@
 import api from '../../utils/api';
 import styles from '../tableClients/Table.module.css';
 
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-
-import { MdDelete, MdOutlineDoneOutline } from 'react-icons/md';
-import { FaPen, FaPaste } from 'react-icons/fa';
-
-import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
-import { formateNumber } from '../../utils/formatNumber';
-import ComponentMessage from '../componentMessage/ComponentMessage';
-import Loading from '../loading/Loading';
+import { useState, useEffect, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { MdDelete } from "react-icons/md";
+import { FaPen, FaPaste } from "react-icons/fa";
+import { MdOutlineDoneOutline } from "react-icons/md";
+import ConfirmDeleteModal from "../modalConfirmDelete/ConfirmDeleteModal";
+import { formateNumber } from "../../utils/formatNumber";
+import ComponentMessage from "../componentMessage/ComponentMessage";
+import Loading from "../loading/Loading";
 
 const RentsTable = ({ selected, rents, singleClient }) => {
   const [data, setData] = useState([]);
@@ -220,53 +219,44 @@ const RentsTable = ({ selected, rents, singleClient }) => {
       />
     )}
 
-    {/* FILTRO */}
-    <form className={styles.searchContainer} onSubmit={handleFilterSubmit}>
-      <div className={styles.inputGroup}>
-        <input
-          type="text"
-          placeholder="Digite para buscar..."
-          value={clientName}
-          onChange={(e) => setClientName(e.target.value)}
-          className={styles.input}
-        />
-
-        <select
-          value={paymentStatus}
-          onChange={(e) => setPaymentStatus(e.target.value)}
-          className={styles.select}
-        >
-          <option value="">Status de Pagamento</option>
-          <option value="PAID">Pago</option>
-          <option value="PARTIALLY_PAID">Parcialmente pago</option>
-          <option value="UNPAID">Não pago</option>
-        </select>
-
-        <select
-          value={stateRent}
-          onChange={(e) => setStateRent(e.target.value)}
-          className={styles.select}
-        >
-          <option value="">Estado do Aluguel</option>
-          <option value="DELIVERED">Entregue</option>
-          <option value="PENDENT">Pendente</option>
-        </select>
-
-        <button type="submit" className={styles.button}>
-          Pesquisar
-        </button>
-
-        {isFiltering && (
-          <button
-            type="button"
-            className={styles.buttonSecondary}
-            onClick={clearFilters}
-          >
-            Limpar
-          </button>
-        )}
-      </div>
-    </form>
+          <form className={styles.searchContainer} onSubmit={selectedFilterSearch}>
+            <div className={styles.inputGroup}>
+              <input
+                type="text"
+                id="search"
+                placeholder="Digite para buscar..."
+                value={clientName}
+                onChange={(e) => setClientName(e.target.value)}
+                className={styles.input}
+              />
+              <select
+                name="paymentStatus"
+                id="paymentStatus"
+                onChange={(e) => setPaymentStatus(e.target.value)}
+                value={paymentStatus}
+                className={styles.select}
+              >
+                <option value={null}>Status de Pagamento</option>
+                <option value="PAID">Pago</option>
+                <option value="PARTIALLY_PAID">Parcialmente pago</option>
+                <option value="UNPAID">Não pago</option>
+              </select>
+              <select
+                name="stateRent"
+                id="stateRent"
+                onChange={(e) => setStateRent(e.target.value)}
+                value={stateRent}
+                className={styles.select}
+              >
+                <option value={null}>Estado do Aluguel</option>
+                <option value="DELIVERED">Entregue</option>
+                <option value="PENDENT">Pendente</option>
+              </select>
+              <button type="submit" className={styles.button}>
+                Pesquisar
+              </button>
+            </div>
+          </form>
 
     {/* TABELA */}
     <table className={styles.table}>
