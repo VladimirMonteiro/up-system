@@ -1,371 +1,394 @@
+import api from '../../utils/api';
+import styles from '../tableClients/Table.module.css';
 
-import api from "../../utils/api";
-import styles from "../tableClients/Table.module.css";
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { MdDelete } from "react-icons/md";
-import { FaPen, FaPaste } from "react-icons/fa";
-import { MdOutlineDoneOutline } from "react-icons/md";
-import ConfirmDeleteModal from "../modalConfirmDelete/ConfirmDeleteModal";
-import { formateNumber } from "../../utils/formatNumber";
-import ComponentMessage from "../componentMessage/ComponentMessage";
-import Loading from "../loading/Loading";
+import { MdDelete, MdOutlineDoneOutline } from 'react-icons/md';
+import { FaPen, FaPaste } from 'react-icons/fa';
+
+import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
+import { formateNumber } from '../../utils/formatNumber';
+import ComponentMessage from '../componentMessage/ComponentMessage';
+import Loading from '../loading/Loading';
 
 const RentsTable = ({ selected, rents, singleClient }) => {
   const [data, setData] = useState([]);
-  const [client, setClient] = useState(undefined);
+  const [client, setClient] = useState(null);
+
   const [notFound, setNotFound] = useState(false);
   const [success, setSuccess] = useState(null);
+
   const [openModal, setOpenModal] = useState(false);
   const [openModalCompleteRent, setOpenModalCompleteRent] = useState(false);
-  const [rentToDeleteId, setRentToDeleteId] = useState("");
-  const [rentToCompleteId, setRentToCompleteId] = useState("");
-  const [clientName, setClientName] = useState("");
+
+  const [rentToDeleteId, setRentToDeleteId] = useState(null);
+  const [rentToCompleteId, setRentToCompleteId] = useState(null);
+
+  const [clientName, setClientName] = useState('');
+  const [paymentStatus, setPaymentStatus] = useState('');
+  const [stateRent, setStateRent] = useState('');
+
   const [loading, setLoading] = useState(true);
+  const [isFiltering, setIsFiltering] = useState(false);
 
-  const [paymentStatus, setPaymentStatus] = useState("");
-  const [stateRent, setStateRent] = useState("");
-
-  const [currentPage, setCurrentPage] = useState(0); // backend começa em 0
+  const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const rowsPerPage = 10;
 
-  const location = useLocation().pathname;
+  const rowsPerPage = 10;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchData(currentPage);
-  }, [rents, singleClient, currentPage]);
+  /* =========================
+     HELPERS
+  ========================== */
+  const normalizeResponse = (response) => {
+    if (Array.isArray(response)) return response;
+    if (response?.content) return response.content;
+    return [];
+  };
 
+  /* =========================
+     FETCH PADRÃO
+  ========================== */
   const fetchData = async (page = 0) => {
     try {
       setLoading(true);
+
       if (singleClient) {
         setClient(singleClient);
-        setData(singleClient.rents || []);
-        setTotalPages(1);
-      } else if (rents) {
+        const rents = singleClient?.rents ?? [];
         setData(rents);
         setTotalPages(1);
-      } else {
-        const response = await api.get(`/rent?page=${page}&size=${rowsPerPage}`);
-        setData(response.data.content || []);
-        setTotalPages(response.data.totalPages || 1);
+        setNotFound(rents.length === 0);
+        return;
       }
-      setNotFound(false);
+
+      if (rents) {
+        setData(rents);
+        setTotalPages(1);
+        setNotFound(rents.length === 0);
+        return;
+      }
+
+      const response = await api.get(`/rent?page=${page}&size=${rowsPerPage}`);
+      const content = normalizeResponse(response.data);
+
+      setData(content);
+      setTotalPages(response.data?.totalPages ?? 1);
+      setNotFound(content.length === 0);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      setNotFound(true);
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* =========================
+     FETCH COM FILTRO
+  ========================== */
+  const fetchFilteredData = async (page = 0) => {
+    try {
+      setLoading(true);
+
+      const params = new URLSearchParams({
+        page,
+        size: rowsPerPage,
+        clientName: clientName || '',
+        paymentStatus: paymentStatus || '',
+        stateRent: stateRent || '',
+      });
+
+      const response = await api.get(`/rent/filter?${params}`);
+      const content = normalizeResponse(response.data);
+
+      setData(content);
+      setTotalPages(response.data?.totalPages ?? 1);
+      setNotFound(content.length === 0);
+    } catch (error) {
+      console.error('Erro ao filtrar:', error);
+      setData([]);
       setNotFound(true);
     } finally {
       setLoading(false);
     }
   };
 
-  const selectedFilterSearch = async (e) => {
-    e.preventDefault();
-    try {
-      setLoading(true);
-      const url = `/rent/filter?page=${currentPage}&size=${rowsPerPage}&clientName=${encodeURIComponent(
-        clientName || ""
-      )}&paymentStatus=${paymentStatus || ""}&stateRent=${stateRent || ""}`;
-
-      const response = await api.get(url);
-      setData(response.data.content || []);
-      setTotalPages(response.data.totalPages || 1);
-      setNotFound((response.data.content || []).length === 0);
-    } catch (error) {
-      console.error("Erro ao buscar aluguéis filtrados:", error);
-    } finally {
-      setLoading(false);
+  /* =========================
+     EFFECT
+  ========================== */
+  useEffect(() => {
+    if (isFiltering) {
+      fetchFilteredData(currentPage);
+    } else {
+      fetchData(currentPage);
     }
+  }, [currentPage, rents, singleClient]);
+
+  /* =========================
+     FILTROS
+  ========================== */
+  const handleFilterSubmit = (e) => {
+    e.preventDefault();
+    setIsFiltering(true);
+    setCurrentPage(0);
+    fetchFilteredData(0);
   };
 
-  const handlePrevious = () =>
-    setCurrentPage((prev) => Math.max(prev - 1, 0));
-  const handleNext = () =>
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages - 1));
+  const clearFilters = () => {
+    setClientName('');
+    setPaymentStatus('');
+    setStateRent('');
+    setIsFiltering(false);
+    setCurrentPage(0);
+    fetchData(0);
+  };
 
+  /* =========================
+     PAGINAÇÃO
+  ========================== */
+  const handlePrevious = () => setCurrentPage((p) => Math.max(p - 1, 0));
+  const handleNext = () => setCurrentPage((p) => Math.min(p + 1, totalPages - 1));
+
+  /* =========================
+     AÇÕES
+  ========================== */
   const handleDeleteRent = async (id) => {
     try {
-      const response = await api.delete(`rent/delete/${id}`);
+      const response = await api.delete(`/rent/delete/${id}`);
+      setSuccess(response.data?.message ?? 'Locação removida');
+      setData((prev) => prev.filter((r) => r.id !== id));
       setOpenModal(false);
-      setSuccess(response.data.message);
-      setData((prevData) => prevData.filter((rent) => rent.id !== id));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const completeRent = async (id) => {
     try {
-      await api.put(`/rent/completed/${id}`, {});
-      setOpenModalCompleteRent(false);
-      setData((prevData) =>
-        prevData.map((rent) =>
-          rent.id === id
-            ? { ...rent, paymentStatus: "PAID", stateRent: "DELIVERED" }
-            : rent
-        )
+      await api.put(`/rent/completed/${id}`);
+      setData((prev) =>
+        prev.map((rent) =>
+          rent.id === id ? { ...rent, paymentStatus: 'PAID', stateRent: 'DELIVERED' } : rent,
+        ),
       );
+      setOpenModalCompleteRent(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const openPdf = (rent) => {
-    const transformedRentItems = rent.rentItems.map((item) => ({
+    const items = rent.rentItems.map((item) => ({
       ...item,
       name: item.tool.name,
       tool: undefined,
     }));
-    const clientData = singleClient || rent.client;
-    const rentData = {
-      client: clientData,
-      items: transformedRentItems,
-      price: rent.price,
-      initialDate: rent.initialDate,
-      deliveryDate: rent.deliveryDate,
-      freight: rent.freight,
-      obs: rent.obs,
-    };
-    navigate("/pdf", { state: rentData });
+
+    navigate('/pdf', {
+      state: {
+        client: singleClient || rent.client,
+        items,
+        price: rent.price,
+        initialDate: rent.initialDate,
+        deliveryDate: rent.deliveryDate,
+        freight: rent.freight,
+        obs: rent.obs,
+      },
+    });
   };
 
-  const openModalClient = (e, id, name) => {
-    e.preventDefault();
-    setRentToDeleteId(id);
-    setClientName(name);
-    setOpenModal(true);
+  const getPaymentStatus = (status) => {
+    if (status === 'PAID') return 'PAGO';
+    if (status === 'PARTIALLY_PAID') return 'PARCIAL';
+    return 'NÃO PAGO';
   };
 
-  const openModalFinishRent = (e, id, name) => {
-    e.preventDefault();
-    setClientName(name);
-    setOpenModalCompleteRent(true);
-    setRentToCompleteId(id);
-  };
-
-  const parseDate = (dateString) => {
-    const [day, month, year] = dateString.split("/");
-    return new Date(year, month - 1, day);
-  };
-
-  const getDeliveryStatus = (deliveryDate, paymentStatus, stateRent) => {
-    const currentDate = new Date();
-    const delivery = parseDate(deliveryDate);
-    const timeDiff = delivery.getTime() - currentDate.getTime();
-    const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
-
-    if (dayDiff < 0 && (paymentStatus !== "PAID" || stateRent !== "DELIVERED")) {
-      return "overdue";
-    }
-    if (dayDiff <= 2 && (paymentStatus !== "PAID" || stateRent !== "DELIVERED")) {
-      return "near";
-    }
-    return "onTime";
-  };
-
-  const getRowClass = (row) => {
-    if (row.stateRent === "DELIVERED") return styles.rowPaid;
-    if (row.stateRent === "PENDENT") return styles.rowOverdue;
-    return "";
-  };
-
-  const getDeliveryStatusStyle = (row) => {
-    const status = getDeliveryStatus(
-      row.deliveryDate,
-      row.paymentStatus,
-      row.stateRent
-    );
-    if (status === "near") return styles.rowNear;
-    if (status === "overdue") return styles.rowOverdue;
-    return "";
-  };
-
-  const getRowClassPaymentStatus = (row) => {
-    if (row.paymentStatus === "PAID") return styles.rowPaid;
-    if (row.paymentStatus === "PARTIALLY_PAID") return styles.rowNear;
-    if (row.paymentStatus === "UNPAID") return styles.rowOverdue;
-    return "";
-  };
-
-  const getPaymentStatus = (payment) => {
-    if (payment === "PAID") return "PAGO";
-    if (payment === "UNPAID") return "NÃO PAGO";
-    if (payment === "PARTIALLY_PAID") return "PARC PAGO";
-  };
+  /* =========================
+     RENDER
+  ========================== */
+  if (loading) return <Loading table />;
 
   return (
-    <>
-      {loading ? (
-        <Loading table={true} />
-      ) : (
-        <div className={styles.tableContainer}>
-          {success && (
-            <ComponentMessage
-              message={success}
-              type="success"
-              onClose={() => setSuccess(null)}
-            />
-          )}
+  <div className={styles.tableContainer}>
+    {success && (
+      <ComponentMessage
+        message={success}
+        type="success"
+        onClose={() => setSuccess(null)}
+      />
+    )}
 
-          <form className={styles.searchContainer} onSubmit={selectedFilterSearch}>
-            <div className={styles.inputGroup}>
-              <input
-                type="text"
-                id="search"
-                placeholder="Digite para buscar..."
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-                className={styles.input}
-              />
-              <select
-                name="paymentStatus"
-                id="paymentStatus"
-                onChange={(e) => setPaymentStatus(e.target.value)}
-                value={paymentStatus}
-                className={styles.select}
-              >
-                <option value="">Status de Pagamento</option>
-                <option value="PAID">Pago</option>
-                <option value="PARTIALLY_PAID">Parcialmente pago</option>
-                <option value="UNPAID">Não pago</option>
-              </select>
-              <select
-                name="stateRent"
-                id="stateRent"
-                onChange={(e) => setStateRent(e.target.value)}
-                value={stateRent}
-                className={styles.select}
-              >
-                <option value="">Estado do Aluguel</option>
-                <option value="DELIVERED">Entregue</option>
-                <option value="PENDENT">Pendente</option>
-              </select>
-              <button type="submit" className={styles.button}>
-                Pesquisar
-              </button>
-            </div>
-          </form>
+    {/* FILTRO */}
+    <form className={styles.searchContainer} onSubmit={handleFilterSubmit}>
+      <div className={styles.inputGroup}>
+        <input
+          type="text"
+          placeholder="Digite para buscar..."
+          value={clientName}
+          onChange={(e) => setClientName(e.target.value)}
+          className={styles.input}
+        />
 
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Endereço</th>
-                <th>Data inicial</th>
-                <th>Data final</th>
-                <th>Valor</th>
-                <th>Pagamento</th>
-                <th>Devolução equip</th>
-                {(location === "/alugueis" ||
-                  location === `/clientes/${client?.id}` ||
-                  location === "/inicial") && <th>Ações</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {notFound ? (
-                <tr>
-                  <td colSpan="8" className={styles.messageNotFound}>
-                    Nenhuma Locação encontrada
-                  </td>
-                </tr>
-              ) : (
-                data.map((row) => (
-                  <tr
-                    key={row.id}
-                    onClick={location === "/alugar" ? () => selected(row) : undefined}
-                  >
-                    <td>{row.id}</td>
-                    <td>{row.client?.name || client?.name}</td>
-                    <td>
-                      {row.client?.addresses?.[0]?.street ||
-                        client?.addresses?.[0]?.street}
-                    </td>
-                    <td>{row.initialDate}</td>
-                    <td className={getDeliveryStatusStyle(row)}>{row.deliveryDate}</td>
-                    <td>{formateNumber(row.price)}</td>
-                    <td>
-                      <span
-                        className={`${styles.tableRow} ${getRowClassPaymentStatus(row)}`}
-                      >
-                        {getPaymentStatus(row.paymentStatus)}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={`${styles.tableRow} ${getRowClass(row)}`}>
-                        {row.stateRent === "DELIVERED" ? "ENTREGUE" : "PENDENTE"}
-                      </span>
-                    </td>
-                    {(location === "/alugueis" ||
-                      location === `/clientes/${client?.id}` ||
-                      location === "/inicial") && (
-                        <td>
-                          <MdDelete
-                            style={{ marginRight: "5px" }}
-                            color="red"
-                            onClick={(e) => openModalClient(e, row.id, row.client?.name)}
-                          />
-                          <FaPen
-                            style={{ marginRight: "5px" }}
-                            onClick={(e) => selected(e, row.id)}
-                          />
-                          <FaPaste
-                            style={{ marginRight: "5px" }}
-                            onClick={() => openPdf(row)}
-                          />
-                          <MdOutlineDoneOutline
-                            color="green"
-                            onClick={
-                              row.stateRent === "PENDENT" || row.paymentStatus !== "PAID"
-                                ? (e) =>
-                                  openModalFinishRent(e, row.id, row.client?.name)
-                                : null
-                            }
-                          />
-                        </td>
-                      )}
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+        <select
+          value={paymentStatus}
+          onChange={(e) => setPaymentStatus(e.target.value)}
+          className={styles.select}
+        >
+          <option value="">Status de Pagamento</option>
+          <option value="PAID">Pago</option>
+          <option value="PARTIALLY_PAID">Parcialmente pago</option>
+          <option value="UNPAID">Não pago</option>
+        </select>
 
-          <ConfirmDeleteModal
-            open={openModal}
-            itemName={clientName}
-            onClose={() => setOpenModal(false)}
-            onConfirm={() => handleDeleteRent(rentToDeleteId)}
-            remove={true}
-          />
-          <ConfirmDeleteModal
-            open={openModalCompleteRent}
-            itemName={clientName}
-            onClose={() => setOpenModalCompleteRent(false)}
-            onConfirm={() => completeRent(rentToCompleteId)}
-          />
+        <select
+          value={stateRent}
+          onChange={(e) => setStateRent(e.target.value)}
+          className={styles.select}
+        >
+          <option value="">Estado do Aluguel</option>
+          <option value="DELIVERED">Entregue</option>
+          <option value="PENDENT">Pendente</option>
+        </select>
 
-          <div className={styles.pagination}>
-            <button onClick={handlePrevious} disabled={currentPage === 0}>
-              Anterior
-            </button>
-            <span>
-              Página {currentPage + 1} de {totalPages}
-            </span>
-            <button
-              onClick={handleNext}
-              disabled={currentPage + 1 >= totalPages}
-            >
-              Próxima
-            </button>
-          </div>
-        </div>
-      )}
-    </>
-  );
+        <button type="submit" className={styles.button}>
+          Pesquisar
+        </button>
+
+        {isFiltering && (
+          <button
+            type="button"
+            className={styles.buttonSecondary}
+            onClick={clearFilters}
+          >
+            Limpar
+          </button>
+        )}
+      </div>
+    </form>
+
+    {/* TABELA */}
+    <table className={styles.table}>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Cliente</th>
+          <th>Início</th>
+          <th>Entrega</th>
+          <th>Valor</th>
+          <th>Pagamento</th>
+          <th>Estado</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {notFound ? (
+          <tr>
+            <td colSpan="8" className={styles.messageNotFound}>
+              Nenhuma locação encontrada
+            </td>
+          </tr>
+        ) : (
+          data.map((row) => (
+            <tr key={row.id}>
+              <td>{row.id}</td>
+              <td>{row.client?.name || client?.name}</td>
+              <td>{row.initialDate}</td>
+              <td>{row.deliveryDate}</td>
+              <td>{formateNumber(row.price)}</td>
+
+              <td>
+                <span
+                  className={`${styles.tableRow} ${
+                    row.paymentStatus === "PAID"
+                      ? styles.rowPaid
+                      : row.paymentStatus === "PARTIALLY_PAID"
+                      ? styles.rowNear
+                      : styles.rowOverdue
+                  }`}
+                >
+                  {getPaymentStatus(row.paymentStatus)}
+                </span>
+              </td>
+
+              <td>
+                <span
+                  className={`${styles.tableRow} ${
+                    row.stateRent === "DELIVERED"
+                      ? styles.rowPaid
+                      : styles.rowOverdue
+                  }`}
+                >
+                  {row.stateRent === "DELIVERED" ? "ENTREGUE" : "PENDENTE"}
+                </span>
+              </td>
+
+              <td className={styles.actions}>
+                <MdDelete
+                  color="red"
+                  onClick={() => {
+                    setRentToDeleteId(row.id);
+                    setClientName(row.client?.name);
+                    setOpenModal(true);
+                  }}
+                />
+
+                <FaPen onClick={(e) => selected(e, row.id)} />
+
+                <FaPaste onClick={() => openPdf(row)} />
+
+                <MdOutlineDoneOutline
+                  color="green"
+                  onClick={() => {
+                    setRentToCompleteId(row.id);
+                    setOpenModalCompleteRent(true);
+                  }}
+                />
+              </td>
+            </tr>
+          ))
+        )}
+      </tbody>
+    </table>
+
+    {/* PAGINAÇÃO */}
+    <div className={styles.pagination}>
+      <button onClick={handlePrevious} disabled={currentPage === 0}>
+        Anterior
+      </button>
+
+      <span>
+        Página {currentPage + 1} de {totalPages}
+      </span>
+
+      <button
+        onClick={handleNext}
+        disabled={currentPage + 1 >= totalPages}
+      >
+        Próxima
+      </button>
+    </div>
+
+    {/* MODAIS */}
+    <ConfirmDeleteModal
+      open={openModal}
+      itemName={clientName}
+      onClose={() => setOpenModal(false)}
+      onConfirm={() => handleDeleteRent(rentToDeleteId)}
+      remove
+    />
+
+    <ConfirmDeleteModal
+      open={openModalCompleteRent}
+      itemName={clientName}
+      onClose={() => setOpenModalCompleteRent(false)}
+      onConfirm={() => completeRent(rentToCompleteId)}
+    />
+  </div>
+);
+
 };
 
 export default RentsTable;
-
