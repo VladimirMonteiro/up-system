@@ -5,211 +5,260 @@ import React, {
   useRef,
   forwardRef,
   useImperativeHandle,
-} from "react";
-import styles from "./Table.module.css";
-import api from "../../utils/api";
+} from 'react';
+import styles from './Table.module.css';
+import api from '../../utils/api';
 
-import { MdDelete } from "react-icons/md";
-import { FaPen } from "react-icons/fa";
-import { GrView } from "react-icons/gr";
+// Ícones
+import { MdDelete } from 'react-icons/md';
+import { FaPen } from 'react-icons/fa';
+import { GrView } from 'react-icons/gr';
 
-import { useLocation, useNavigate } from "react-router-dom";
-import ConfirmDeleteModal from "../modalConfirmDelete/ConfirmDeleteModal";
-import ComponentMessage from "../componentMessage/ComponentMessage";
-import Loading from "../loading/Loading";
+// Router
+import { useLocation, useNavigate } from 'react-router-dom';
 
+// Componentes auxiliares
+import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
+import ComponentMessage from '../componentMessage/ComponentMessage';
+import Loading from '../loading/Loading';
+
+// Quantidade fixa de linhas por página
 const rowsPerPage = 13;
 
+/**
+ * Tabela de clientes
+ * - Lista clientes com paginação
+ * - Permite busca manual (submit)
+ * - Mostra ações somente na rota /clientes
+ * - Exponibiliza métodos imperativos via ref
+ */
 const Table = forwardRef(({ selected, loading, setLoadingClients, isOpen }, ref) => {
-  const [data, setData] = useState({ content: [], totalPages: 0 });
-  const [searchTerm, setSearchTerm] = useState("");
-  const [success, setSuccess] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [openModalDelete, setOpenModalDelete] = useState(false);
-  const [loadingTable, setLoadingTable] = useState(true);
-  const [clientToDelete, setClientToDelete] = useState(null);
-  const [clientName, setClientName] = useState("");
+  /* =======================
+       STATES
+    ======================== */
 
-  
-  const pathname = useLocation().pathname;
+  // Dados da tabela (padrão Spring Page)
+  const [data, setData] = useState({ content: [], totalPages: 0 });
+
+  // Termo digitado no input de busca
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Mensagem de sucesso (delete)
+  const [success, setSuccess] = useState(null);
+
+  // Página atual
+  const [currentPage, setCurrentPage] = useState(0);
+
+  // Modal de confirmação de delete
+  const [openModalDelete, setOpenModalDelete] = useState(false);
+
+  // Loading específico da tabela
+  const [loadingTable, setLoadingTable] = useState(true);
+
+  // Cliente selecionado para exclusão
+  const [clientToDelete, setClientToDelete] = useState(null);
+  const [clientName, setClientName] = useState('');
+
+  /* =======================
+       ROUTER
+    ======================== */
+
+  const { pathname } = useLocation();
   const navigate = useNavigate();
 
+  // Verifica se estamos na rota /clientes ou subrotas
+  const isClientesRoute = pathname === '/clientes' || pathname.startsWith('/clientes/');
+
+  /* =======================
+       REFS
+    ======================== */
+
+  // Referência do input de busca
   const searchInputRef = useRef(null);
 
-  // expõe métodos imperativos para o pai (opcional)
+  /* =======================
+       MÉTODOS IMPERATIVOS
+       (expostos ao componente pai)
+    ======================== */
+
   useImperativeHandle(ref, () => ({
+    // Foca e seleciona o texto do input
     focus: () => focusInputOnce(),
-    clearSearch: () => setSearchTerm(""),
+    // Limpa a busca
+    clearSearch: () => setSearchTerm(''),
   }));
 
-  // função que foca o input (segura)
   const focusInputOnce = () => {
-    try {
-      if (searchInputRef.current) {
-        searchInputRef.current.focus();
-        searchInputRef.current.select?.();
-        return true;
-      }
-    } catch (err) {
-      // ignore
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+      searchInputRef.current.select?.();
+      return true;
     }
     return false;
   };
 
-  // Ao abrir o modal, tentamos focar no input. Mas só quando a tabela já terminou de carregar.
-  // Fazemos polling com um interval e máximo de tentativas para garantir foco em portais / focus-traps.
+  /* =======================
+       FOCUS AUTOMÁTICO
+       (quando modal abre)
+    ======================== */
+
   useEffect(() => {
     if (!isOpen) return;
 
     let attempts = 0;
-    const maxAttempts = 20; // 20 * 80ms ≈ 1600ms máximo de espera
-    const intervalMs = 80;
+    const maxAttempts = 20;
 
     const timer = setInterval(() => {
       attempts++;
-      // somente foca quando a tabela já não está em loading e o input existe
       if (!loadingTable && searchInputRef.current) {
         focusInputOnce();
         clearInterval(timer);
       } else if (attempts >= maxAttempts) {
-        clearInterval(timer); // evita loop infinito
+        clearInterval(timer);
       }
-    }, intervalMs);
+    }, 80);
 
-    // cleanup
     return () => clearInterval(timer);
   }, [isOpen, loadingTable]);
 
-  // busca geral (sem filtro) / paginada
+  /* =======================
+       BUSCA SEM FILTRO
+    ======================== */
+
   const fetchClients = useCallback(
     async (page = currentPage) => {
       try {
         setLoadingTable(true);
+
         const response = await api.get(`/clients?page=${page}&size=${rowsPerPage}`);
+
         setData(response.data || { content: [], totalPages: 0 });
-        setLoadingClients(false);
         setCurrentPage(page);
+        setLoadingClients(false);
       } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
+        console.error('Erro ao buscar clientes:', error);
       } finally {
         setLoadingTable(false);
       }
     },
-    [currentPage, setLoadingClients]
+    [currentPage, setLoadingClients],
   );
 
-  // busca com filtro (quando usuário submeter a pesquisa)
+  /* =======================
+       BUSCA COM FILTRO
+    ======================== */
+
   const searchClients = async (page = 0) => {
     try {
       setLoadingTable(true);
-      const url = `/clients/search?name=${encodeURIComponent(searchTerm)}&page=${page}&size=${rowsPerPage}`;
-      const response = await api.get(url);
+
+      const response = await api.get(
+        `/clients/search?name=${encodeURIComponent(searchTerm)}&page=${page}&size=${rowsPerPage}`,
+      );
+
       setData(response.data || { content: [], totalPages: 0 });
       setCurrentPage(page);
     } catch (error) {
-      console.error("Erro ao buscar (search) clientes:", error);
+      console.error('Erro ao buscar clientes:', error);
     } finally {
       setLoadingTable(false);
     }
   };
 
-  // carregar lista inicial (somente no mount)
+  /* =======================
+       LOAD INICIAL
+    ======================== */
+
   useEffect(() => {
     fetchClients(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // só uma vez
+  }, []);
 
   const clients = data.content || [];
 
+  /* =======================
+       PAGINAÇÃO
+    ======================== */
+
   const handlePrevious = () => {
     const newPage = Math.max(currentPage - 1, 0);
-    if (searchTerm.trim()) {
-      searchClients(newPage);
-    } else {
-      fetchClients(newPage);
-    }
-    window.scrollTo({ top: 0, behavior: "auto" });
+    searchTerm.trim() ? searchClients(newPage) : fetchClients(newPage);
+    window.scrollTo({ top: 0 });
   };
 
   const handleNext = () => {
     const newPage = Math.min(currentPage + 1, Math.max(data.totalPages - 1, 0));
-    if (searchTerm.trim()) {
-      searchClients(newPage);
-    } else {
-      fetchClients(newPage);
-    }
-    window.scrollTo({ top: 0, behavior: "auto" });
+    searchTerm.trim() ? searchClients(newPage) : fetchClients(newPage);
+    window.scrollTo({ top: 0 });
   };
+
+  /* =======================
+       DELETE
+    ======================== */
 
   const handleDelete = async (id) => {
     try {
-      const response = await api.delete(`clients/delete/${id}`);
+      const response = await api.delete(`/clients/delete/${id}`);
+
       setData((prev) => ({
         ...prev,
         content: prev.content.filter((c) => c.id !== id),
       }));
+
       setOpenModalDelete(false);
       setSuccess(response.data.message);
     } catch (error) {
-      console.error("Erro ao deletar cliente:", error);
+      console.error('Erro ao deletar cliente:', error);
     }
   };
 
   const openModalClient = (e, id, name) => {
-    e.preventDefault();
+    e.stopPropagation();
     setClientToDelete(id);
     setClientName(name);
     setOpenModalDelete(true);
   };
 
+  /* =======================
+       SUBMIT DA BUSCA
+    ======================== */
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    // se vazio, volta pra listagem normal
-    if (!searchTerm.trim()) {
-      fetchClients(0);
-    } else {
-      searchClients(0);
-    }
+    searchTerm.trim() ? searchClients(0) : fetchClients(0);
   };
 
-    const rowSelectable = ["/alugar", "/criar-orcamento"].some(
-    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
-  );
+  /* =======================
+       RENDER
+    ======================== */
 
   return (
     <>
       {loading || loadingTable ? (
-        <Loading table={true} />
+        <Loading table />
       ) : (
         <div className={styles.tableContainer}>
           {success && (
-            <ComponentMessage
-              message={success}
-              type="success"
-              onClose={() => setSuccess(null)}
-            />
+            <ComponentMessage message={success} type='success' onClose={() => setSuccess(null)} />
           )}
 
-          {/* formulário de pesquisa - submeter (enter ou botão) dispara chamada ao backend */}
+          {/* BUSCA */}
           <form className={styles.inputGroup} onSubmit={handleSearchSubmit}>
             <input
               ref={searchInputRef}
-              type="text"
-              id="search"
-              placeholder="Digite para buscar..."
+              type='text'
+              placeholder='Digite para buscar...'
               value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                // não disparar busca automática aqui (só no submit)
-              }}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className={styles.input}
-              autoComplete="off"
+              autoComplete='off'
             />
-            <button type="submit" className={styles.button}>
+            <button type='submit' className={styles.button}>
               Pesquisar
             </button>
           </form>
 
+          {/* TABELA */}
           <table className={styles.table}>
             <thead>
               <tr>
@@ -221,41 +270,44 @@ const Table = forwardRef(({ selected, loading, setLoadingClients, isOpen }, ref)
                 <th>Cidade</th>
                 <th>Bairro</th>
                 <th>CEP</th>
-                {location === "/clientes" && <th>Ações</th>}
+                {isClientesRoute && <th>Ações</th>}
               </tr>
             </thead>
+
             <tbody>
               {clients.map((row) => {
-                const phone = row.phones?.[0] || "-";
+                const phone = row.phones?.[0] || '-';
                 const addr = row.addresses?.[0];
+
                 return (
-                  <tr
-                    key={row.id}
-                    onClick={
-                      rowSelectable ? () => selected(row) : undefined
-                    }
-                  >
+                  <tr key={row.id}>
                     <td>{row.id}</td>
                     <td>{row.name}</td>
-                    <td>{row.cpf || row.cnpj || "-"}</td>
+                    <td>{row.cpf || row.cnpj || '-'}</td>
                     <td>{phone}</td>
-                    <td>{addr ? `${addr.street} - ${addr.number}` : "-"}</td>
-                    <td>{addr?.city || "-"}</td>
-                    <td>{addr?.neighborhood || "-"}</td>
-                    <td>{addr?.cep || "-"}</td>
+                    <td>{addr ? `${addr.street} - ${addr.number}` : '-'}</td>
+                    <td>{addr?.city || '-'}</td>
+                    <td>{addr?.neighborhood || '-'}</td>
+                    <td>{addr?.cep || '-'}</td>
 
-                    {location === "/clientes" && (
-                      <td style={{ padding: "5px" }}>
+                    {isClientesRoute && (
+                      <td style={{ padding: '5px' }}>
                         <FaPen
-                          style={{ marginRight: "5px" }}
-                          onClick={(e) => selected(e, row.id)}
+                          style={{ marginRight: '5px' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            selected(e, row.id);
+                          }}
                         />
                         <GrView
-                          style={{ marginRight: "5px" }}
-                          onClick={() => navigate(`/clientes/${row.id}`)}
+                          style={{ marginRight: '5px' }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/clientes/${row.id}`);
+                          }}
                         />
                         <MdDelete
-                          style={{ color: "red" }}
+                          style={{ color: 'red' }}
                           onClick={(e) => openModalClient(e, row.id, row.name)}
                         />
                       </td>
@@ -266,14 +318,16 @@ const Table = forwardRef(({ selected, loading, setLoadingClients, isOpen }, ref)
             </tbody>
           </table>
 
+          {/* MODAL DELETE */}
           <ConfirmDeleteModal
             open={openModalDelete}
             itemName={clientName}
             onClose={() => setOpenModalDelete(false)}
             onConfirm={() => handleDelete(clientToDelete)}
-            remove={true}
+            remove
           />
 
+          {/* PAGINAÇÃO */}
           <div className={styles.pagination}>
             <button onClick={handlePrevious} disabled={currentPage === 0}>
               Anterior
@@ -281,10 +335,7 @@ const Table = forwardRef(({ selected, loading, setLoadingClients, isOpen }, ref)
             <span>
               Página {currentPage + 1} de {data.totalPages}
             </span>
-            <button
-              onClick={handleNext}
-              disabled={currentPage === data.totalPages - 1}
-            >
+            <button onClick={handleNext} disabled={currentPage === data.totalPages - 1}>
               Próxima
             </button>
           </div>

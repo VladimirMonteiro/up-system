@@ -51,39 +51,30 @@ const RentsTable = ({ selected, rents, singleClient }) => {
      FETCH PADRÃO
   ========================== */
   const fetchData = async (page = 0) => {
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      if (singleClient) {
-        setClient(singleClient);
-        const rents = singleClient?.rents ?? [];
-        setData(rents);
-        setTotalPages(1);
-        setNotFound(rents.length === 0);
-        return;
-      }
-
-      if (rents) {
-        setData(rents);
-        setTotalPages(1);
-        setNotFound(rents.length === 0);
-        return;
-      }
-
+    if (singleClient && rents) {
+      setClient(singleClient);
+      setData(rents);
+      setTotalPages(1);
+      setNotFound(rents.length === 0);
+    } else {
       const response = await api.get(`/rent?page=${page}&size=${rowsPerPage}`);
       const content = normalizeResponse(response.data);
 
       setData(content);
       setTotalPages(response.data?.totalPages ?? 1);
       setNotFound(content.length === 0);
-    } catch (error) {
-      console.error(error);
-      setNotFound(true);
-      setData([]);
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    console.error(error);
+    setNotFound(true);
+    setData([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   /* =========================
      FETCH COM FILTRO

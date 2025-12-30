@@ -1,150 +1,122 @@
-import { useState, useEffect } from "react";
-import Navbar from "../../../components/navbar/Navbar";
-import Table from "../../../components/tableClients/Table";
-import styles from "./Clients.module.css";
-import Modal from "../../../components/modal/Modal";
-import RegisterClient from "../../../components/RegisterClient/RegisterClient";
-import api from "../../../utils/api";
-import UpdateClientFs from "../../../components/updateClientFs/UpdateClientFs";
-import UpdateClientPj from "../../../components/updateClientsPj/UpdateClientPj";
-import ComponentMessage from "../../../components/componentMessage/ComponentMessage";
+import { useState, useEffect } from 'react';
+import Navbar from '../../../components/navbar/Navbar';
+import Table from '../../../components/tableClients/Table';
+import styles from './Clients.module.css';
+import Modal from '../../../components/modal/Modal';
+import RegisterClient from '../../../components/RegisterClient/RegisterClient';
+import api from '../../../utils/api';
+import UpdateClientFs from '../../../components/updateClientFs/UpdateClientFs';
+import UpdateClientPj from '../../../components/updateClientsPj/UpdateClientPj';
+import ComponentMessage from '../../../components/componentMessage/ComponentMessage';
 
 const Clients = () => {
-  const [modalClients, setModalClients] = useState(false);
-  const [client, setClient] = useState({});
   const [clients, setClients] = useState([]);
-  const [loadingClient, setLoadingClient] = useState(true);
+  const [client, setClient] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [success, setSuccess] = useState(null);
   const [errors, setErrors] = useState(null);
-  const [errorsPj, setErrorsPj] = useState(null);
   const [errorsUpdate, setErrorsUpdate] = useState(null);
   const [errorsUpdatePj, setErrorsUpdatePj] = useState(null);
-  const [modalUpdateClients, setModalUpdateClients] = useState(false);
-  const [modalUpdateClientsPj, setModalUpdateClientsPj] = useState(false);
+
+  const [modalCreate, setModalCreate] = useState(false);
+  const [modalUpdateFs, setModalUpdateFs] = useState(false);
+  const [modalUpdatePj, setModalUpdatePj] = useState(false);
+
+  /* ===============================
+     BUSCAR CLIENTES (ÚNICA FONTE)
+  =============================== */
+  const loadClients = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/clients");
+
+      const data = response.data?.content || response.data;
+      setClients(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Erro ao carregar clientes", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadClients = async () => {
-      try {
-        setLoadingClient(true);
-        const response = await api.get("clients");
-        setClients(Array.isArray(response.data) ? response.data : []);
-      } catch (error) {
-        console.error("Erro ao carregar clientes:", error);
-      } finally {
-        setLoadingClient(false);
-      }
-    };
     loadClients();
   }, []);
 
-  const handleUpdateClient = async (e, id) => {
+  /* ===============================
+     CRIAR CLIENTE (FS ou PJ)
+  =============================== */
+  const handleCreateClient = async (clientData) => {
     try {
-      const response = await api.get(`clients/${id}`);
-      if (response.data) {
-        setClient(response.data);
-        response.data.cnpj
-          ? setModalUpdateClientsPj(true)
-          : setModalUpdateClients(true);
-      }
-    } catch (error) {
-      console.error("Erro ao obter cliente:", error);
-    }
-  };
+      const response = await api.post("/clients/create", clientData);
 
-  // criar cliente FS
-  const handleCreateClientFs = async (client) => {
-    try {
-      const response = await api.post("clients/createFs", client);
-
-      if (!response.data?.errors) {
-        const newClient =
-          response.data?.client || response.data?.content || response.data;
-
-        setClients((prev) =>
-          Array.isArray(prev) ? [...prev, newClient] : [newClient]
-        );
-
-        setSuccess(response.data?.message || "Cliente cadastrado com sucesso!");
-        setErrors(null);
-      } else {
+      if (response.data?.errors) {
         setErrors(response.data.errors);
+        return;
       }
-      return response.data;
+
+      setErrors(null);
+      setSuccess("Cliente cadastrado com sucesso!");
+      setModalCreate(false);
+
+      await loadClients(); // 🔥 AQUI ESTÁ O SEGREDO
     } catch (error) {
       setErrors(error.response?.data?.errors || ["Erro inesperado"]);
-      return { errors: true };
     }
   };
 
-  // criar cliente PJ
-  const handleCreateClientPj = async (client) => {
+  /* ===============================
+     ABRIR MODAL UPDATE
+  =============================== */
+  const handleSelectClient = async (_, id) => {
     try {
-      const response = await api.post("clients/createPj", client);
+      const response = await api.get(`/clients/${id}`);
+      setClient(response.data);
 
-      if (!response.data?.errors) {
-        const newClient =
-          response.data?.client || response.data?.content || response.data;
-
-        setClients((prev) =>
-          Array.isArray(prev) ? [...prev, newClient] : [newClient]
-        );
-
-        setSuccess(response.data?.message || "Cliente cadastrado com sucesso!");
-        setErrorsPj(null);
-        setModalClients(false);
-      } else {
-        setErrorsPj(response.data.errors);
-      }
-      return response.data;
+      response.data.cnpj
+        ? setModalUpdatePj(true)
+        : setModalUpdateFs(true);
     } catch (error) {
-      setErrorsPj(error.response?.data?.errors || ["Erro inesperado"]);
-      return { errors: true };
+      console.error("Erro ao buscar cliente", error);
     }
   };
 
-  // update FS
-  const updateClientFs = async (id, updateClient) => {
+  /* ===============================
+     UPDATE FS
+  =============================== */
+  const updateClientFs = async (id, data) => {
     try {
-      const response = await api.put(
-        `/clients/update/clientFs/${id}`,
-        updateClient
-      );
+      const response = await api.put(`/clients/${id}`, {...data, type: "clientFS"});
 
-      if (!response.data?.errors) {
-        setClients((prev) =>
-          prev.map((c) => (c.id === id ? response.data : c))
-        );
-
-        setSuccess(response.data?.message || "Cliente atualizado!");
-        setErrorsUpdate(null);
-        setModalUpdateClients(false);
-      } else {
+      if (response.data?.errors) {
         setErrorsUpdate(response.data.errors);
+        return;
       }
+
+      setModalUpdateFs(false);
+      setSuccess("Cliente atualizado com sucesso!");
+      await loadClients();
     } catch (error) {
       setErrorsUpdate(error.response?.data?.errors || ["Erro inesperado"]);
     }
   };
 
-  // update PJ
-  const updateClientPj = async (id, updateClient) => {
+  /* ===============================
+     UPDATE PJ
+  =============================== */
+  const updateClientPj = async (id, data) => {
     try {
-      const response = await api.put(
-        `/clients/update/clientPj/${id}`,
-        updateClient
-      );
+      const response = await api.put(`/clients/${id}`, {...data, type: "clientPJ"});
 
-      if (!response.data?.errors) {
-        setClients((prev) =>
-          prev.map((c) => (c.id === id ? response.data : c))
-        );
-
-        setSuccess(response.data?.message || "Cliente atualizado!");
-        setErrorsUpdatePj(null);
-        setModalUpdateClientsPj(false);
-      } else {
+      if (response.data?.errors) {
         setErrorsUpdatePj(response.data.errors);
+        return;
       }
+
+      setModalUpdatePj(false);
+      setSuccess("Cliente atualizado com sucesso!");
+      await loadClients();
     } catch (error) {
       setErrorsUpdatePj(error.response?.data?.errors || ["Erro inesperado"]);
     }
@@ -152,13 +124,12 @@ const Clients = () => {
 
   return (
     <div className="mainContainerFlex">
-    
       <Navbar />
 
       {success && (
         <ComponentMessage
-          message={success}
           type="success"
+          message={success}
           onClose={() => setSuccess(null)}
         />
       )}
@@ -166,55 +137,59 @@ const Clients = () => {
       <section className={styles.containerSection}>
         <div className="content">
           <h1>Clientes</h1>
+
           <Table
-            selected={handleUpdateClient}
             clients={clients}
-            loading={loadingClient}
-            setLoadingClients={setLoadingClient}
+            loading={loading}
+            selected={handleSelectClient}
           />
+
           <div className={styles.containerBtn}>
-            <button onClick={() => setModalClients(true)}>Cadastrar Cliente</button>
+            <button onClick={() => setModalCreate(true)}>
+              Cadastrar Cliente
+            </button>
           </div>
-          {/* Cadastro */}
+
+          {/* CREATE */}
           <Modal
-            isOpen={modalClients}
-            onClose={() => setModalClients(false)}
+            isOpen={modalCreate}
+            onClose={() => setModalCreate(false)}
             width="1000px"
             height="90vh"
             overflow="scroll"
           >
             <RegisterClient
-              createClientFs={handleCreateClientFs}
+              createClient={handleCreateClient}
               errors={errors}
-              createClientPj={handleCreateClientPj}
-              errorsPj={errorsPj}
             />
           </Modal>
-          {/* Update FS */}
+
+          {/* UPDATE FS */}
           <Modal
-            isOpen={modalUpdateClients}
-            onClose={() => setModalUpdateClients(false)}
+            isOpen={modalUpdateFs}
+            onClose={() => setModalUpdateFs(false)}
             height="90vh"
             overflow="scroll"
           >
             <UpdateClientFs
               clientId={client?.id}
               clientFs={client}
-              errors={errorsUpdate}
               updateClientFs={updateClientFs}
+              errors={errorsUpdate}
             />
           </Modal>
-          {/* Update PJ */}
+
+          {/* UPDATE PJ */}
           <Modal
-            isOpen={modalUpdateClientsPj}
-            onClose={() => setModalUpdateClientsPj(false)}
+            isOpen={modalUpdatePj}
+            onClose={() => setModalUpdatePj(false)}
             height="90vh"
             overflow="scroll"
           >
             <UpdateClientPj
               clientId={client?.id}
-              errors={errorsUpdatePj}
               updateClientPj={updateClientPj}
+              errors={errorsUpdatePj}
             />
           </Modal>
         </div>
