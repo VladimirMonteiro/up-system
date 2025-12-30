@@ -5,7 +5,7 @@ import { formatCnpj } from "../../utils/formatCnpj";
 import { formatPhone } from "../../utils/formatPhone";
 import api from "../../utils/api";
 
-const RegisterClient = ({ createClientFs, errors, createClientPj, errorsPj }) => {
+const RegisterClient = ({ createClient, errors, createClientPj, errorsPj }) => {
     const [selectedForm, setSelectedForm] = useState("pf");
     const [name, setName] = useState("");
     const [cpf, setCpf] = useState("");
@@ -97,12 +97,13 @@ const RegisterClient = ({ createClientFs, errors, createClientPj, errorsPj }) =>
             if (selectedForm === "pf") {
                 const newClientFs = {
                     name,
+                    type: "clientFS",
                     cpf,
                     phones: phones ? [phones] : null,
                     addresses: [addresses],
                 };
 
-                const response = await createClientFs(newClientFs);
+                const response = await createClient(newClientFs);
 
                 if (!response?.errors) {
                     resetForm();
@@ -111,6 +112,7 @@ const RegisterClient = ({ createClientFs, errors, createClientPj, errorsPj }) =>
             } else {
                 const newClientPj = {
                     name,
+                    type: "clientPJ",
                     cnpj,
                     phones: phones ? [phones] : null,
                     addresses: [addresses],
@@ -120,7 +122,7 @@ const RegisterClient = ({ createClientFs, errors, createClientPj, errorsPj }) =>
                     municipalRegistration,
                 };
 
-                const response = await createClientPj(newClientPj);
+                const response = await createClient(newClientPj);
 
                 if (!response?.errors) {
                     resetForm();
