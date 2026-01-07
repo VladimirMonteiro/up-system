@@ -1,20 +1,20 @@
-import { useLocation } from "react-router-dom";
-import generatePDF, { Resolution, Margin } from "react-to-pdf";
-import styles from "./Pdf.module.css";
-import { formateNumber } from "../../utils/formatNumber";
-import LocData from "./LocData";
-import logo_up from "../../assets/logoBlackUp.png";
+import { useLocation } from 'react-router-dom';
+import generatePDF, { Resolution, Margin } from 'react-to-pdf';
+import styles from './Pdf.module.css';
+import { formateNumber } from '../../utils/formatNumber';
+import LocData from './LocData';
+import logo_up from '../../assets/logoBlackUp.png';
 
 const options = {
-  method: "open",
+  method: 'open',
   resolution: Resolution.HIGH,
   page: {
     margin: Margin.SMALL,
-    format: "A4",
-    orientation: "portrait",
+    format: 'A4',
+    orientation: 'portrait',
   },
   canvas: {
-    mimeType: "image/jpeg",
+    mimeType: 'image/jpeg',
     qualityRatio: 0.8,
   },
   overrides: {
@@ -32,21 +32,23 @@ const PdfPage = () => {
   const { client, rentId, items, price, freight, obs, initialDate, deliveryDate } =
     location.state || {};
 
-  const getTargetElement = () => document.getElementById("content-id");
+  const address = client?.addresses?.[0];
+
+  const getTargetElement = () => document.getElementById('content-id');
 
   const months = [
-    "Janeiro",
-    "Fevereiro",
-    "Março",
-    "Abril",
-    "Maio",
-    "Junho",
-    "Julho",
-    "Agosto",
-    "Setembro",
-    "Outubro",
-    "Novembro",
-    "Dezembro",
+    'Janeiro',
+    'Fevereiro',
+    'Março',
+    'Abril',
+    'Maio',
+    'Junho',
+    'Julho',
+    'Agosto',
+    'Setembro',
+    'Outubro',
+    'Novembro',
+    'Dezembro',
   ];
 
   // Function to get the month name based on the number (1 to 12)
@@ -54,14 +56,14 @@ const PdfPage = () => {
     if (monthNumber >= 1 && monthNumber <= 12) {
       return months[monthNumber - 1]; // Array is 0-indexed, so subtract 1
     } else {
-      return "Mês inválido"; // Return an error message if the month number is invalid
+      return 'Mês inválido'; // Return an error message if the month number is invalid
     }
   }
 
   function dateFormatter(date) {
     // If the date is a string in "DD/MM/YYYY" format, convert it to "YYYY-MM-DD"
-    if (typeof date === "string") {
-      const parts = date.split("/");
+    if (typeof date === 'string') {
+      const parts = date.split('/');
       date = `${parts[2]}-${parts[1]}-${parts[0]}`; // Reorder to "YYYY-MM-DD"
     }
 
@@ -69,15 +71,15 @@ const PdfPage = () => {
 
     // Check if the newDate is valid
     if (isNaN(newDate)) {
-      throw new Error("Invalid date format");
+      throw new Error('Invalid date format');
     }
 
-    return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" }).format(newDate);
+    return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short' }).format(newDate);
   }
-  dateFormatter(initialDate)
-  const getDayOfMonth = (date) => dateFormatter(date).split("/")[0];
-  const getMonth = (date) => dateFormatter(date).split("/")[1];
-  const getYear = (date) => dateFormatter(date).split("/")[2];
+  dateFormatter(initialDate);
+  const getDayOfMonth = (date) => dateFormatter(date).split('/')[0];
+  const getMonth = (date) => dateFormatter(date).split('/')[1];
+  const getYear = (date) => dateFormatter(date).split('/')[2];
 
   return (
     <>
@@ -91,11 +93,11 @@ const PdfPage = () => {
       </div>
 
       <div className={styles.containerPdf}>
-        <div id="content-id" className={styles.content}>
+        <div id='content-id' className={styles.content}>
           <div className={styles.header}>
             <div className={styles.headerDiv}>
               <div className={styles.imageContainer}>
-                <img src={logo_up} alt="up locacoes"></img>
+                <img src={logo_up} alt='up locacoes'></img>
               </div>
               <div className={styles.idRent}>
                 Número do contrato: Nº {rentId ? rentId : items[0].rent}
@@ -105,32 +107,32 @@ const PdfPage = () => {
           </div>
 
           <LocData
-            title={"Contrato de Locação DADOS DO LOCADOR"}
-            name={"Up Locações de equipamentos LTDA"}
-            cpfOrCnpj={"40.094.239/0001-92"}
-            address={"Avenida Presidente Vargas, Nº 3630"}
-            neighborhood={"Centro"}
-            city={"Esteio"}
-            state={"RS"}
-            phone={"(51) 99913-4363"}
-            servicePhone={"3059-4365"}
-            email={"uplocacoes.rs@gmail.com"}
+            title={'Contrato de Locação DADOS DO LOCADOR'}
+            name={'Up Locações de equipamentos LTDA'}
+            cpfOrCnpj={'40.094.239/0001-92'}
+            address={'Avenida Presidente Vargas, Nº 3630'}
+            neighborhood={'Centro'}
+            city={'Esteio'}
+            state={'RS'}
+            phone={'(51) 99913-4363'}
+            servicePhone={'3059-4365'}
+            email={'uplocacoes.rs@gmail.com'}
           />
 
           <LocData
-            title={"Dados do Locatário"}
+            title='Dados do Locatário'
             name={client?.name}
-            cpfOrCnpj={client.cpf ? client.cpf : client.cnpj}
-            address={client.addresses[0].street + ", Nº " + client.addresses[0].number}
-            complement={client.addresses[0].complement}
-            neighborhood={client.addresses[0].neighborhood}
-            city={client.addresses[0].city}
-            state={client.addresses[0].state}
-            phone={client.phones[0]}
-            email={client.email}
+            cpfOrCnpj={client?.cpf ?? client?.cnpj}
+            address={address ? `${address.street}, Nº ${address.number}` : ''}
+            complement={address?.complement}
+            neighborhood={address?.neighborhood}
+            city={address?.city}
+            state={address?.state}
+            phone={client?.phones?.[0]}
+            email={client?.email}
           />
 
-          <p style={{ fontWeight: "bold" }}>PERIODO DE LOCAÇÃO</p>
+          <p style={{ fontWeight: 'bold' }}>PERIODO DE LOCAÇÃO</p>
           <div className={styles.line5}>
             <div>
               <span>Inicio: </span>
@@ -165,17 +167,11 @@ const PdfPage = () => {
                       </tr>
                     ))}
                   <tr>
-                    <td
-                      style={{ backgroundColor: "transparent", border: "none" }}
-                    ></td>
-                    <td
-                      style={{ backgroundColor: "transparent", border: "none" }}
-                    ></td>
-                    <td
-                      style={{ backgroundColor: "transparent", border: "none" }}
-                    ></td>
+                    <td style={{ backgroundColor: 'transparent', border: 'none' }}></td>
+                    <td style={{ backgroundColor: 'transparent', border: 'none' }}></td>
+                    <td style={{ backgroundColor: 'transparent', border: 'none' }}></td>
                     <td>
-                      <span style={{ fontWeight: "bold" }}>Frete: </span>
+                      <span style={{ fontWeight: 'bold' }}>Frete: </span>
                       {formateNumber(freight ? freight : 0)}
                     </td>
                   </tr>
@@ -191,58 +187,57 @@ const PdfPage = () => {
           <div className={styles.containerClausulas}>
             <h2>Cláusulas contratais</h2>
             <h3>
-              CONTRATO DE LOCAÇÃO DE EQUIPAMENTO PARA CONSTRUÇÃO CIVIL CONTRATO
-              PARA LOCAÇÃO DE PRAZO DETERMINADO.
+              CONTRATO DE LOCAÇÃO DE EQUIPAMENTO PARA CONSTRUÇÃO CIVIL CONTRATO PARA LOCAÇÃO DE
+              PRAZO DETERMINADO.
             </h3>
             <p>
-              As partes acima têm, entre si, justas e acertadas o presente
-              contrato para locação de equipamentos para construção civil de prazo
-              determinado, que se regerá pelas cláusulas seguintes e pelas
-              condições descritas no presente.
+              As partes acima têm, entre si, justas e acertadas o presente contrato para locação de
+              equipamentos para construção civil de prazo determinado, que se regerá pelas cláusulas
+              seguintes e pelas condições descritas no presente.
             </p>
             <ul>
               <li>
-                Cláusula 1ª: O presente contrato tem como objeto a locação de
-                equipamento para construção civil, conforme descrito.
+                Cláusula 1ª: O presente contrato tem como objeto a locação de equipamento para
+                construção civil, conforme descrito.
               </li>
               <li>
-                Cláusula 2ª: O equipamento, objeto deste contrato, será utilizado
-                exclusivamente pelo locatário, não sendo permitido o seu uso por
-                terceiros sob pena de rescisão contratual.
-              </li>{" "}
+                Cláusula 2ª: O equipamento, objeto deste contrato, será utilizado exclusivamente
+                pelo locatário, não sendo permitido o seu uso por terceiros sob pena de rescisão
+                contratual.
+              </li>{' '}
               <li>
-                Cláusula 3ª: O Locatário pagará à locadora a quantia relacionada
-                no documento em razão do aluguel do equipamento. Este pagamento
-                será realizado no vencimento especificado.
-              </li>{" "}
+                Cláusula 3ª: O Locatário pagará à locadora a quantia relacionada no documento em
+                razão do aluguel do equipamento. Este pagamento será realizado no vencimento
+                especificado.
+              </li>{' '}
               <li>
-                Cláusula 4ª: O locatário deverá devolver o equipamento à locadora
-                nas mesmas condições em que estava quando recebeu, respondendo
-                pelos danos ou prejuízos causados.
-              </li>{" "}
+                Cláusula 4ª: O locatário deverá devolver o equipamento à locadora nas mesmas
+                condições em que estava quando recebeu, respondendo pelos danos ou prejuízos
+                causados.
+              </li>{' '}
               <li>
-                Cláusula 5ª: A presente locação terá o lapso temporal de validade
-                especificado neste documento e terminando na data especificada,
-                data na qual o equipamento deverá ser devolvido.
+                Cláusula 5ª: A presente locação terá o lapso temporal de validade especificado neste
+                documento e terminando na data especificada, data na qual o equipamento deverá ser
+                devolvido.
               </li>
               <li>
-                Clausula 6ª: O descumprimento de qualquer cláusula por partes dos
-                contratantes enseja a rescisão deste instrumento e o devido
-                pagamento pela parte.
+                Clausula 6ª: O descumprimento de qualquer cláusula por partes dos contratantes
+                enseja a rescisão deste instrumento e o devido pagamento pela parte.
               </li>
               <li>
-                Clausula 7ª E por estarem de acordo com todas as cláusulas, firmam
-                o presente instrumento, por si e eventuais sucessores, em duas (2)
-                vias de igual teor, para um só efeito, com vigência a partir da
-                data de sua assinatura.
+                Clausula 7ª E por estarem de acordo com todas as cláusulas, firmam o presente
+                instrumento, por si e eventuais sucessores, em duas (2) vias de igual teor, para um
+                só efeito, com vigência a partir da data de sua assinatura.
               </li>
             </ul>
           </div>
 
-          <div style={{ marginTop: "20px" }}>
-            <p style={{ fontWeight: "bold" }}>
-              Esteio, {rentId ? dateFormatter(initialDate).split("/")[0] : initialDate.split("/")[0]} de{" "}
-              {getMonthName(dateFormatter(initialDate).split("/")[1])} de {dateFormatter(initialDate).split("/")[2]}.
+          <div style={{ marginTop: '20px' }}>
+            <p style={{ fontWeight: 'bold' }}>
+              Esteio,{' '}
+              {rentId ? dateFormatter(initialDate).split('/')[0] : initialDate.split('/')[0]} de{' '}
+              {getMonthName(dateFormatter(initialDate).split('/')[1])} de{' '}
+              {dateFormatter(initialDate).split('/')[2]}.
             </p>
           </div>
 
@@ -270,9 +265,7 @@ const PdfPage = () => {
                     Assinatura {client.name}
                     <br />
                   </strong>
-                  <strong>
-                    CPF/CNPJ: {client.cpf ? client.cpf : client.cnpj}
-                  </strong>
+                  <strong>CPF/CNPJ: {client.cpf ? client.cpf : client.cnpj}</strong>
                 </p>
               </div>
             </div>
