@@ -123,7 +123,7 @@ export default function BudgetPdf() {
             <p>
               <strong>CPF/CNPJ:</strong>
             </p>
-            <p>{client?.document}</p>
+            <p>{client?.cpfOrCnpj}</p>
             <p>
               <strong>Telefone:</strong>
             </p>
