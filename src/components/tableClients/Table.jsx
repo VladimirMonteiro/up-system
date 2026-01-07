@@ -228,6 +228,10 @@ const Table = forwardRef(({ selected, loading, setLoadingClients, isOpen }, ref)
     searchTerm.trim() ? searchClients(0) : fetchClients(0);
   };
 
+  const rowSelectable = ["/alugar", "/criar-orcamento"].some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
+  );
+
   /* =======================
        RENDER
     ======================== */
@@ -280,7 +284,9 @@ const Table = forwardRef(({ selected, loading, setLoadingClients, isOpen }, ref)
                 const addr = row.addresses?.[0];
 
                 return (
-                  <tr key={row.id}>
+                  <tr key={row.id} onClick={
+                      rowSelectable ? () => selected(row) : undefined
+                    }>
                     <td>{row.id}</td>
                     <td>{row.name}</td>
                     <td>{row.cpf || row.cnpj || '-'}</td>
