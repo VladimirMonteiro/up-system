@@ -1,0 +1,151 @@
+.tableContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+  font-family: 'Inter', system-ui, sans-serif;
+  padding: 0 16px;
+  color: #111827;
+}
+.searchContainer {
+  justify-content: center;
+  display: flex;
+  justify-content: center;
+}
+
+.inputGroup {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 1rem;
+}
+
+.input {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.select {
+  padding: 0.6rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-width: 180px;
+  cursor: pointer;
+}
+
+.button {
+  padding: 0.6rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.tableWrapper {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.table th {
+  background: #f9fafb;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: left;
+  padding: 14px 16px;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #4b5563;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.table tr:hover td {
+  background: #f3f6ff;
+  cursor: pointer;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.pagination {
+  margin-top: 22px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.pagination button {
+  padding: 7px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.pagination button:disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.messageNotFound {
+  color: #ef4444;
+  text-align: center;
+  margin: 40px 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.tableRow {
+  transition: background-color 0.2s ease;
+  padding: 4px;
+}
+
+.tableRow:hover {
+  background-color: #f3f6ff; /* hover padrão */
+}
+
+.rowPaid {
+  background-color: rgba(46, 204, 112, 0.45); /* verde */
+}
+
+.rowNear {
+  background-color: rgba(241, 196, 15, 0.35); /* amarelo */
+}
+
+.rowOverdue {
+  background-color: rgba(255, 0, 0, 0.2); /* vermelho */
+}

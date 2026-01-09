@@ -1,34 +1,40 @@
 // ComponentMessage.js
-import { useState, useEffect } from 'react';
-import styles from './ComponentMessage.module.css';
+import { useEffect, useState } from 'react';
 import { Alert } from 'antd';
+import styles from './ComponentMessage.module.css';
 
-const ComponentMessage = ({ message, type, onClose }) => {
-    const [showMessage, setShowMessage] = useState(false);
+const ComponentMessage = ({ message, type = 'success', onClose }) => {
+  const [show, setShow] = useState(false);
 
-    useEffect(() => {
-        if (message) {
-            setShowMessage(true);
+  useEffect(() => {
+    if (!message) return;
 
-            // Esconde a mensagem após 5 segundos
-            const timer = setTimeout(() => {
-                setShowMessage(false);
-                onClose(); // Limpa a mensagem de sucesso ou erro no componente pai
-            }, 2500);
+    setShow(true);
 
-            return () => clearTimeout(timer); // Limpa o timer se o componente for desmontado antes
-        }
-    }, [message, onClose]);
+    const timer = setTimeout(() => {
+      setShow(false);
+      onClose?.(); // só chama se existir
+    }, 4500);
 
-    return (
-        <Alert
-        message="Sucesso!"
-        description={message}
-        type="success"
-        showIcon
-        style={{width: '300px', height: 'auto', position: 'absolute', left: '50%', top: '0', zIndex: '99', margin: '20px'}}
-      />
-    );
+    return () => clearTimeout(timer);
+  }, [message, onClose]);
+
+  if (!show) return null;
+
+  return (
+    <Alert
+      message={type === 'success' ? 'Sucesso' : 'Erro'}
+      description={message}
+      type={type}
+      showIcon
+      closable
+      onClose={() => {
+        setShow(false);
+        onClose?.();
+      }}
+      className={styles.alert}
+    />
+  );
 };
 
 export default ComponentMessage;
