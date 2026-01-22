@@ -32,7 +32,7 @@
 /* --- Sobrescrevendo estilos do Ant Design Menu --- */
 :global(.ant-menu-dark) {
   background: #001529 !important;
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 :global(.ant-menu-dark .ant-menu-item),

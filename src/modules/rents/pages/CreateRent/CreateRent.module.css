@@ -1,0 +1,322 @@
+.sectionContainer {
+  margin: 25px auto;
+  width: calc(100% - 257px);
+}
+
+.sectionContainer h1 {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 30px;
+}
+.center {
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2%;
+}
+
+.formContainer {
+  width: 50%;
+}
+
+.inputContainer {
+  margin: 20px;
+}
+
+.inputContainer label {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.inputContainer input {
+  width: 40%;
+  margin-right: 20px;
+  height: 27px;
+}
+
+.containerTwoInput div input {
+  width: 70%;
+  height: 37px;
+}
+
+.inputContainer button {
+  background-color: #115293;
+  color: white;
+  height: 27px;
+  width: 100px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pCalculate {
+  padding: 10px;
+  background-color: #4d90fe;
+  width: 140px;
+
+  color: white;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.pCalculate:hover {
+  background-color: cornflowerblue;
+}
+
+.inputContainer button:hover {
+  background-color: #115293da;
+}
+
+.inputContainer input[name='client']:disabled {
+  cursor: not-allowed;
+}
+.inputContainer input[name='tool']:disabled {
+  cursor: not-allowed;
+}
+
+/* Estilo geral do contêiner */
+.dateInputContainer {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Espaço entre o label e o input */
+  margin: 16px 0; /* Margem externa */
+  font-family: Arial, sans-serif;
+}
+
+/* Estilo do label */
+.dateInputContainer label {
+  font-size: 16px;
+  color: #333; /* Cor do texto */
+  font-weight: bold;
+}
+
+/* Estilo do input de data */
+.dateInputContainer input[type='date'] {
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 2px solid #ddd; /* Borda sutil */
+  border-radius: 8px; /* Bordas arredondadas */
+  outline: none;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s; /* Animação suave */
+  background-color: #f9f9f9; /* Cor de fundo */
+  color: #333;
+}
+
+/* Efeito ao passar o mouse sobre o input */
+.dateInputContainer input[type='date']:hover {
+  border-color: #80bdff;
+}
+
+/* Efeito quando o input está focado */
+.dateInputContainer input[type='date']:focus {
+  border-color: #4d90fe;
+  box-shadow: 0 0 5px rgba(77, 144, 254, 0.5);
+}
+
+/* Estilo quando o input estiver desabilitado */
+.dateInputContainer input[type='date']:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Estilo geral do contêiner para inputs */
+.inputContainer2 {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Espaçamento entre o label e o input */
+  margin: 16px 0; /* Margem externa */
+  font-family: Arial, sans-serif;
+}
+
+/* Estilo do label */
+.inputContainer2 label {
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+}
+
+/* Estilo para inputs de texto e número */
+.inputContainer2 input[type='text'],
+.inputContainer2 input[type='submit'],
+.inputContainer2 button {
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s,
+    background-color 0.3s;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* Efeito hover para inputs */
+.inputContainer2 input[type='text']:hover,
+.inputContainer2 input[type='submit']:hover,
+.inputContainer2 button:hover {
+  border-color: #80bdff;
+}
+
+/* Efeito foco para inputs */
+.inputContainer2 input[type='text']:focus,
+.inputContainer2 input[type='submit']:focus,
+.inputContainer2 button:focus {
+  border-color: #4d90fe;
+  box-shadow: 0 0 5px rgba(77, 144, 254, 0.5);
+}
+
+/* Estilo do botão */
+.inputContainer2 button {
+  background-color: #4d90fe;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition:
+    background-color 0.3s,
+    transform 0.2s;
+}
+
+/* Efeito hover no botão */
+.inputContainer2 button:hover {
+  background-color: #357ae8;
+  transform: translateY(-2px);
+}
+
+/* Efeito ativo no botão */
+.inputContainer2 button:active {
+  background-color: #2a65c0;
+  transform: translateY(0);
+}
+
+/* Estilo do botão submit */
+.inputContainer2 input[type='submit'] {
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    transform 0.2s;
+}
+
+/* Efeito hover no botão submit */
+.inputContainer2 input[type='submit']:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+/* Efeito ativo no botão submit */
+.inputContainer2 input[type='submit']:active {
+  background-color: #1e7e34;
+  transform: translateY(0);
+}
+
+/*LIST OF THE ITEMS*/
+
+.listContainer {
+  width: 50%;
+  min-height: 550px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.list h2 {
+  text-align: center;
+  margin: 10px 0 20px 0;
+  font-size: 1.8rem;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.list ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  max-height: 350px;
+}
+
+.list ul li {
+  color: #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fafafa;
+  transition: background-color 0.3s ease;
+}
+
+.list ul li:hover {
+  background-color: #f0f0f0;
+}
+
+.inputUpdate {
+  width: 16%;
+  height: 30px;
+  padding: 5px;
+  border-width: 2px;
+  border-color: #2a65c0;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.removeButton {
+  padding: 5px 10px;
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.removeButton:hover {
+  background-color: #e60000;
+}
+
+.total {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4caf50;
+  margin-top: 20px;
+  padding-top: 10px;
+  border-top: 2px solid #ddd;
+}
+
+/* styles.module.css */
+.textareaContainer {
+  margin: 10px auto;
+  width: 100%; /* Para garantir que o textarea tenha 100% da largura do contêiner */
+}
+
+.textareaInput {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical; /* Permite ao usuário redimensionar o textarea verticalmente */
+}

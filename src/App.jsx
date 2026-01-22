@@ -4,12 +4,12 @@ import { AuthProvider } from "./context/authProvider/AuthContext";
 // Pages
 import Login from "./pages/login/Login";
 import Home from "./pages/admin/home/Home";
-import CreateRent from "./pages/admin/createRent/CreateRent";
+import CreateRent from "./modules/rents/pages/CreateRent";
 import Clients from "./pages/admin/clients/Clients";
 import Tools from "./modules/tools/pages/Tools";
-import Rents from "./pages/admin/rents/Rents";
+import Rents from "./modules/rents/pages/Rents";
 import Protected from "./components/Protected";
-import PdfPage from "./components/pdf/Pdf";
+import PdfPage from "./modules/pdf/pages/RentPdfPage";
 import Earnings from "./pages/admin/earnings/Earninigs";
 import Expenses from "./pages/admin/expenses/Expenses";
 import ReportPDF from "./components/pdf/ReportPDF";

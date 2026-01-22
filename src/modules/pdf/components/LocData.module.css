@@ -1,0 +1,75 @@
+.dataContainer {
+    margin: 20px 0;
+}
+
+
+.locationInfo {
+    border-top: 1px solid #555;
+    border-bottom: 1px solid #555;
+    border-left: 1px solid #555;
+    border-right: 1px solid #555;
+  }
+
+  .locationInfo span {
+    font-weight: bold;
+  }
+
+  .line1 {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .line1 div {
+    display: flex;
+  }
+   .line1 div span, .line2 span, .line3 span, .line4 span{
+    margin: 0 0 0 5px;
+  }
+
+  .line1CPF {
+    border-left: 2px solid #555;
+  }
+
+  .line2 {
+    display: flex;
+    border-top: 1px solid #555;
+    border-bottom: 1px solid #555;
+  }
+
+.line3 {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #555;
+}
+
+  .line3 div, .line4 div {
+    display: flex;
+    width: 33.3%;
+      
+  }
+
+  .line3 div:nth-child(2) {
+    border-left: 2px solid #555;
+  }
+  .line3 div:nth-child(3) {
+    border-left: 2px solid #555;
+  }
+  .line4  {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .line4 div {
+    display: flex;
+    width: 30%;
+  }
+
+  .line4 div:nth-child(2) {
+    border-left: 2px solid #555;
+    
+  }
+  .line4 div:nth-child(3) {
+    border-left: 2px solid #555;
+  }
+
+  
