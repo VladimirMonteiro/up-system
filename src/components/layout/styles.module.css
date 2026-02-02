@@ -19,7 +19,7 @@
 /* Conteúdo fluido */
 .content {
   flex: 1;
-  padding: 24px;
+  padding: 42px;
   overflow-x: hidden;
   background: #f5f7fa;
 }

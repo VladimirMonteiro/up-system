@@ -6,14 +6,14 @@ import Login from './pages/login/Login';
 import { DashboardHome } from './pages/admin/Home/index.jsx';
 import CreateRent from './modules/rents/pages/CreateRent';
 import Clients from './pages/admin/clients/Clients';
-import Tools from './modules/tools/pages/Tools/';
+import { ToolsManager } from './pages/admin/ToolsManager';
 import Rents from './modules/rents/pages/Rents';
 import PdfPage from './modules/pdf/pages/RentPdfPage';
 import Earnings from './pages/admin/earnings/Earninigs';
 import Expenses from './pages/admin/expenses/Expenses';
 import SingleRent from './pages/singleRent/SingleRent';
 import SingleClient from './pages/admin/singleClient/SingleClient';
-import SingleTool from './modules/tools/pages/SingleTool';
+import { ToolDetails } from './pages/admin/ToolDetails';
 import Budgets from './pages/admin/budgets/Budgets';
 import CreateBudget from './pages/admin/createBudget/CreateBudget';
 import BudgetPdf from './components/pdf/BudgetPdf';
@@ -39,8 +39,8 @@ function App() {
                 <Route path='/alugar' element={<CreateRent />} />
                 <Route path='/clientes' element={<Clients />} />
                 <Route path='/clientes/:id' element={<SingleClient />} />
-                <Route path='/ferramentas' element={<Tools />} />
-                <Route path='/ferramentas/:id' element={<SingleTool />} />
+                <Route path='/ferramentas' element={<ToolsManager />} />
+                <Route path='/ferramentas/:id' element={<ToolDetails />} />
                 <Route path='/alugueis' element={<Rents />} />
                 <Route path='/alugueis/:id' element={<SingleRent />} />
                 <Route path='/faturamentos' element={<Earnings />} />
