@@ -60,7 +60,7 @@ export function RecentRents({ data, loading }) {
 
                   <Tag
                     color={
-                      item.paymentStatus === 'PAID'
+                      item.paymentStatus === 'Pago'
                         ? 'green'
                         : item.paymentStatus === 'Parc pago'
                           ? 'orange'
