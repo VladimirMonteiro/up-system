@@ -1,25 +1,60 @@
+/* Layout geral */
 .layout {
-  display: flex;
   min-height: 100vh;
-  width: 100%;
-  background: #f5f7fa;
+  background-color: #f5f7fa;
 }
 
-/* Sidebar fixa */
-.sidebar {
-  width: 250px;
-  flex-shrink: 0; /* CRÍTICO: impede quebrar layout */
-  position: sticky;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  z-index: 100;
+/* Sidebar */
+.sider {
+  background-color: #001529; /* padrão Ant Design Pro */
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
 }
 
-/* Conteúdo fluido */
+/* Header */
+.header {
+  background-color: #ffffff;
+  height: 64px;
+  padding: 0 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  border-bottom: 1px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Header right (usuário) */
+.headerRight {
+  display: flex;
+  align-items: center;
+}
+
+.user {
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.user:hover {
+  background-color: #f5f7fa;
+}
+
+.username {
+  font-weight: 500;
+  color: #262626;
+}
+
+/* Content */
 .content {
-  flex: 1;
-  padding: 42px;
-  overflow-x: hidden;
-  background: #f5f7fa;
+  margin: 24px;
+  padding: 24px;
+
+  background-color: #ffffff;
+  border-radius: 12px;
+
+  min-height: calc(100vh - 112px); /* header + margens */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 }

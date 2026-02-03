@@ -20,7 +20,7 @@ export function ToolDetails() {
   if (error || !tool) return <div style={{ padding: '24px' }}>Erro ao carregar ferramenta.</div>;
 
   return (
-    <div style={{ background: '#f5f7fa', minHeight: '100vh', padding: '24px' }}>
+    <div style={{ minHeight: '100vh' }}>
       {/* --- HEADER --- */}
       <ToolDetailsHeader tool={tool} />
 

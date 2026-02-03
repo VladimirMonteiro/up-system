@@ -108,7 +108,7 @@ export function ToolsManager() {
      RENDER
   ========================== */
   return (
-    <Layout>
+    <Layout style={{backgroundColor: 'white'}}>
       {/* HEADER */}
       <ToolsManagerHeader
         title='Ferramentas'
