@@ -7,29 +7,38 @@ import { RentsHeader } from '../../../modules/rents/components/rents/RentsHeader
 
 export function RentsManager() {
   const {
+    // dados
     rents,
     rentStats,
     loading,
     page,
     totalPages,
+
+    // filtros
+    clientName,
+    rentStatus,
+
+    // setters
+    setClientName,
+    setRentStatus,
     setPage,
-    deleteRent,
-    completeRent,
+
+    // ações
+    fetchRents,
     openContractPdf,
-    filters,
-    setFilters,
-    isFiltering,
-    setIsFiltering,
+    completeRent,
+    deleteRent,
   } = useRents();
 
   return (
     <div className={styles.page}>
       {/* ================= HEADER ================= */}
       <RentsHeader
-        filters={filters}
-        setFilters={setFilters}
-        isFiltering={isFiltering}
-        setIsFiltering={setIsFiltering}
+        clientName={clientName}
+        rentStatus={rentStatus}
+        setClientName={setClientName}
+        setRentStatus={setRentStatus}
+        fetchRents={fetchRents}
       />
 
       {/* ================= STATS ================= */}

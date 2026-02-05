@@ -1,19 +1,20 @@
 import styles from './styles.module.css';
-
 import { Input, Select, Button } from 'antd';
 import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-
 import { Heading } from '../../../../../components/Heading';
 
-export function RentsHeader({ filters, setFilters, isFiltering, setIsFiltering }) {
+export function RentsHeader({ clientName, rentStatus, setClientName, setRentStatus, fetchRents }) {
   const navigate = useNavigate();
+
+  const handleSearch = () => {
+    fetchRents(0);
+  };
+
   return (
     <>
       <div className={styles.header}>
-        <div>
-          <Heading title='Aluguéis' description='Gerencie todas as locações da empresa' />
-        </div>
+        <Heading title='Aluguéis' description='Gerencie todas as locações da empresa' />
 
         <Button type='primary' icon={<PlusOutlined />} onClick={() => navigate('/alugar')}>
           Nova Locação
@@ -24,15 +25,16 @@ export function RentsHeader({ filters, setFilters, isFiltering, setIsFiltering }
         <Input
           placeholder='Buscar por cliente...'
           prefix={<SearchOutlined />}
-          value={filters.clientName}
-          onChange={(e) => setFilters({ ...filters, clientName: e.target.value })}
+          value={clientName}
+          onChange={(e) => setClientName(e.target.value)}
+          onPressEnter={handleSearch}
         />
 
         <Select
           placeholder='Status'
           style={{ width: 200 }}
-          value={filters.rentStatus}
-          onChange={(value) => setFilters({ ...filters, rentStatus: value })}
+          value={rentStatus || undefined}
+          onChange={setRentStatus}
           options={[
             { label: 'Todos', value: '' },
             { label: 'Ativo', value: 'ACTIVE' },
@@ -41,17 +43,8 @@ export function RentsHeader({ filters, setFilters, isFiltering, setIsFiltering }
           ]}
         />
 
-        <Button type='primary' onClick={() => setIsFiltering(true)}>
+        <Button type='primary' onClick={handleSearch}>
           Filtrar
-        </Button>
-
-        <Button
-          onClick={() => {
-            setFilters({ clientName: '', rentStatus: '' });
-            setIsFiltering(false);
-          }}
-        >
-          Limpar
         </Button>
       </div>
     </>

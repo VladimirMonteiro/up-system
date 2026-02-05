@@ -7,105 +7,94 @@ const PAGE_SIZE = 15;
 export const useRents = () => {
   const [rents, setRents] = useState([]);
   const [rentStats, setRentStats] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
-  const [filters, setFilters] = useState({
-    clientName: '',
-    rentStatus: '', // ACTIVE | FINISHED | OVERDUE
-  });
+  // filtros (estado controlado, SEM efeito colateral)
+  const [clientName, setClientName] = useState('');
+  const [rentStatus, setRentStatus] = useState('');
 
-  const [isFiltering, setIsFiltering] = useState(false);
-
-  // ================= FETCH RENTS =================
-  const fetchRents = async (currentPage = 0) => {
-    setLoading(true);
+  // ================= FETCH =================
+  const fetchRents = async (pageNumber = page) => {
     try {
-      const response = isFiltering
-        ? await rentService.filter({
-            clientName: filters.clientName || null,
-            rentStatus: filters.rentStatus || null,
-            page: currentPage,
-            size: PAGE_SIZE,
-          })
-        : await rentService.findAll(currentPage, PAGE_SIZE);
+      setLoading(true);
+
+      const response = await rentService.filter({
+        clientName: clientName || null,
+        rentStatus: rentStatus || null,
+        page: pageNumber,
+        size: PAGE_SIZE,
+      });
 
       const data = response.data;
 
       setRents(data.page.content);
       setRentStats(data.stats);
       setTotalPages(data.page.totalPages || 1);
-      setNotFound(data.page.content.length === 0);
+      setPage(pageNumber);
     } catch (error) {
       console.error(error);
       setRents([]);
-      setNotFound(true);
     } finally {
       setLoading(false);
     }
   };
 
-  // ================= OPEN PDF =================
-  const openContractPdf = async (rent) => {
-    try {
-      const response = await rentService.getContract(rent.id);
-
-      const url = window.URL.createObjectURL(
-        new Blob([response.data], { type: 'application/pdf' }),
-      );
-
-      window.open(url, '_blank');
-      setTimeout(() => window.URL.revokeObjectURL(url), 5000);
-    } catch (error) {
-      console.error(error);
-      message.error('Erro ao abrir contrato');
-      throw error; // importante para o loading externo funcionar
-    }
-  };
-  // ================= CRUD =================
-  const deleteRent = async (id) => {
-    try {
-      await rentService.delete(id);
-      message.success('Locação excluída com sucesso');
-      fetchRents(page);
-    } catch {
-      message.error('Erro ao excluir locação');
-    }
-  };
-
-  const completeRent = async (id) => {
-    try {
-      await rentService.complete(id);
-      message.success('Locação finalizada com sucesso');
-      fetchRents(page);
-    } catch {
-      message.error('Locação já finalizada ou não encontrada.');
-    }
-  };
-
+  // 🔥 BUSCA INICIAL (UMA ÚNICA VEZ)
   useEffect(() => {
-    fetchRents(page);
-  }, [page, isFiltering]);
+    fetchRents(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     rents,
     rentStats,
     loading,
-    notFound,
     page,
     totalPages,
-    filters,
 
+    clientName,
+    rentStatus,
+
+    setClientName,
+    setRentStatus,
     setPage,
-    setFilters,
-    setIsFiltering,
 
     fetchRents,
-    openContractPdf,
-    deleteRent,
-    completeRent,
+
+    openContractPdf: async (rent) => {
+      try {
+        const response = await rentService.getContract(rent.id);
+        const url = window.URL.createObjectURL(
+          new Blob([response.data], { type: 'application/pdf' }),
+        );
+        window.open(url, '_blank');
+        setTimeout(() => window.URL.revokeObjectURL(url), 5000);
+      } catch {
+        message.error('Erro ao abrir contrato');
+      }
+    },
+
+    completeRent: async (id) => {
+      try {
+        await rentService.complete(id);
+        message.success('Locação finalizada');
+        fetchRents(page);
+      } catch {
+        message.error('Erro ao finalizar locação');
+      }
+    },
+
+    deleteRent: async (id) => {
+      try {
+        await rentService.delete(id);
+        message.success('Locação excluída');
+        fetchRents(page);
+      } catch {
+        message.error('Erro ao excluir locação');
+      }
+    },
   };
 };
