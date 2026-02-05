@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import styles from "./SingleRent.module.css";
-import { useParams } from "react-router-dom";
-import api from "../../utils/api";
-import Loading from "../../components/loading/Loading";
-import Navbar from "../../components/navbar/Navbar";
-import UpdateRent from "../../components/updateRent/UpdateRent";
+import { useEffect, useState } from 'react';
+import styles from './SingleRent.module.css';
+import { useParams } from 'react-router-dom';
+import api from '../../../utils/api';
+import Loading from '../../../components/loading/Loading';
+import Navbar from '../../../components/navbar/Navbar';
+import UpdateRent from '../../../components/updateRent/UpdateRent';
 
 const SingleRent = () => {
   const [rent, setRent] = useState({});
@@ -23,18 +23,18 @@ const SingleRent = () => {
   }, [id]);
 
   return (
-    <div className="mainContainerFlex">
+    <div className='mainContainerFlex'>
       {loading ? (
         <>
-           <Navbar />
-           <Loading />
+          <Navbar />
+          <Loading />
         </>
       ) : (
         <>
           <Navbar />
           <section className={styles.container}>
             <h1> Aluguel nº {id}</h1>
-            <UpdateRent rent={rent}/>
+            <UpdateRent rent={rent} />
           </section>
         </>
       )}

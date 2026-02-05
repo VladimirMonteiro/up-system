@@ -1,44 +1,46 @@
 import { useEffect, useState } from 'react';
 import { rentService } from '../services/rentService';
-import { useNavigate } from 'react-router-dom';
+import { message } from 'antd';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 15;
 
 export const useRents = () => {
   const [rents, setRents] = useState([]);
+  const [rentStats, setRentStats] = useState({});
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
     clientName: '',
-    paymentStatus: '',
-    stateRent: '',
+    rentStatus: '', // ACTIVE | FINISHED | OVERDUE
   });
 
   const [isFiltering, setIsFiltering] = useState(false);
 
+  // ================= FETCH RENTS =================
   const fetchRents = async (currentPage = 0) => {
     setLoading(true);
-
     try {
       const response = isFiltering
         ? await rentService.filter({
-            ...filters,
+            clientName: filters.clientName || null,
+            rentStatus: filters.rentStatus || null,
             page: currentPage,
             size: PAGE_SIZE,
           })
         : await rentService.findAll(currentPage, PAGE_SIZE);
 
-      const data = response.data.content || response.data;
+      const data = response.data;
 
-      setRents(data);
-      setTotalPages(response.data.totalPages || 1);
-      setNotFound(data.length === 0);
-    } catch {
+      setRents(data.page.content);
+      setRentStats(data.stats);
+      setTotalPages(data.page.totalPages || 1);
+      setNotFound(data.page.content.length === 0);
+    } catch (error) {
+      console.error(error);
       setRents([]);
       setNotFound(true);
     } finally {
@@ -46,24 +48,42 @@ export const useRents = () => {
     }
   };
 
-  const generatePdf = (rent) => {
-    console.log(rent);
-    navigate('/pdf', {
-      state: {
-        rentId: rent.id,
-        client: rent.client,
-        items: rent.rentItems.map((i) => ({
-          name: i.tool.name,
-          quantity: i.quantity,
-          price: i.price,
-        })),
-        price: rent.price,
-        freight: rent.freight,
-        obs: rent.obs,
-        initialDate: rent.initialDate,
-        deliveryDate: rent.deliveryDate,
-      },
-    });
+  // ================= OPEN PDF =================
+  const openContractPdf = async (rent) => {
+    try {
+      const response = await rentService.getContract(rent.id);
+
+      const url = window.URL.createObjectURL(
+        new Blob([response.data], { type: 'application/pdf' }),
+      );
+
+      window.open(url, '_blank');
+      setTimeout(() => window.URL.revokeObjectURL(url), 5000);
+    } catch (error) {
+      console.error(error);
+      message.error('Erro ao abrir contrato');
+      throw error; // importante para o loading externo funcionar
+    }
+  };
+  // ================= CRUD =================
+  const deleteRent = async (id) => {
+    try {
+      await rentService.delete(id);
+      message.success('Locação excluída com sucesso');
+      fetchRents(page);
+    } catch {
+      message.error('Erro ao excluir locação');
+    }
+  };
+
+  const completeRent = async (id) => {
+    try {
+      await rentService.complete(id);
+      message.success('Locação finalizada com sucesso');
+      fetchRents(page);
+    } catch {
+      message.error('Locação já finalizada ou não encontrada.');
+    }
   };
 
   useEffect(() => {
@@ -72,6 +92,7 @@ export const useRents = () => {
 
   return {
     rents,
+    rentStats,
     loading,
     notFound,
     page,
@@ -83,20 +104,8 @@ export const useRents = () => {
     setIsFiltering,
 
     fetchRents,
-    generatePdf,
-
-    deleteRent: async (id) => {
-      await rentService.delete(id);
-      setRents((prev) => prev.filter((r) => r.id !== id));
-    },
-
-    completeRent: async (id) => {
-      await rentService.complete(id);
-      setRents((prev) =>
-        prev.map((r) =>
-          r.id === id ? { ...r, paymentStatus: 'PAID', stateRent: 'DELIVERED' } : r,
-        ),
-      );
-    },
+    openContractPdf,
+    deleteRent,
+    completeRent,
   };
 };
