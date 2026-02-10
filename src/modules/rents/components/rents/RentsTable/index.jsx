@@ -21,12 +21,13 @@ export function RentsTable({
   openContractPdf,
   completeRent,
   deleteRent,
+  openPayments, // 👈 NOVA PROP
 }) {
   const handleOpenContract = async (record) => {
     const hide = message.loading('Gerando contrato...', 0);
 
     try {
-      await openContractPdf(record); // precisa retornar Promise
+      await openContractPdf(record);
     } catch (error) {
       message.error('Erro ao gerar contrato');
       console.error(error);
@@ -71,7 +72,11 @@ export function RentsTable({
       key: 'rentStatus',
       render: (status) => {
         const map = { Ativo: 'blue', Finalizada: 'green', Atrasada: 'red' };
-        const label = { Ativo: 'Ativo', Finalizada: 'Finalizado', Atrasada: 'Atrasado' };
+        const label = {
+          Ativo: 'Ativo',
+          Finalizada: 'Finalizado',
+          Atrasada: 'Atrasado',
+        };
         return <Tag color={map[status]}>{label[status]}</Tag>;
       },
     },
@@ -90,8 +95,16 @@ export function RentsTable({
       dataIndex: 'paymentStatus',
       key: 'paymentStatus',
       render: (status) => {
-        const map = { Pago: 'green', 'Parc pago': 'orange', 'Não pago': 'red' };
-        const label = { Pago: 'Finalizado', 'Parc pago': 'Pendente', 'Não pago': 'Não Pago' };
+        const map = {
+          Pago: 'green',
+          'Parc pago': 'orange',
+          'Não pago': 'red',
+        };
+        const label = {
+          Pago: 'Finalizado',
+          'Parc pago': 'Parc pago',
+          'Não pago': 'Não pago',
+        };
         return <Tag color={map[status] || 'default'}>{label[status] || status}</Tag>;
       },
     },
@@ -113,6 +126,7 @@ export function RentsTable({
                 key: '2',
                 icon: <DollarOutlined style={{ color: '#52c41a' }} />,
                 label: 'Pagamentos',
+                onClick: () => openPayments(record), // 👈 AQUI
               },
               {
                 key: '3',
@@ -120,11 +134,11 @@ export function RentsTable({
                 label: 'Visualizar Contrato',
                 onClick: () => handleOpenContract(record),
               },
-              {
-                key: '4',
-                icon: <ReloadOutlined style={{ color: '#fa541c' }} />,
-                label: 'Renovar',
-              },
+              //{
+              //  key: '4',
+              //  icon: <ReloadOutlined style={{ color: '#fa541c' }} />,
+              //  label: 'Renovar',
+              //},
               {
                 key: '5',
                 icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
