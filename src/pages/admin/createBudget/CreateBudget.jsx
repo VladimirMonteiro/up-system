@@ -105,9 +105,7 @@ const NewBudget = () => {
   const totals = calculateTotals();
 
   return (
-    <div className={styles.container}>
-      <Navbar />
-
+    <div>
       <main className={styles.mainContent}>
         <header className={styles.topBar}>
           <h2 className={styles.title}>NOVO ORÇAMENTO DE LOCAÇÃO</h2>

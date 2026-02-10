@@ -166,10 +166,9 @@ const CreateRent = () => {
   };
 
   return (
-    <section style={{ display: 'flex' }}>
-      <Navbar />
-      <section className={styles.sectionContainer}>
-        <div className='content'>
+    <section>
+      <section>
+        <div>
           <h1>Alugar</h1>
           <div className={styles.center}>
             <form className={styles.formContainer} onSubmit={modalFinishRent}>
@@ -303,12 +302,7 @@ const CreateRent = () => {
         </div>
       </section>
 
-      <Modal
-        isOpen={isFinishRentOpen}
-        onClose={modalFinishRentClose}
-        width={'500px'}
-        height={'auto'}
-      >
+      <Modal isOpen={isFinishRentOpen} onClose={modalFinishRentClose} width={500}>
         <CompleteRent
           client={client}
           tool={tool}
@@ -317,32 +311,26 @@ const CreateRent = () => {
           listItems={listItems}
         />
       </Modal>
-
-      <Modal
-        isOpen={isClientModalOpen}
-        onClose={closeClientModal}
-        height={'90vh'}
-        overflow={'scroll'}
-      >
+      <Modal isOpen={isClientModalOpen} onClose={closeClientModal} width='80vw' height='80vh'>
         <h2>Selecione um Cliente</h2>
+
         <Table
           selected={handleSelectClient}
           loading={loadingClients}
           setLoadingClients={setLoadingClients}
-          isOpen={isClientModalOpen} // 🔹 foca input cliente
+          isOpen={isClientModalOpen}
         />
-        <button onClick={closeClientModal}>Fechar</button>
       </Modal>
 
-      <Modal isOpen={isToolModalOpen} onClose={closeToolModal} height={'90vh'} overflow={'scroll'}>
+      <Modal isOpen={isToolModalOpen} onClose={closeToolModal} width='80vw' height='80vh'>
         <h2>Selecione uma Ferramenta</h2>
+
         <TableTools
           selected={handleSelectTool}
           loading={loading}
           setLoading={setLoading}
-          isOpen={isToolModalOpen} // 🔹 foca input ferramenta
+          isOpen={isToolModalOpen}
         />
-        <button onClick={closeToolModal}>Fechar</button>
       </Modal>
     </section>
   );

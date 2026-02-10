@@ -67,24 +67,30 @@ const MyMenu = () => {
         { key: '6', label: <NavLink to='/orcamentos'>Orçamentos</NavLink> },
       ],
     },
-    {
-      key: 'sub2',
-      label: 'Relatórios',
-      icon: <LineChartOutlined />,
-      children: [
-        { key: '7', label: <NavLink to='/faturamentos'>Faturamentos</NavLink> },
-        { key: '8', label: <NavLink to='/gastos'>Gastos</NavLink> },
-        {
-          key: '9',
-          label: (
-            <span className='menu-disabled'>
-              Fretes <span className='soon-tag'>Em breve</span>
-            </span>
-          ),
-          disabled: true, // 🔒 Ant Design já bloqueia clique },
-        },
-      ],
-    },
+   {
+  key: 'sub2',
+  icon: <LineChartOutlined />,
+  label: (
+    <span className="menu-disabled">
+      Relatórios <span className="soon-tag">manutenção</span>
+    </span>
+  ),
+  disabled: true
+  //children: [
+  //  {
+  //    key: '7',
+  //    label: <span className="menu-disabled">Faturamentos</span>,
+  //  },
+  //  {
+  //    key: '8',
+  //    label: <span className="menu-disabled">Gastos</span>,
+  //  },
+  //  {
+  //    key: '9',
+  //    label: <span className="menu-disabled">Fretes</span>,
+  //  },
+  //],
+}
   ];
 
   return (

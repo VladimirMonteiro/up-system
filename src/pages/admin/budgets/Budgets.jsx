@@ -106,8 +106,7 @@ const Budgets = () => {
   };
 
   return (
-    <section id={styles.container} className='mainContainerFlex'>
-      <Navbar />
+    <section id={styles.container} >
 
       {loading ? (
         <Loading />
@@ -116,7 +115,7 @@ const Budgets = () => {
           {success && (
             <ComponentMessage message={success} type='success' onClose={() => setSuccess(null)} />
           )}
-          <h1 className={styles.title}>Orcamentos</h1>
+          <h1 className={styles.title}>Orçamentos</h1>
           <table className={styles.table}>
             <thead>
               <tr>

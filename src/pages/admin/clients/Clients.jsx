@@ -123,9 +123,7 @@ const Clients = () => {
   };
 
   return (
-    <div className="mainContainerFlex">
-      <Navbar />
-
+    <div>
       {success && (
         <ComponentMessage
           type="success"
