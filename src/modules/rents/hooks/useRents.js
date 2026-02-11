@@ -43,8 +43,8 @@ export const useRents = () => {
   };
 
   useEffect(() => {
-    fetchRents(0);
-  }, []);
+  fetchRents(page);
+}, [page]);
 
   return {
     rents,

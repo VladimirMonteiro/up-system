@@ -207,7 +207,7 @@ const TableTools = ({ selected, isOpen }) => {
                 <td>{tool.id}</td>
                 <td>{tool.name}</td>
                 <td>{tool.totalQuantity}un</td>
-                <td>{tool.quantity}un</td>
+                <td>{tool.quantityAvailable}un</td>
                 <td>{formateNumber(tool.daily)}</td>
                 <td>{formateNumber(tool.week)}</td>
                 <td>{formateNumber(tool.biweekly)}</td>
