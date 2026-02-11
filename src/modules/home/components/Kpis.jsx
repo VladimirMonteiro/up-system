@@ -7,7 +7,7 @@ export function Kpis({ data, loading }) {
       <Col xs={24} md={6}>
         <Card style={{ borderRadius: 12 }}>
           <Skeleton loading={loading} active>
-            <Statistic title='Locações Ativas' value={data.activeRents} prefix={<RiseOutlined />} />
+            <Statistic title='Total de clientes' value={data.totalClients} prefix={<RiseOutlined />} />
           </Skeleton>
         </Card>
       </Col>
@@ -16,7 +16,7 @@ export function Kpis({ data, loading }) {
           <Skeleton loading={loading} active>
             <Statistic
               title='Ferramentas Disponíveis'
-              value={data.avaibleTools}
+              value={data.availableTools}
               prefix={<ToolOutlined />}
             />
           </Skeleton>
