@@ -1,14 +1,11 @@
 import styles from './styles.module.css';
-import { useState } from 'react';
 
 import { useRents } from '../../../modules/rents/hooks/useRents';
 import { RentsTable } from '../../../modules/rents/components/rents/RentsTable';
 import { Stats } from '../../../modules/rents/components/rents/Stats';
 import { RentsHeader } from '../../../modules/rents/components/rents/RentsHeader';
 import { PaymentsModal } from '../../../modules/rents/components/rents/PaymentsModal';
-import { message } from 'antd';
-
-import { paymentsService } from '../../../modules/payments/services/usePayments';
+import { usePayments } from '../../../modules/payments/hooks/usePayments';
 
 export function RentsManager() {
   const {
@@ -26,68 +23,10 @@ export function RentsManager() {
     openContractPdf,
     completeRent,
     deleteRent,
+    deletePayment,
   } = useRents();
 
-  /** =========================
-   *  STATES - PAGAMENTOS
-   ========================== */
-  const [paymentsOpen, setPaymentsOpen] = useState(false);
-  const [selectedRent, setSelectedRent] = useState(null);
-  const [paymentsData, setPaymentsData] = useState(null);
-  const [registeringPayment, setRegisteringPayment] = useState(false);
-  const [loadingPayments, setLoadingPayments] = useState(false);
-
-  /** =========================
-   *  HANDLERS
-   ========================== */
-  async function openPayments(rent) {
-    try {
-      setSelectedRent(rent);
-      setPaymentsOpen(true);
-      setLoadingPayments(true);
-
-      const { data } = await paymentsService.findByRent(rent.id);
-      setPaymentsData(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoadingPayments(false);
-    }
-  }
-
-  function closePayments() {
-    setPaymentsOpen(false);
-    setSelectedRent(null);
-    setPaymentsData(null);
-  }
-
-  async function handleRegisterPayment(data) {
-    try {
-      setRegisteringPayment(true);
-
-      const payload = {
-        value: data.value,
-        paymentMethod: data.method,
-        paymentDate: data.paymentDate.format('YYYY-MM-DD'),
-        observation: data.note,
-      };
-
-      await paymentsService.create(selectedRent.id, payload);
-
-      message.success('Pagamento registrado com sucesso!');
-
-      await fetchRents();
-      closePayments();
-    } catch (error) {
-      console.error(error);
-
-      message.error(
-        error?.response?.data?.message || 'Erro ao registrar pagamento. Tente novamente.',
-      );
-    } finally {
-      setRegisteringPayment(false);
-    }
-  }
+  const paymentsCtrl = usePayments(fetchRents);
 
   /** =========================
    *  RENDER
@@ -113,16 +52,16 @@ export function RentsManager() {
         openContractPdf={openContractPdf}
         completeRent={completeRent}
         deleteRent={deleteRent}
-        openPayments={openPayments}
+        openPayments={paymentsCtrl.openPayments}
       />
-
       <PaymentsModal
-        open={paymentsOpen}
-        loading={loadingPayments || registeringPayment}
-        rent={selectedRent}
-        data={paymentsData}
-        onClose={closePayments}
-        onRegisterPayment={handleRegisterPayment}
+        open={paymentsCtrl.paymentsOpen}
+        onClose={paymentsCtrl.closePayments}
+        rent={paymentsCtrl.selectedRent}
+        data={paymentsCtrl.paymentsData}
+        loading={paymentsCtrl.registeringPayment}
+        onRegisterPayment={paymentsCtrl.registerPayment}
+        onDeletePayment={paymentsCtrl.deletePayment}
       />
     </div>
   );

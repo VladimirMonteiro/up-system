@@ -42,10 +42,8 @@ export const useRents = () => {
     }
   };
 
-  // 🔥 BUSCA INICIAL (UMA ÚNICA VEZ)
   useEffect(() => {
     fetchRents(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {

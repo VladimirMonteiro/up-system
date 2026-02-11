@@ -12,20 +12,31 @@ import {
   Row,
   Col,
   DatePicker,
+  Popconfirm,
 } from 'antd';
 import dayjs from 'dayjs';
+
 import {
   QrcodeOutlined,
   DollarOutlined,
   CreditCardOutlined,
   WalletOutlined,
   PlusOutlined,
+  DeleteOutlined,
 } from '@ant-design/icons';
 import { formateNumber } from '../../../../../utils/formatNumber';
 
 const { TextArea } = Input;
 
-export function PaymentsModal({ open, onClose, rent, data, onRegisterPayment, loading }) {
+export function PaymentsModal({
+  open,
+  onClose,
+  rent,
+  data,
+  onRegisterPayment,
+  onDeletePayment,
+  loading,
+}) {
   if (!open || !rent || !data) return null;
 
   const { price, totalPaid, remaining, progress, payments } = data;
@@ -56,6 +67,22 @@ export function PaymentsModal({ open, onClose, rent, data, onRegisterPayment, lo
       key: 'value',
       align: 'right',
       render: (value) => <strong style={{ color: '#16a34a' }}>{formateNumber(value)}</strong>,
+    },
+    {
+      title: 'Ações',
+      key: 'actions',
+      align: 'center',
+      render: (_, record) => (
+        <Popconfirm
+          title='Excluir pagamento'
+          description='Tem certeza que deseja excluir este pagamento?'
+          okText='Sim'
+          cancelText='Não'
+          onConfirm={() => onDeletePayment(record.id)}
+        >
+          <Button danger type='text' icon={<DeleteOutlined />} />
+        </Popconfirm>
+      ),
     },
   ];
 

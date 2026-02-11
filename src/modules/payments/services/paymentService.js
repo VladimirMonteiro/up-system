@@ -8,4 +8,8 @@ export const paymentsService = {
   create(rentId, data) {
     return api.post(`/payments/rent/${rentId}`, data);
   },
+
+  delete(id) {
+    return api.delete(`/payments/${id}`);
+  },
 };
