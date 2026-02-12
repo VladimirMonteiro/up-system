@@ -108,7 +108,7 @@ export function ToolsManager() {
      RENDER
   ========================== */
   return (
-    <Layout style={{backgroundColor: 'white'}}>
+    <>
       {/* HEADER */}
       <ToolsManagerHeader
         title='Ferramentas'
@@ -150,7 +150,7 @@ export function ToolsManager() {
         onSubmit={handleSubmit}
         editingTool={editingTool}
       />
-    </Layout>
+    </>
   );
 }
 
