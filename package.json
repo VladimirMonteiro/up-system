@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "antd": "^5.24.0",
-    "axios": "^1.7.9",
+    "axios": "^1.8.1",
     "currency.js": "^2.0.4",
     "date-fns": "^4.1.0",
     "frontend-up-system": "file:",
