@@ -7,6 +7,7 @@ import { authContext } from '../../context/authProvider/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
 import Navbar from '../navbar/Navbar.jsx';
+import { Footer } from '../Footer/index.jsx';
 
 const { Header, Content, Sider } = Layout;
 
@@ -53,6 +54,7 @@ export default function AdminLayout() {
         {/* Content */}
         <Content className={styles.content}>
           <Outlet />
+          <Footer/>
         </Content>
       </Layout>
     </Layout>
