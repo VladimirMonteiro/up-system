@@ -36,7 +36,6 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
   const navigate = useNavigate();
 
   const finishRent = async (values) => {
-    // values contém as datas do DatePicker (objetos dayjs)
     const { initialDate, deliveryDate } = values;
 
     const updatedListItems = listItems.map((item) => {
@@ -44,7 +43,6 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
       return rest;
     });
 
-    // Cálculo do total: (Itens) + Frete - Desconto
     const totalValue =
       updatedListItems.reduce((total, item) => total + item.price * item.quantity, 0) +
       (freight ? parseFloat(freight) : 0) -
@@ -66,14 +64,14 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
       deliveryDate: deliveryDate.format('YYYY-MM-DD'),
       obs,
       freight: freight ? parseFloat(freight) : 0,
-      discount: discount ? parseFloat(discount) : 0, // Enviando desconto
+      discount: discount ? parseFloat(discount) : 0,
     };
 
     setLoading(true);
 
     try {
       const response = await api.post('/rent/create', newRent, {
-        responseType: 'blob',
+        responseType: 'blob', // Importante para o PDF
       });
 
       const file = new Blob([response.data], { type: 'application/pdf' });
@@ -83,8 +81,20 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
       message.success('Locação finalizada e contrato gerado!');
       navigate('/alugueis');
     } catch (error) {
-      console.error(error);
-      message.error('Erro ao gerar contrato');
+      if (error.response && error.response.data instanceof Blob) {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          const errorData = JSON.parse(reader.result);
+          const msg = errorData.errors?.[0] || 'Erro ao processar locação';
+          message.error(msg);
+        };
+
+        reader.readAsText(error.response.data);
+      } else {
+        message.error('Erro de comunicação com o servidor.');
+        console.error(error);
+      }
     } finally {
       setLoading(false);
     }
@@ -92,7 +102,7 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto' }}>
-      <Card style={{border: 'none'}}>
+      <Card style={{ border: 'none' }}>
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
           <FileDoneOutlined style={{ fontSize: '32px', color: '#1890ff' }} />
           <Title level={3} style={{ marginTop: '12px' }}>
@@ -128,7 +138,6 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
                   style={{ width: '100%' }}
                   placeholder='Selecione'
                   suffixIcon={<CalendarOutlined />}
-
                 />
               </Form.Item>
             </Col>
