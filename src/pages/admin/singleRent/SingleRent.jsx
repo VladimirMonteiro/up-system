@@ -23,17 +23,15 @@ const SingleRent = () => {
   }, [id]);
 
   return (
-    <div className='mainContainerFlex'>
+    <div >
       {loading ? (
         <>
-          <Navbar />
           <Loading />
         </>
       ) : (
         <>
-          <Navbar />
-          <section className={styles.container}>
-            <h1> Aluguel nº {id}</h1>
+          <section>
+            <h1 style={{textAlign: 'center'}}> Aluguel nº {id}</h1>
             <UpdateRent rent={rent} />
           </section>
         </>

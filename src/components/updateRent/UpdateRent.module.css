@@ -1,293 +1,105 @@
-.section {
+.container {
+  padding: 40px;
+  max-width: 1400px;
+  margin: 0 auto;
   background: #ffffff;
-  padding: 2rem;
-  max-width: 1000px;
-  margin: 2rem auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.titleContainer {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.titleContainer h3 {
-  color: #4a5568;
-}
-
-.titleContainer h3 span {
-  padding: 8px;
-  border-radius: 5px;
-  font-weight: bold;
-}
-
-.title {
-  font-size: 2rem;
-  font-weight: 600;
-  margin-bottom: 2rem;
-  text-align: center;
-  color: #1a202c;
-}
-
-.subTitle {
-  font-size: 1.4rem;
-  font-weight: 500;
-  margin-bottom: 1rem;
-  color: #2d3748;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.formRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  align-items: flex-end;
-}
-
-.formGroup {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.label {
-  font-size: 0.9rem;
-  margin-bottom: 0.4rem;
-  color: #4a5568;
-}
-
-.input {
-  padding: 0.6rem 0.8rem;
-  border: 1px solid #cbd5e0;
-  border-radius: 6px;
-  font-size: 1rem;
-  background: #f7fafc;
-}
-
-.selectButton {
-  background-color: #3182ce;
-  color: white;
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.selectButton:hover {
-  background-color: #2b6cb0;
-}
-
-.itemsSection {
-  margin-top: 2rem;
-}
-
-.itemList {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.itemCard {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  padding: 1rem;
-  background: #edf2f7;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  align-items: flex-start;
-}
-
-.inputGroup {
-  flex: 1 1 200px;
-  display: flex;
-  flex-direction: column;
-}
-
-.deleteButton {
-  background-color: #e53e3e;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  align-self: flex-end;
-}
-
-.deleteButton:hover {
-  background-color: #c53030;
-}
-
-.emptyMessage {
-  font-style: italic;
-  color: #718096;
-}
-
-.totalRow {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.totalLabel {
-  font-weight: 600;
-  font-size: 1rem;
-  color: #2d3748;
-}
-
-.totalInput {
-  font-weight: bold;
-  font-size: 1.1rem;
-  background: #f0f0f0;
-  border: 1px solid #ccc;
-  padding: 0.6rem;
-  border-radius: 6px;
-  min-width: 120px;
-  text-align: right;
-}
-
-.submitRow {
-  text-align: center;
-  margin-top: 2rem;
-}
-
-.submitButton {
-  padding: 0.8rem 2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  background-color: #38a169;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  margin-bottom: 30px;
-  cursor: pointer;
-}
-
-.submitButton:hover {
-  background-color: #2f855a;
-}
-
-.totalRow {
-  display: flex;
-  justify-content: space-between;
-  background-color: #f5f5f7;
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  margin-top: 1.5rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.totalItem {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  min-width: 150px;
-}
-
-.totalLabel {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #555;
-  margin-bottom: 0.3rem;
-}
-
-.totalValue {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: #222;
-}
-
-.totalValuePaid {
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: #2e7d32; /* verde */
-}
-
-.negativeBalance {
-  color: #d32f2f; /* vermelho */
-}
-
-.positiveBalance {
-  color: #388e3c; /* verde */
-}
-
-
-.closeModalButton {
-  margin-top: 1rem;
-  background-color: #4a5568;
-  color: white;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.statusContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.deliveryStatus {
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 50px;
+  margin-bottom: 32px;
 }
 
 .statusTag {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 8px;
   font-size: 14px;
+  padding: 6px 14px;
 }
 
-.statusDelivered {
-  background-color: #e0f8e9;
-  color: #2e7d32;
-  border: 1px solid #a5d6a7;
+.alert {
+  margin-bottom: 24px;
 }
 
-.statusPending {
-  background-color: #fff3e0;
-  color: #ef6c00;
-  border: 1px solid #ffb74d;
-}
-.toggleStatusButton {
-  margin-top: 8px;
-  padding: 8px 12px;
-  background-color: #1976d2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s ease;
+.layout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
 }
 
-.toggleStatusButton:hover {
-  background-color: #1565c0;
+.left {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-
-.rowPaid {
-  background-color: rgba(46, 204, 112, 0.45); /* verde */
+.right {
+  flex: 1;
+  position: sticky;
+  top: 40px;
 }
 
-.rowNear {
-  background-color: rgba(241, 196, 15, 0.35); /* amarelo */
+/* ===== CARDS NOVA COR ===== */
+
+.card {
+  background: #f8fafc !important;
+  border: none !important;
+  border-radius: 18px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
 }
 
-.rowOverdue {
-  background-color: rgba(255, 0, 0, 0.2); /* vermelho */
+.summaryCard {
+  background: #f1f5f9 !important;
+  border: none !important;
+  border-radius: 20px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  padding: 4px;
+}
+
+/* ===== ITENS ===== */
+
+.itemRow {
+  padding: 12px 0;
+}
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr auto;
+  gap: 12px;
+  width: 100%;
+  align-items: center;
+}
+
+/* ===== RESUMO ===== */
+
+.summaryItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  font-size: 15px;
+}
+
+.summaryItem strong {
+  font-size: 18px;
+}
+
+.paid {
+  color: #22c55e;
+}
+
+.balanceNegative {
+  color: #ef4444;
+}
+
+.balancePositive {
+  color: #22c55e;
+}
+
+/* ===== BOTÃO ENTREGA ===== */
+
+.deliveryButton {
+  height: 48px;
+  border-radius: 14px;
+  font-weight: 600;
 }

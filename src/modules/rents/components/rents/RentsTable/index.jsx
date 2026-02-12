@@ -11,6 +11,7 @@ import {
 
 import styles from './styles.module.css';
 import { formateNumber } from '../../../../../utils/formatNumber';
+import { useNavigate } from 'react-router-dom';
 
 export function RentsTable({
   rents,
@@ -35,6 +36,8 @@ export function RentsTable({
       hide();
     }
   };
+
+  const navigate = useNavigate();
 
   const columns = [
     {
@@ -121,6 +124,7 @@ export function RentsTable({
                 key: '1',
                 icon: <EyeOutlined style={{ color: '#1890ff' }} />,
                 label: 'Ver Detalhes',
+                onClick: () => {navigate(`/alugueis/${record.id}`);}
               },
               {
                 key: '2',
