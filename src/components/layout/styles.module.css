@@ -1,7 +1,7 @@
 /* Layout geral */
 .layout {
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-color: #f0f2f5;
 }
 
 /* Sidebar */
@@ -51,10 +51,6 @@
 .content {
   margin: 24px;
   padding: 24px;
-
-  background-color: #ffffff;
   border-radius: 12px;
-
   min-height: calc(100vh - 112px); /* header + margens */
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 }

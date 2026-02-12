@@ -37,7 +37,7 @@ export default function AdminLayout() {
         <Navbar />
       </Sider>
 
-      <Layout>
+      <Layout style={{backgroundColor: '#F8FAFC'}}>
         {/* Header */}
         <Header className={styles.header}>
           <div className={styles.headerRight}>
