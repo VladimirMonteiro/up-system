@@ -9,6 +9,7 @@ import styles from './Budgets.module.css';
 import Navbar from '../../../components/navbar/Navbar';
 import ConfirmDeleteModal from '../../../components/modalConfirmDelete/ConfirmDeleteModal';
 import ComponentMessage from '../../../components/componentMessage/ComponentMessage';
+import { message } from 'antd';
 
 const Budgets = () => {
   const [budgets, setBudgets] = useState([]);
@@ -96,18 +97,28 @@ const Budgets = () => {
   };
 
   const openPdf = async (id) => {
+    message.loading('Abrindo PDF...');
     try {
-      const response = await api.get(`/budgets/${id}`);
-      const rentData = response.data;
-      navigate('/orcamento-pdf', { state: rentData });
+      const response = await api.get(`/budgets/pdf/${id}`, {
+        responseType: 'blob', // IMPORTANTE
+      });
+
+      const file = new Blob([response.data], {
+        type: 'application/pdf',
+      });
+
+      const fileURL = URL.createObjectURL(file);
+
+      // abre em nova aba
+      window.open(fileURL, '_blank');
     } catch (error) {
-      console.error('Erro ao gerar PDF:', error);
+      console.error('Erro ao abrir PDF:', error);
+      message.error('Erro ao abrir PDF. Tente novamente.');
     }
   };
 
   return (
-    <section id={styles.container} >
-
+    <section id={styles.container}>
       {loading ? (
         <Loading />
       ) : (

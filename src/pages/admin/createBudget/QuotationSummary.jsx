@@ -3,6 +3,7 @@ import styles from "./QuotationSummary.module.css";
 import api from "../../../utils/api";
 
 import { useNavigate } from "react-router-dom";
+import { message } from "antd";
 
 const QuotationSummary = ({ totals, client, tools, discount, freight }) => {
   // Evita erro caso totals venha undefined
@@ -17,36 +18,52 @@ const QuotationSummary = ({ totals, client, tools, discount, freight }) => {
 
   // --------- ENVIO PARA O BACKEND ----------
   const handleSendBudget = async () => {
-    try {
-      const payload = {
-        clientId: client.id,
-        price: safeTotals.total,
-        discount: Number(discount),
-        initialDate: document.getElementById("initialDate").value,
-        deliveryDate: document.getElementById("deliveryDate").value,
-        freight: Number(freight),
-        obs: document.getElementById("obs").value,
+  try {
+    message.loading("Enviando orçamento...")
+    const payload = {
+      clientId: client.id,
+      price: safeTotals.total,
+      discount: Number(discount) || 0,
+      initialDate: document.getElementById("initialDate").value,
+      deliveryDate: document.getElementById("deliveryDate").value,
+      freight: Number(freight) || 0,
+      obs: document.getElementById("obs").value,
+      budgetItems: tools.map((t) => ({
+        toolId: t.id,
+        quantity: Number(t.quantity),
+        price: Number(t.price),
+      })),
+    };
 
-        budgetItems: tools.map((t) => ({
-          toolId: t.id,
-          quantity: Number(t.quantity),
-          price: Number(t.price)
-        })),
-      };
+    const response = await api.post("/budgets", payload, {
+      responseType: "blob", // 👈 MUITO IMPORTANTE
+    });
 
-      console.log("📦 Enviando para backend:", payload);
+  
 
-      const response = await api.post("/budgets", payload);
+    // Criar URL temporária do PDF
+    const file = new Blob([response.data], { type: "application/pdf" });
+    const fileURL = URL.createObjectURL(file);
 
-        console.log("Resposta:", response.data);
-        
-      navigate("/orcamento-pdf", { state: response.data  });
+    // Abrir em nova aba
+    window.open(fileURL);
 
-    } catch (error) {
-      console.error("Erro ao enviar orçamento:", error);
-      alert("Erro ao enviar. Veja o console.");
-    }
-  };
+    // Ou se quiser forçar download:
+    /*
+    const link = document.createElement("a");
+    link.href = fileURL;
+    link.download = "orcamento.pdf";
+    link.click();
+    */
+
+    navigate("/orcamentos");
+
+  } catch (error) {
+    console.error("Erro ao enviar orçamento:", error);
+    message.error("Erro ao enviar orçamento. Tente novamente.");
+  }
+};
+
 
   return (
     <aside className={styles.summaryPanel}>
