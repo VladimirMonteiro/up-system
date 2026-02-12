@@ -1,122 +1,140 @@
 .loginPage {
   display: flex;
   height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  width: 100vw;
+  background: #f4f7f9;
 }
 
-.leftPanel {
-  flex: 1;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  color: white;
-  padding: 4rem 2rem;
+.brandSide {
+  flex: 1.1;
+  background-color: #001529;
+  /* NOVA FOTO: Referência a Andaimes e Construção Civil */
+  background-image: url('https://images.unsplash.com/photo-1541888946425-d81bb19480c5?q=80&w=2070&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  text-align: center;
+  padding: 80px;
 }
 
-.leftPanel .logo {
-  max-width: 180px;
-  margin-bottom: 2rem;
+.brandOverlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 21, 41, 0.98) 0%, rgba(0, 21, 41, 0.8) 100%);
+  z-index: 1;
 }
 
-.leftPanel h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+.brandContent { position: relative; z-index: 2; }
+
+/* LOGO AMPLIADA */
+.mainLogoLarge {
+  height: 120px; /* Aumentado para dar destaque total à Up Locações */
+  width: auto;
+  margin-bottom: 30px;
+  filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
 }
 
-.leftPanel p {
-  font-size: 1.1rem;
-  line-height: 1.4;
-  max-width: 300px;
+.mainTitle {
+  color: #fff !important;
+  font-size: 3.2rem !important;
+  line-height: 1.1 !important;
+  margin-top: 20px !important;
 }
 
-.rightPanel {
-  flex: 1;
+.mainTitle span {
+  color: #1890ff;
+  font-weight: 300;
+}
+
+.clientText {
+  color: rgba(255,255,255,0.6);
+  font-size: 16px;
+}
+
+.brandFooter {
+  position: absolute;
+  bottom: 40px;
+  left: 80px;
+  z-index: 2;
+}
+
+.footerDraft {
+  color: rgba(255,255,255,0.3);
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.formSide {
+  flex: 0.9;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f7f9fc;
+  background: #fff;
+  border-radius: 40px 0 0 40px;
+  z-index: 2;
+  box-shadow: -20px 0 40px rgba(0,0,0,0.05);
 }
 
-.formWrapper {
-  background-color: white;
-  padding: 3rem 2rem;
-  border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+.loginBox {
   width: 100%;
-  max-width: 400px;
+  max-width: 380px;
 }
 
-.formWrapper h2 {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  color: #333;
-  text-align: center;
+.loginHeader { margin-bottom: 40px; }
+
+.label {
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: #8c8c8c;
 }
 
-.inputGroup {
-  margin-bottom: 1.2rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.inputGroup label {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: #444;
-}
-
-.inputWithIcon {
-  display: flex;
-  align-items: center;
-  background: #f0f2f5;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 0.6rem 0.8rem;
-  transition: border-color 0.3s;
-}
-
-.inputWithIcon:focus-within {
-  border-color: #2a5298;
-  box-shadow: 0 0 0 2px rgba(42, 82, 152, 0.2);
-}
-
-.inputWithIcon input {
-  border: none;
-  outline: none;
-  background: transparent;
-  flex: 1;
-  font-size: 1rem;
-  padding-left: 0.5rem;
-}
-
-.icon {
-  color: #2a5298;
-  font-size: 1.1rem;
-}
-
-.error {
-  color: red;
-  font-size: 0.85rem;
-  margin-top: 0.4rem;
+.customInput {
+  border-radius: 6px !important;
+  background: #fcfcfc !important;
 }
 
 .submitBtn {
-  width: 100%;
-  padding: 0.9rem;
-  background-color: #2a5298;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-top: 1rem;
+  height: 54px !important;
+  border-radius: 8px !important;
+  background: #001529 !important;
+  border: none !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  margin-top: 15px;
 }
 
 .submitBtn:hover {
-  background-color: #1e3c72;
+  background: #1890ff !important;
+}
+
+.devFooter {
+  margin-top: 60px;
+  padding-top: 20px;
+  border-top: 1px dashed #e8e8e8;
+}
+
+.devBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.devIcon {
+  font-size: 24px;
+  color: #1890ff;
+}
+
+.devLabel {
+  font-size: 9px;
+  color: #bfbfbf;
+  display: block;
+  letter-spacing: 1px;
+}
+
+.devName {
+  margin: 0 !important;
+  font-size: 14px !important;
+  letter-spacing: 0.5px;
 }
