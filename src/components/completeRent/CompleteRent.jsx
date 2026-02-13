@@ -12,13 +12,8 @@ import {
   Col,
   message,
 } from 'antd';
-import {
-  FileDoneOutlined,
-  CalendarOutlined,
-  DollarOutlined,
-  FormOutlined,
-} from '@ant-design/icons';
-import dayjs from 'dayjs';
+import { FileDoneOutlined, CalendarOutlined, DollarOutlined } from '@ant-design/icons';
+import ptBR from 'antd/es/date-picker/locale/pt_BR';
 
 import api from '../../utils/api';
 import { handlePriceChange } from '../../utils/handlePriceChange';
@@ -120,6 +115,7 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
                 rules={[{ required: true, message: 'Informe a data inicial' }]}
               >
                 <DatePicker
+                  locale={ptBR}
                   format='DD/MM/YYYY'
                   style={{ width: '100%' }}
                   placeholder='Selecione'
@@ -134,6 +130,7 @@ const CompleteRent = ({ client, tool, price, quantity, listItems }) => {
                 rules={[{ required: true, message: 'Informe a data final' }]}
               >
                 <DatePicker
+                  locale={ptBR}
                   format='DD/MM/YYYY'
                   style={{ width: '100%' }}
                   placeholder='Selecione'

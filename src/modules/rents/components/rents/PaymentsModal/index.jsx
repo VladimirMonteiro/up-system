@@ -15,6 +15,8 @@ import {
   Popconfirm,
 } from 'antd';
 import dayjs from 'dayjs';
+import ptBR from 'antd/es/date-picker/locale/pt_BR';
+
 
 import {
   QrcodeOutlined,
@@ -152,7 +154,7 @@ export function PaymentsModal({
                 rules={[{ required: true, message: 'Informe a data do pagamento' }]}
                 initialValue={dayjs()} // 👈 hoje por padrão
               >
-                <DatePicker style={{ width: '100%' }} format='DD/MM/YYYY' />
+                <DatePicker style={{ width: '100%' }} format='DD/MM/YYYY' locale={ptBR} />
               </Form.Item>
             </Col>
 
