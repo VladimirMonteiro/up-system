@@ -272,30 +272,22 @@ const Table = forwardRef(({ selected, loading, setLoadingClients, isOpen }, ref)
                 <th>Telefone</th>
                 <th>Endereço</th>
                 <th>Cidade</th>
-                <th>Bairro</th>
-                <th>CEP</th>
                 {isClientesRoute && <th>Ações</th>}
               </tr>
             </thead>
 
             <tbody>
               {clients.map((row) => {
-                const phone = row.phones?.[0] || '-';
-                const addr = row.addresses?.[0];
-
                 return (
                   <tr key={row.id} onClick={
                       rowSelectable ? () => selected(row) : undefined
                     }>
                     <td>{row.id}</td>
                     <td>{row.name}</td>
-                    <td>{row.cpf || row.cnpj || '-'}</td>
-                    <td>{phone}</td>
-                    <td>{addr ? `${addr.street} - ${addr.number}` : '-'}</td>
-                    <td>{addr?.city || '-'}</td>
-                    <td>{addr?.neighborhood || '-'}</td>
-                    <td>{addr?.cep || '-'}</td>
-
+                    <td>{row.document || '-'}</td>
+                    <td>{row.phone}</td>
+                    <td>{`${row.street} - nº ${row.number}`}</td>
+                    <td>{row.city}</td>
                     {isClientesRoute && (
                       <td style={{ padding: '5px' }}>
                         <FaPen
