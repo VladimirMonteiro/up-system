@@ -32,7 +32,7 @@ export function KpiCards({ tool }) {
           color: '#8c8c8c',
         },
         {
-          title: 'Locações Ativas',
+          title: 'Qtn em locações ativas',
           value: tool.quantityRentActive || 0,
           icon: <ClockCircleOutlined />,
           color: '#1677ff',
