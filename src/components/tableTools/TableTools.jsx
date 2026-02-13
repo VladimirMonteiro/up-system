@@ -1,6 +1,6 @@
 import api from '../../utils/api';
 import styles from '../tableClients/Table.module.css';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MdDelete } from 'react-icons/md';
 import { FaPen } from 'react-icons/fa';
@@ -12,7 +12,7 @@ import ComponentMessage from '../componentMessage/ComponentMessage';
 
 const rowsPerPage = 13;
 
-const TableTools = ({ selected, isOpen }) => {
+const TableTools = forwardRef(({ selected, isOpen }, ref) => {
   /* =======================
         STATES
      ======================= */
@@ -38,19 +38,44 @@ const TableTools = ({ selected, isOpen }) => {
   /* =======================
         REFS
      ======================= */
+
   const searchInputRef = useRef(null);
+  useImperativeHandle(ref, () => ({
+    focus: () => focusInputOnce(),
+    clearSearch: () => setSearchTerm(''),
+  }));
+
+  const focusInputOnce = () => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+      searchInputRef.current.select?.();
+      return true;
+    }
+    return false;
+  };
 
   /* =======================
         FOCUS NO INPUT
      ======================= */
   useEffect(() => {
-    if (isOpen && searchInputRef.current) {
-      setTimeout(() => {
-        searchInputRef.current.focus();
-        searchInputRef.current.select?.();
-      }, 100);
-    }
-  }, [isOpen]);
+    if (!isOpen) return;
+
+    let attempts = 0;
+    const maxAttempts = 20;
+
+    const timer = setInterval(() => {
+      attempts++;
+
+      if (!loadingTable && searchInputRef.current) {
+        focusInputOnce();
+        clearInterval(timer);
+      } else if (attempts >= maxAttempts) {
+        clearInterval(timer);
+      }
+    }, 80);
+
+    return () => clearInterval(timer);
+  }, [isOpen, loadingTable]);
 
   /* =======================
         BUSCA SEM FILTRO
@@ -212,7 +237,7 @@ const TableTools = ({ selected, isOpen }) => {
                 <td>{formateNumber(tool.week)}</td>
                 <td>{formateNumber(tool.biweekly)}</td>
                 <td>{formateNumber(tool.twentyOneDays)}</td>
-                
+
                 <td>{formateNumber(tool.priceMonth)}</td>
                 {isToolsRoute && (
                   <td>
@@ -259,6 +284,6 @@ const TableTools = ({ selected, isOpen }) => {
       />
     </div>
   );
-};
+});
 
 export default TableTools;
