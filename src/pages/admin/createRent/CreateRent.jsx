@@ -24,6 +24,8 @@ const CreateRent = () => {
     const [isToolModalOpen, setToolModalOpen] = useState(false);
     const [isFinishRentOpen, setFinishRentOpen] = useState(false)
 
+    const tableRef = useRef(null);
+
     useEffect(() => {
         console.log("A lista foi atualizada:", listItems);
     }, [listItems])
@@ -272,6 +274,7 @@ const CreateRent = () => {
             <Modal isOpen={isToolModalOpen} onClose={closeToolModal} height={"90vh"} overflow={"scroll"}>
                 <h2>Selecione uma Ferramenta</h2>
                 <TableTools
+                    ref={tableRef}
                     selected={handleSelectTool}
                     loading={loading}
                     setLoading={setLoading}

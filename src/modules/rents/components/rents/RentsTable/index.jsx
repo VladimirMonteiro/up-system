@@ -16,6 +16,7 @@ import styles from './styles.module.css';
 import { formateNumber } from '../../../../../utils/formatNumber';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { formatCpfCnpj } from '../../../../../utils/formatCpfOrCnpj';
 
 export function RentsTable({
   rents,
@@ -83,7 +84,7 @@ export function RentsTable({
       title: 'CPF/CNPJ',
       dataIndex: 'clientDocument',
       key: 'clientDocument',
-      render: (clientDocument) => <strong>{clientDocument}</strong>,
+      render: (clientDocument) => <strong>{formatCpfCnpj(clientDocument)}</strong>,
     },
     {
       title: 'Período',
