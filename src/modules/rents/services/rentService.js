@@ -7,7 +7,16 @@ export const rentService = {
 
   delete: (id) => api.delete(`/rent/delete/${id}`),
 
-  complete: (id) => api.put(`/rent/completed/${id}`),
+  complete: (id, paymentMethod) => {
+    if (paymentMethod) {
+      return api.put(`/rent/completed/${id}`, {
+        method: paymentMethod,
+      });
+    }
+
+    // se já pago, não envia método
+    return api.put(`/rent/completed/${id}`);
+  },
 
   getContract: (rentId) =>
     api.get(`/rent/${rentId}/contract`, {

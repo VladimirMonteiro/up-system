@@ -1,4 +1,4 @@
-import { Card, Table, Tag, Dropdown, Popconfirm, message } from 'antd';
+import { Card, Table, Tag, Dropdown, Popconfirm, message, Modal, Form, Select } from 'antd';
 import {
   MoreOutlined,
   EyeOutlined,
@@ -7,11 +7,15 @@ import {
   ReloadOutlined,
   CheckCircleOutlined,
   DeleteOutlined,
+  QrcodeOutlined,
+  CreditCardOutlined,
+  WalletOutlined,
 } from '@ant-design/icons';
 
 import styles from './styles.module.css';
 import { formateNumber } from '../../../../../utils/formatNumber';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export function RentsTable({
   rents,
@@ -36,6 +40,29 @@ export function RentsTable({
       hide();
     }
   };
+
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [selectedRentId, setSelectedRentId] = useState(null);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+
+  const handleConfirmComplete = async () => {
+    try {
+      const values = await form.validateFields();
+
+      setConfirmLoading(true);
+
+      await completeRent(selectedRentId, values.method);
+
+      setIsCompleteModalOpen(false);
+      form.resetFields();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setConfirmLoading(false);
+    }
+  };
+
+  const [form] = Form.useForm();
 
   const navigate = useNavigate();
 
@@ -124,7 +151,9 @@ export function RentsTable({
                 key: '1',
                 icon: <EyeOutlined style={{ color: '#1890ff' }} />,
                 label: 'Ver Detalhes',
-                onClick: () => {navigate(`/alugueis/${record.id}`);}
+                onClick: () => {
+                  navigate(`/alugueis/${record.id}`);
+                },
               },
               {
                 key: '2',
@@ -147,7 +176,17 @@ export function RentsTable({
                 key: '5',
                 icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
                 label: 'Finalizar',
-                onClick: () => completeRent(record.id),
+                onClick: async () => {
+                  // ✅ Se já está pago → finaliza direto
+                  if (record.paymentStatus === 'Pago') {
+                    await completeRent(record.id, null);
+                    return;
+                  }
+
+                  // ❗ Se não está pago → abrir modal
+                  setSelectedRentId(record.id);
+                  setIsCompleteModalOpen(true);
+                },
               },
               { type: 'divider' },
               {
@@ -176,20 +215,67 @@ export function RentsTable({
   ];
 
   return (
-    <Card className={styles.tableCard}>
-      <Table
-        rowKey='id'
-        columns={columns}
-        dataSource={rents}
-        loading={loading}
-        pagination={{
-          current: page + 1,
-          total: totalPages * 15,
-          pageSize: 15,
-          onChange: (p) => setPage(p - 1),
-          showSizeChanger: false,
+    <>
+      <Card className={styles.tableCard}>
+        <Table
+          rowKey='id'
+          columns={columns}
+          dataSource={rents}
+          loading={loading}
+          pagination={{
+            current: page + 1,
+            total: totalPages * 15,
+            pageSize: 15,
+            onChange: (p) => setPage(p - 1),
+            showSizeChanger: false,
+          }}
+        />
+      </Card>
+      {/* ===============================
+          MODAL FINALIZAR LOCAÇÃO
+         =============================== */}
+      <Modal
+        title='Finalizar Locação'
+        open={isCompleteModalOpen}
+        onCancel={() => {
+          setIsCompleteModalOpen(false);
+          form.resetFields();
         }}
-      />
-    </Card>
+        onOk={handleConfirmComplete}
+        okText='Finalizar'
+        cancelText='Cancelar'
+        confirmLoading={confirmLoading}
+      >
+        <Form form={form} layout='vertical'>
+          <Form.Item
+            label='Método de Pagamento'
+            name='method'
+            rules={[{ required: true, message: 'Selecione o método' }]}
+          >
+            <Select placeholder='Selecione...'>
+              <Select.Option value='Pix'>
+                <QrcodeOutlined style={{ color: '#22c55e', marginRight: 8 }} />
+                PIX
+              </Select.Option>
+
+              <Select.Option value='Dinheiro'>
+                <DollarOutlined style={{ color: '#16a34a', marginRight: 8 }} />
+                Dinheiro
+              </Select.Option>
+
+              <Select.Option value='Crédito'>
+                <CreditCardOutlined style={{ color: '#2563eb', marginRight: 8 }} />
+                Crédito
+              </Select.Option>
+
+              <Select.Option value='Débito'>
+                <WalletOutlined style={{ color: '#7c3aed', marginRight: 8 }} />
+                Débito
+              </Select.Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </>
   );
 }

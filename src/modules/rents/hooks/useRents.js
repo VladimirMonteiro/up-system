@@ -43,8 +43,8 @@ export const useRents = () => {
   };
 
   useEffect(() => {
-  fetchRents(page);
-}, [page]);
+    fetchRents(page);
+  }, [page]);
 
   return {
     rents,
@@ -75,9 +75,9 @@ export const useRents = () => {
       }
     },
 
-    completeRent: async (id) => {
+    completeRent: async (id, paymentMethod = null) => {
       try {
-        await rentService.complete(id);
+        await rentService.complete(id, paymentMethod);
         message.success('Locação finalizada');
         fetchRents(page);
       } catch {
