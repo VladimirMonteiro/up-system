@@ -311,7 +311,7 @@ const CreateRent = () => {
           listItems={listItems}
         />
       </Modal>
-      <Modal isOpen={isClientModalOpen} onClose={closeClientModal} width='80vw' height='80vh'>
+      <Modal isOpen={isClientModalOpen} onClose={closeClientModal} width='auto'>
         <h2>Selecione um Cliente</h2>
 
         <Table
@@ -322,7 +322,7 @@ const CreateRent = () => {
         />
       </Modal>
 
-      <Modal isOpen={isToolModalOpen} onClose={closeToolModal} width='80vw' height='80vh'>
+      <Modal isOpen={isToolModalOpen} onClose={closeToolModal} width='auto'>
         <h2>Selecione uma Ferramenta</h2>
 
         <TableTools
