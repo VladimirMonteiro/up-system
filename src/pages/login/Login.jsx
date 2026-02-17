@@ -61,7 +61,7 @@ const Login = () => {
         </div>
         
         <div className={styles.brandFooter}>
-          <Text className={styles.footerDraft}>PLATAFORMA CORPORATIVA V1.0</Text>
+          <Text className={styles.footerDraft}>PLATAFORMA CORPORATIVA v2.0.0</Text>
         </div>
       </div>
 
