@@ -159,6 +159,7 @@ const Clients = () => {
             <RegisterClient
               createClient={handleCreateClient}
               errors={errors}
+              errorsPj={errors}
             />
           </Modal>
 

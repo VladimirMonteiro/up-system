@@ -90,6 +90,7 @@ const RegisterClient = ({ createClient, errors, createClientPj, errorsPj }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+     const cleanedPhone = phones?.replace(/\D/g, '');
 
     try {
       if (selectedForm === 'pf') {
@@ -97,7 +98,7 @@ const RegisterClient = ({ createClient, errors, createClientPj, errorsPj }) => {
           name,
           type: 'clientFS',
           cpf,
-          phones: phones ? [phones] : null,
+          phones: cleanedPhone ? [cleanedPhone] : [],
           addresses: [addresses],
         };
 
@@ -111,14 +112,17 @@ const RegisterClient = ({ createClient, errors, createClientPj, errorsPj }) => {
         const newClientPj = {
           name,
           type: 'clientPJ',
-          cnpj,
-          phones: phones ? [phones] : null,
+          cnpj: cnpj.replace(/\D/g, ''), // ✅ CORRETO
+          phones: cleanedPhone ? [cleanedPhone] : [],
           addresses: [addresses],
           socialReason,
           fantasyName,
           stateRegistration,
           municipalRegistration,
         };
+
+        alert(newClientPj.phones
+        )
 
         const response = await createClient(newClientPj);
 
@@ -223,7 +227,7 @@ const RegisterClient = ({ createClient, errors, createClientPj, errorsPj }) => {
                   type='text'
                   maxLength={15}
                   value={phones}
-                  onChange={(e) => formatPhone(e, setPhones)}
+                  onChange={(e) => setPhones(formatPhone(e.target.value))}
                 />
                 {errors && (
                   <p className={styles.errorMsg}>
@@ -284,7 +288,7 @@ const RegisterClient = ({ createClient, errors, createClientPj, errorsPj }) => {
                   type='text'
                   maxLength={15}
                   value={phones}
-                  onChange={(e) => formatPhone(e, setPhones)}
+                  onChange={(e) => setPhones(formatPhone(e.target.value))}
                 />
                 {errorsPj && (
                   <p className={styles.errorMsg}>
