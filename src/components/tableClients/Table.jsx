@@ -21,6 +21,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ConfirmDeleteModal from '../modalConfirmDelete/ConfirmDeleteModal';
 import ComponentMessage from '../componentMessage/ComponentMessage';
 import Loading from '../loading/Loading';
+import { formatCpfCnpj } from '../../utils/formatCpfOrCnpj';
+import { formatPhone } from '../../utils/formatPhone';
 
 // Quantidade fixa de linhas por página
 const rowsPerPage = 13;
@@ -272,30 +274,22 @@ const Table = forwardRef(({ selected, loading, setLoadingClients, isOpen }, ref)
                 <th>Telefone</th>
                 <th>Endereço</th>
                 <th>Cidade</th>
-                <th>Bairro</th>
-                <th>CEP</th>
                 {isClientesRoute && <th>Ações</th>}
               </tr>
             </thead>
 
             <tbody>
               {clients.map((row) => {
-                const phone = row.phones?.[0] || '-';
-                const addr = row.addresses?.[0];
-
                 return (
                   <tr key={row.id} onClick={
                       rowSelectable ? () => selected(row) : undefined
                     }>
                     <td>{row.id}</td>
                     <td>{row.name}</td>
-                    <td>{row.cpf || row.cnpj || '-'}</td>
-                    <td>{phone}</td>
-                    <td>{addr ? `${addr.street} - ${addr.number}` : '-'}</td>
-                    <td>{addr?.city || '-'}</td>
-                    <td>{addr?.neighborhood || '-'}</td>
-                    <td>{addr?.cep || '-'}</td>
-
+                    <td>{formatCpfCnpj(row.document ) || '-'}</td>
+                    <td>{formatPhone(row.phone) || '-'}</td>
+                    <td>{`${row.street} - nº ${row.number}`}</td>
+                    <td>{row.city}</td>
                     {isClientesRoute && (
                       <td style={{ padding: '5px' }}>
                         <FaPen

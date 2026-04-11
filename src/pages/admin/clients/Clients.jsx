@@ -123,9 +123,7 @@ const Clients = () => {
   };
 
   return (
-    <div className="mainContainerFlex">
-      <Navbar />
-
+    <div>
       {success && (
         <ComponentMessage
           type="success"
@@ -161,6 +159,7 @@ const Clients = () => {
             <RegisterClient
               createClient={handleCreateClient}
               errors={errors}
+              errorsPj={errors}
             />
           </Modal>
 

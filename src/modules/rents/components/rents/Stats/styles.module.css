@@ -1,0 +1,25 @@
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.cardActive {
+  background: #e6f0ff;
+  border: 1px solid #adc6ff;
+}
+
+.cardDone {
+  background: #e6fffb;
+  border: 1px solid #87e8de;
+}
+
+.cardLate {
+  background: #fff1f0;
+  border: 1px solid #ffa39e;
+}
+
+.tableCard {
+  border-radius: 12px;
+}

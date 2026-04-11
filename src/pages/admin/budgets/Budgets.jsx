@@ -1,186 +1,251 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdDelete } from 'react-icons/md';
-import { FaPen, FaPaste } from 'react-icons/fa';
+import {
+  Table,
+  Button,
+  Space,
+  Tag,
+  Tooltip,
+  Popconfirm,
+  Card,
+  message,
+  Input,
+} from 'antd';
+import {
+  DeleteOutlined,
+  FilePdfOutlined,
+  SwapOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
 
 import api from '../../../utils/api';
-import Loading from '../../../components/loading/Loading';
-import styles from './Budgets.module.css';
-import Navbar from '../../../components/navbar/Navbar';
-import ConfirmDeleteModal from '../../../components/modalConfirmDelete/ConfirmDeleteModal';
-import ComponentMessage from '../../../components/componentMessage/ComponentMessage';
+
+const { Search } = Input;
 
 const Budgets = () => {
   const [budgets, setBudgets] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
+
   const rowsPerPage = 14;
-
-  const [budgetToDelete, setBudgetToDelete] = useState(null);
-  const [clientName, setClientName] = useState('');
-  const [openModalDelete, setOpenModalDelete] = useState(false);
-  const [success, setSuccess] = useState(null);
-
   const navigate = useNavigate();
 
-  // Busca no backend
+  // ===============================
+  // 🔎 Buscar dados no backend
+  // ===============================
   const fetchData = async (page = 1, term = '') => {
     setLoading(true);
     try {
       const params = {
-        page: Math.max(page - 1, 0),
+        page: page - 1,
         size: rowsPerPage,
       };
+
       if (term.trim() !== '') params.search = term.trim();
 
       const response = await api.get('/budgets', { params });
 
-      const content = response.data?.content ?? response.data ?? [];
-      const tp =
-        response.data?.totalPages ??
-        Math.max(1, Math.ceil((response.data?.length ?? content.length) / rowsPerPage));
-
-      setBudgets(Array.isArray(content) ? content : []);
-      setTotalPages(tp);
+      setBudgets(response.data.content || []);
+      setTotalElements(response.data.totalElements || 0);
       setCurrentPage(page);
     } catch (error) {
-      console.error('Erro ao buscar ferramentas:', error);
+      console.error('Erro ao buscar orçamentos:', error);
+      message.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
     }
   };
 
-  // Primeira carga
   useEffect(() => {
     fetchData(1, '');
   }, []);
 
+  // ===============================
+  // 💰 Formatar moeda
+  // ===============================
   const formatCurrency = (value) =>
     new Intl.NumberFormat('pt-BR', {
       style: 'currency',
       currency: 'BRL',
     }).format(Number(value ?? 0));
 
-  const handlePrevious = () => {
-    if (currentPage > 1) fetchData(currentPage - 1, searchTerm);
-  };
-  const handleNext = () => {
-    if (currentPage < totalPages) fetchData(currentPage + 1, searchTerm);
+  // ===============================
+  // 🎨 Tag de Status
+  // ===============================
+  const getStatusTag = (status) => {
+    const map = {
+      Ativo: 'blue',
+      Convertido: 'green',
+      Cancelado: 'red',
+    };
+
+    return <Tag color={map[status] || 'default'}>{status}</Tag>;
   };
 
-  const openModal = (e, id, name) => {
-    e.stopPropagation?.();
-    e.preventDefault?.();
-    setBudgetToDelete(id);
-    setClientName(name);
-    setOpenModalDelete(true);
-  };
-
+  // ===============================
+  // 🗑 Deletar
+  // ===============================
   const handleDeleteBudget = async (id) => {
     try {
-      const response = await api.delete(`/budgets/${id}`);
-      setOpenModalDelete(false);
-      setSuccess(response?.data?.message ?? 'Removido com sucesso');
-
-      await fetchData(currentPage, searchTerm);
-
-      if (currentPage > totalPages && totalPages > 0) {
-        fetchData(Math.max(totalPages, 1), searchTerm);
-      }
+      await api.delete(`/budgets/${id}`);
+      message.success('Removido com sucesso');
+      fetchData(currentPage, searchTerm);
     } catch (error) {
-      console.error('Erro ao deletar:', error);
+      console.error(error);
+      message.error('Erro ao remover');
     }
   };
 
+  // ===============================
+  // 📄 Abrir PDF
+  // ===============================
   const openPdf = async (id) => {
+    message.loading({ content: 'Abrindo PDF...', key: 'pdf' });
+
     try {
-      const response = await api.get(`/budgets/${id}`);
-      const rentData = response.data;
-      navigate('/orcamento-pdf', { state: rentData });
+      const response = await api.get(`/budgets/pdf/${id}`, {
+        responseType: 'blob',
+      });
+
+      const file = new Blob([response.data], {
+        type: 'application/pdf',
+      });
+
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL, '_blank');
+
+      message.success({ content: 'PDF aberto', key: 'pdf' });
     } catch (error) {
-      console.error('Erro ao gerar PDF:', error);
+      console.error(error);
+      message.error({ content: 'Erro ao abrir PDF', key: 'pdf' });
     }
   };
+
+  // ===============================
+  // 🔄 Converter para Rent
+  // ===============================
+  const convertToRent = async (id) => {
+    message.loading({ content: 'Convertendo...', key: 'convert' });
+
+    try {
+      const response = await api.post(
+        `/rent/budgets/${id}`,
+        null,
+        { responseType: 'blob' }
+      );
+
+      const file = new Blob([response.data], {
+        type: 'application/pdf',
+      });
+
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL, '_blank');
+
+      message.success({ content: 'Convertido com sucesso', key: 'convert' });
+
+      navigate('/alugueis');
+    } catch (error) {
+      console.error(error);
+      message.error({ content: 'Erro ao converter', key: 'convert' });
+    }
+  };
+
+  // ===============================
+  // 📋 Colunas da Tabela
+  // ===============================
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      width: 80,
+    },
+    {
+      title: 'Cliente',
+      dataIndex: 'clientName',
+    },
+    {
+      title: 'Data',
+      dataIndex: 'createAt',
+    },
+    {
+      title: 'Valor Total',
+      dataIndex: 'price',
+      render: (value) => formatCurrency(value),
+    },
+    {
+      title: 'Desconto',
+      dataIndex: 'discount',
+      render: (value) => formatCurrency(value),
+    },
+    {
+      title: 'Frete',
+      dataIndex: 'freight',
+      render: (value) => formatCurrency(value),
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (status) => getStatusTag(status),
+    },
+    {
+      title: 'Ações',
+      width: 180,
+      render: (_, record) => (
+        <Space>
+          <Tooltip title="Excluir">
+            <Popconfirm
+              title="Deseja remover este orçamento?"
+              onConfirm={() => handleDeleteBudget(record.id)}
+              okText="Sim"
+              cancelText="Não"
+            >
+              <Button danger icon={<DeleteOutlined />} />
+            </Popconfirm>
+          </Tooltip>
+
+          <Tooltip title="Abrir PDF">
+            <Button
+              icon={<FilePdfOutlined />}
+              onClick={() => openPdf(record.id)}
+            />
+          </Tooltip>
+
+          <Tooltip title="Converter em Locação">
+            <Button
+              type="primary"
+              icon={<SwapOutlined />}
+              onClick={() => convertToRent(record.id)}
+              disabled={record.status !== 'Ativo'}
+            />
+          </Tooltip>
+        </Space>
+      ),
+    },
+  ];
 
   return (
-    <section id={styles.container} className='mainContainerFlex'>
-      <Navbar />
-
-      {loading ? (
-        <Loading />
-      ) : (
-        <div>
-          {success && (
-            <ComponentMessage message={success} type='success' onClose={() => setSuccess(null)} />
-          )}
-          <h1 className={styles.title}>Orcamentos</h1>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Cliente</th>
-                <th>Data</th>
-                <th>Valor Total</th>
-                <th>Desconto</th>
-                <th>Frete</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {budgets.map((budget, idx) => (
-                <tr key={idx}>
-                  <td>{budget.id}</td>
-                  <td>{budget.clientName}</td>
-                  <td>{budget.createAt}</td>
-                  <td>{formatCurrency(budget.price)}</td>
-                  <td>{formatCurrency(budget.discount)}</td>
-                  <td>{formatCurrency(budget.freight)}</td>
-                  <td style={{ width: '10%' }}>
-                    <MdDelete
-                      style={{
-                        color: 'red',
-                        marginRight: '5px',
-                        cursor: 'pointer',
-                      }}
-                      onClick={(e) => openModal(e, budget.id, budget.clientName)}
-                    />
-                    <FaPaste style={{ marginRight: '5px' }} onClick={() => openPdf(budget.id)} />
-
-                    {/*FaPen
-                      style={{ marginRight: '5px', cursor: 'pointer' }}
-                      onClick={(e) => selected(e, row.id)}/>*/}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className={styles.pagination}>
-            <button onClick={handlePrevious} disabled={currentPage === 1}>
-              Anterior
-            </button>
-            <span>
-              Página {currentPage} de {totalPages}
-            </span>
-            <button onClick={handleNext} disabled={currentPage === totalPages || totalPages === 0}>
-              Próxima
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Modal de confirmação */}
-
-      <ConfirmDeleteModal
-        open={openModalDelete}
-        onClose={() => setOpenModalDelete(false)}
-        itemName={clientName}
-        onConfirm={() => handleDeleteBudget(budgetToDelete)}
-        remove={true}
+    <Card
+      title="Orçamentos"
+     
+    >
+      <Table
+        rowKey="id"
+        columns={columns}
+        dataSource={budgets}
+        loading={loading}
+        bordered
+        pagination={{
+          current: currentPage,
+          total: totalElements,
+          pageSize: rowsPerPage,
+          showSizeChanger: false,
+          onChange: (page) => fetchData(page, searchTerm),
+        }}
       />
-    </section>
+    </Card>
   );
 };
 

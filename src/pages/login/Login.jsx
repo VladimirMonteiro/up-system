@@ -1,99 +1,124 @@
-import styles from './Login.module.css';
 import { useContext, useState } from 'react';
 import { authContext } from '../../context/authProvider/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Form, Input, Button, Typography, Alert, Badge, Avatar } from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
-import { FaUser, FaLock } from 'react-icons/fa';
 import logo from '../../assets/logo_up.png';
+import outerCodeLogo from '../../assets/outer-code-logo.png'  // Caminho da imagem que você enviou
+import styles from './Login.module.css';
+
+const { Title, Text } = Typography;
 
 const Login = () => {
-    const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState(null);
+  
+  const auth = useContext(authContext);
+  const navigate = useNavigate();
 
-    const auth = useContext(authContext);
-    const navigate = useNavigate();
+  const onFinish = async (values) => {
+    setLoading(true);
+    setErrorMsg(null);
+    try {
+      const data = await auth.authenticate(values);
+      if (data.status === 403) {
+        setErrorMsg('Credenciais não autorizadas.');
+      } else if (data.response) {
+        setErrorMsg(data.response.data.errors?.[0] || 'Falha na autenticação.');
+      } else {
+        navigate('/inicial');
+      }
+    } catch (err) {
+      setErrorMsg('Erro de comunicação com o servidor.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
+  return (
+    <div className={styles.loginPage}>
+      <div className={styles.brandSide}>
+        <div className={styles.brandOverlay} />
+        <div className={styles.brandContent}>
+          {/* Logo UP em destaque máximo */}
+          <img src={logo} alt="Up Locações" className={styles.mainLogoLarge} />
+          
+          <div className={styles.badgeArea}>
+            <Badge status="processing" color="#52c41a" text={<span style={{color: '#fff'}}>Sistema Operacional Ativo</span>} />
+          </div>
 
-        const data = await auth.authenticate({ login, password });
-
-        if (data.status === 403) {
-            setErrors(['Usuário não encontrado.']);
-            setLoading(false);
-        } else if (data.response) {
-            setErrors(data.response.data.errors);
-            setLoading(false);
-        } else {
-            setLogin('');
-            setPassword('');
-            setLoading(false);
-            navigate('/inicial');
-        }
-    };
-
-    return (
-        <div className={styles.loginPage}>
-            <div className={styles.leftPanel}>
-                <img src={logo} alt="Up Locações" className={styles.logo} />
-                <h1>Bem-vindo à Up Locações</h1>
-                <p>Aluguel de equipamentos com praticidade e confiança.</p>
-            </div>
-
-            <div className={styles.rightPanel}>
-                <div className={styles.formWrapper}>
-                    <h2>Login</h2>
-                    <form onSubmit={handleSubmit}>
-                        <div className={styles.inputGroup}>
-                            <label htmlFor="login">Usuário</label>
-                            <div className={styles.inputWithIcon}>
-                                <FaUser className={styles.icon} />
-                                <input
-                                    type="text"
-                                    id="login"
-                                    value={login}
-                                    onChange={(e) => setLogin(e.target.value)}
-                                    autoComplete="off"
-                                    placeholder="Digite seu usuário"
-                                />
-                            </div>
-                            {errors.some((err) => err.toLowerCase().includes('login')) && (
-                                <p className={styles.error}>Usuário inválido</p>
-                            )}
-                        </div>
-
-                        <div className={styles.inputGroup}>
-                            <label htmlFor="password">Senha</label>
-                            <div className={styles.inputWithIcon}>
-                                <FaLock className={styles.icon} />
-                                <input
-                                    type="password"
-                                    id="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Digite sua senha"
-                                />
-                            </div>
-                            {errors.some((err) => err.toLowerCase().includes('senha')) && (
-                                <p className={styles.error}>Senha incorreta</p>
-                            )}
-                        </div>
-
-                        {errors.some((err) => err.toLowerCase().includes('usuário')) && (
-                            <p className={styles.error}>Usuário não encontrado</p>
-                        )}
-
-                        <button type="submit" className={styles.submitBtn}>
-                            {loading ? 'Acessando...' : 'Entrar'}
-                        </button>
-                    </form>
-                </div>
-            </div>
+          <Title level={1} className={styles.mainTitle}>
+            Gestão de  
+            <span> Locações</span>
+          </Title>
+          
+          <div className={styles.clientInfo}>
+            <Text className={styles.clientText}>
+              Ambiente exclusivo para colaboradores e parceiros da <strong>Up Locações</strong>.
+            </Text>
+          </div>
         </div>
-    );
+        
+        <div className={styles.brandFooter}>
+          <Text className={styles.footerDraft}>PLATAFORMA CORPORATIVA v2.0.0</Text>
+        </div>
+      </div>
+
+      <div className={styles.formSide}>
+        <div className={styles.loginBox}>
+          <header className={styles.loginHeader}>
+            <Title level={3}>Login Administrativo</Title>
+            <Text type="secondary">Insira suas credenciais para continuar</Text>
+          </header>
+
+          {errorMsg && (
+            <Alert message={errorMsg} type="error" showIcon closable className={styles.alert} />
+          )}
+
+          <Form layout="vertical" onFinish={onFinish} size="large" requiredMark={false}>
+            <Form.Item
+              name="login"
+              label={<Text strong className={styles.label}>NOME DE USUÁRIO</Text>}
+              rules={[{ required: true, message: 'O usuário é obrigatório' }]}
+            >
+              <Input prefix={<UserOutlined />} placeholder="Ex: admin.up" className={styles.customInput} />
+            </Form.Item>
+
+            <Form.Item
+              name="password"
+              label={<Text strong className={styles.label}>SENHA DE ACESSO</Text>}
+              rules={[{ required: true, message: 'A senha é obrigatória' }]}
+            >
+              <Input.Password prefix={<LockOutlined />} placeholder="••••••••" className={styles.customInput} />
+            </Form.Item>
+
+            <Button type="primary" htmlType="submit" block loading={loading} className={styles.submitBtn}>
+              ENTRAR NO SISTEMA
+            </Button>
+          </Form>
+
+          {/* Assinatura Outer Code com a Foto enviada */}
+          <footer className={styles.devFooter}>
+            <div className={styles.devBrand}>
+              <Avatar 
+                src={outerCodeLogo} 
+                size={45} 
+                shape="square"
+                className={styles.devAvatar}
+              />
+              <div className={styles.devTextContainer}>
+                <Text className={styles.devLabel}>PROJETADO E DESENVOLVIDO POR</Text>
+                <Title level={5} className={styles.devName}>
+                  OUTER <span style={{ color: '#1890ff' }}>CODE</span>
+                </Title>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Login;

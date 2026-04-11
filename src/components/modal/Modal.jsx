@@ -1,18 +1,27 @@
-// Modal.jsx
-import React from 'react';
+// components/Modal/Modal.jsx
+import { Modal as AntModal } from 'antd';
 import styles from './Modal.module.css';
 
-const Modal = ({ isOpen, onClose, children, width, height, overflow}) => {
-    if (!isOpen) return null; // Não renderiza nada se o modal não estiver aberto
-
-    return (
-        <div className={styles.modalOverlay} onClick={onClose}>
-            <div style={{height: height, width: width}} className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                <button className={styles.closeButton} onClick={onClose}>X</button>
-                {children}
-            </div>
-        </div>
-    );
+const Modal = ({ isOpen, onClose, children, width = 600, height }) => {
+  return (
+    <AntModal
+      open={isOpen}
+      onCancel={onClose}
+      footer={null}
+      width={width}
+      destroyOnClose
+      centered
+      className={styles.modalContainer}
+      styles={{
+        body: {
+          height: height,
+          overflowY: height ? 'auto' : 'visible',
+        },
+      }}
+    >
+      {children}
+    </AntModal>
+  );
 };
 
 export default Modal;

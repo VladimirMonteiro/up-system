@@ -1,0 +1,22 @@
+.header {
+  background: transparent;
+  padding: 0;
+  height: auto;
+  line-height: normal;
+}
+
+.title {
+  margin-bottom: 0;
+}
+
+.filters {
+  margin-top: 24px;
+}
+
+.selectCategory {
+  width: 200px;
+}
+
+.selectStatus {
+  width: 180px;
+}

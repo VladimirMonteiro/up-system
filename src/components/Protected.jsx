@@ -1,19 +1,45 @@
-import { authContext } from "../context/authProvider/AuthContext";
-import { useContext } from "react";
+import { useContext } from 'react';
+import { Outlet } from 'react-router-dom';
+import { Spin, Result, Button } from 'antd';
+import { authContext } from '../context/authProvider/AuthContext';
 
-const Protected = ({ children }) => {
-    const {token, loading} = useContext(authContext);
+const Protected = () => {
+  const { token, loading } = useContext(authContext);
 
-    // Exibir um carregamento ou algum tipo de feedback enquanto o estado do token é carregado
-    if (loading) {
-        return <h1>Carregando...</h1>;
-    }
+  // Loading elegante
+  if (loading) {
+    return (
+      <div
+        style={{
+          height: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Spin size='large' />
+      </div>
+    );
+  }
 
-    if (!token) {
-        return <h1>Acesso Negado</h1>;
-    }
+  // Não autenticado
+  if (!token) {
+    return (
+      <Result
+        status='403'
+        title='403'
+        subTitle='Você não tem permissão para acessar esta página.'
+        extra={
+          <Button type='primary' onClick={() => (window.location.href = '/')}>
+            Ir para o login
+          </Button>
+        }
+      />
+    );
+  }
 
-    return <>{children}</>;
+  // Autenticado → libera as rotas filhas
+  return <Outlet />;
 };
 
 export default Protected;

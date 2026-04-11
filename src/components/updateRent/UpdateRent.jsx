@@ -1,66 +1,113 @@
-import { useState, useEffect } from "react";
-import styles from "./UpdateRent.module.css"; // Importando o CSS Module
-import api from "../../utils/api";
-import Modal from "../modal/Modal";
-import TableTools from "../tableTools/TableTools"; // Componente que lista as ferramentas
-import { formateNumber } from "../../utils/formatNumber";
-import ComponentMessage from "../componentMessage/ComponentMessage";
-import RentPaymentsTable from "../rentPaymentsTable/RentPaymentsTable";
-import { formatCurrency, formatInputToCurrency, parseCurrencyToFloat } from "../../utils/formatCurrency";
+import { useState, useEffect } from 'react';
+import {
+  Form,
+  Input,
+  Button,
+  DatePicker,
+  Card,
+  Row,
+  Col,
+  Typography,
+  Tag,
+  Divider,
+  Alert,
+  Table,
+  InputNumber,
+  Statistic,
+  Space,
+  Progress,
+  message,
+} from 'antd';
+import {
+  PlusOutlined,
+  SaveOutlined,
+  DeleteOutlined,
+  CheckCircleOutlined,
+  SyncOutlined,
+  ArrowLeftOutlined,
+  InfoCircleOutlined,
+  ShoppingCartOutlined,
+  WalletOutlined,
+  FileTextOutlined,
+} from '@ant-design/icons';
+import dayjs from 'dayjs';
+
+import api from '../../utils/api';
+import Modal from '../modal/Modal';
+import TableTools from '../tableTools/TableTools';
+import { formatInputToCurrency, parseCurrencyToFloat } from '../../utils/formatCurrency';
+import { formateNumber } from '../../utils/formatNumber';
+import styles from './UpdateRent.module.css';
+import { useNavigate } from 'react-router-dom';
+
+const { Title, Text } = Typography;
+const { TextArea } = Input;
 
 const UpdateRent = ({ rent }) => {
+  const [form] = Form.useForm();
+
   const [client, setClient] = useState({});
   const [listItems, setListItems] = useState([]);
-  const [initialDate, setInitialDate] = useState("");
-  const [deliveryDate, setDeliveryDate] = useState("");
-  const [freight, setFreight] = useState("");
-  const [isToolModalOpen, setToolModalOpen] = useState(false); // Estado para o modal de ferramenta
-  const [loading, setLoading] = useState(true);
-  const [success, setSuccess] = useState(false)
-  const [payments, setPayments] = useState([])
-  const [paymentStatus, setPaymentStatus] = useState("")
-  const [stateRent, setStateRent] = useState("")
+  const [freight, setFreight] = useState('');
+  const [discount, setDiscount] = useState('');
+  const [obs, setObs] = useState('');
+  const [isToolModalOpen, setToolModalOpen] = useState(false);
+  const [success, setSuccess] = useState(null);
+  const [stateRent, setStateRent] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  console.log(rent)
+  const [paymentsInfo, setPaymentsInfo] = useState({
+    totalRent: 0,
+    totalPaid: 0,
+    remaining: 0,
+    progress: 0,
+    payments: [],
+  });
+
+  const navigate = useNavigate();
+
+  const formatDateForInput = (dateStr) => {
+    if (!dateStr) return null;
+    if (dateStr.includes('/')) {
+      const [day, month, year] = dateStr.split('/');
+      return dayjs(`${year}-${month}-${day}`);
+    }
+    return dayjs(dateStr);
+  };
 
   useEffect(() => {
     if (rent) {
       setClient(rent.client || {});
       setListItems(rent.rentItems || []);
-      setFreight(rent.freight || "");
-      setInitialDate(formatDate(rent.initialDate) || "");
-      setDeliveryDate(formatDate(rent.deliveryDate) || "");
-      setPaymentStatus(rent.paymentStatus || "")
-      setStateRent(rent.stateRent || "")
+      setFreight(rent.freight || '');
+      setDiscount(rent.discount || '');
+      setObs(rent.obs || '');
+      setStateRent(rent.stateRent || '');
+
+      form.setFieldsValue({
+        initialDate: formatDateForInput(rent.initialDate),
+        deliveryDate: formatDateForInput(rent.deliveryDate),
+        obs: rent.obs || '',
+      });
+
+      fetchPaymentsDTO(rent.id);
     }
+  }, [rent, form]);
 
-    const getPayments = async (id) => {
-      const response = await api.get(`/earning/rent/${rent.id}`)
-      setPayments(response.data)
+  const fetchPaymentsDTO = async (id) => {
+    try {
+      const response = await api.get(`/payments/rent/${id}`);
+      setPaymentsInfo(response.data);
+    } catch (err) {
+      console.error('Erro ao buscar DTO de pagamentos:', err);
     }
+  };
 
-    getPayments()
-  }, [rent]);
-  useEffect(() => {
-    const total = calculateTotal();
-    const paid = calculateTotalPaid();
-
-    let status = "UNPAID";
-    if (paid >= total) {
-      status = "PAID";
-    } else if (paid > 0 && paid < total) {
-      status = "PARTIALLY_PAID";
-    }
-
-    setPaymentStatus(status);
-
-    // Se quiser atualizar o objeto rent localmente
-    rent.paymentStatus = status;
-
-  }, [listItems, freight, payments]);
-
-
-  console.log(rent)
+  const openTools = (e) => {
+    if (e) e.preventDefault();
+    setToolModalOpen(true);
+  };
+  const closeToolModal = () => setToolModalOpen(false);
 
   const handleUpdateItem = (index, updatedItem) => {
     const updatedList = [...listItems];
@@ -68,352 +115,347 @@ const UpdateRent = ({ rent }) => {
     setListItems(updatedList);
   };
 
-
-  const handleDeleteItem = async (index) => {
-    const updatedList = listItems.filter((_, i) => i !== index);
-    setListItems(updatedList);
+  const handleDeleteItem = (index) => {
+    setListItems(listItems.filter((_, i) => i !== index));
   };
 
-  const handleUpdateRent = async (e) => {
-    e.preventDefault();
+  const handleSelectTool = (tool) => {
+    if (!listItems.some((item) => item.tool.id === tool.id)) {
+      setListItems((prev) => [...prev, { tool, quantity: 1, price: tool.price || 0 }]);
+    }
+    closeToolModal();
+  };
 
-    const updatedRent = {
+  const onFinish = async (values) => {
+    setLoading(true);
+    const payload = {
       rentId: rent.id,
       items: listItems.map((item) => ({
         toolId: item.tool.id,
         quantity: item.quantity,
         price: parseCurrencyToFloat(item.price),
       })),
-      price: calculateTotal(),
-      deliveryDate,
-      initialDate,
+      initialDate: values.initialDate?.format('YYYY-MM-DD'),
+      deliveryDate: values.deliveryDate?.format('YYYY-MM-DD'),
       freight: parseCurrencyToFloat(freight),
+      discount: parseCurrencyToFloat(discount),
+      obs: obs,
     };
 
-
     try {
-      const response = await api.put(`/rent/update/${rent.id}`, updatedRent);
-      console.log(response.data);
-      setSuccess(response.data.message)
+      const response = await api.put(`/rent/update/${rent.id}`, payload);
+
+      // Padronização de sucesso (usando a mensagem do back ou uma fixa)
+      message.success(response.data.message || 'Locação atualizada com sucesso!');
+
+      fetchPaymentsDTO(rent.id);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+
+      // Captura exatamente a estrutura: error.response.data.errors[0]
+      // O uso do ?. garante que se o erro não tiver essa estrutura, ele não quebre o JS
+      const msg = error.response?.data?.errors?.[0] || 'Erro ao atualizar';
+
+      message.error(msg);
+    } finally {
+      setLoading(false);
     }
-  };
-
-  const openTools = (e) => {
-    e.preventDefault();
-    setToolModalOpen(true); // Abre o modal de ferramentas
-  };
-
-  const closeToolModal = () => {
-    setToolModalOpen(false); // Fecha o modal
-  };
-
-  const handleSelectTool = (tool) => {
-    // Verifica se a ferramenta já está na lista de itens
-    const isToolAlreadyInList = listItems.some(
-      (item) => item.tool.id === tool.id
-    );
-
-    if (!isToolAlreadyInList) {
-      // Adiciona a ferramenta à lista de itens
-      const newItem = {
-        tool,
-        quantity: 1,
-        price: tool.price || 0,
-      };
-
-      setListItems((prevItems) => [...prevItems, newItem]); // Atualiza a lista
-    }
-
-    closeToolModal(); // Fecha o modal
-  };
-
-  // Função para calcular o total de cada item (quantidade * preço)
-  const calculateItemTotal = (quantity, price) => {
-    const priceFloat = parseCurrencyToFloat(price);
-    return (quantity * priceFloat).toFixed(2);
-  };
-
-  // Função para calcular o total geral (somando os totais dos itens)
-  const calculateTotal = () => {
-    const totalItems = listItems
-      .map(item => item.quantity * parseCurrencyToFloat(item.price))
-      .reduce((acc, cur) => acc + cur, 0);
-
-    const freightValue = parseCurrencyToFloat(freight || "0");
-
-    return totalItems + freightValue;
-  };
-
-
-
-  const formatDate = (inputDate) => {
-    // Divide a data fornecida em partes (dia, mês, ano)
-    const [day, month, year] = inputDate.split("/");
-
-    // Retorna a data no formato yyyy-MM-dd
-    return `${year}-${month}-${day}`;
-  };
-  const getPaymentStatus = (payment) => {
-    if (payment === "PAID") return "PAGO"
-    if (payment === "UNPAID") return "NÃO PAGO"
-    if (payment === "PARTIALLY_PAID") return "PARCIALMENTE PAGO"
-  }
-
-  const getRowClassPaymentStatus = (row) => {
-    if (row.paymentStatus === "PAID") {
-      return styles.rowPaid
-    }
-    if (row.paymentStatus === "PARTIALLY_PAID") {
-      return styles.rowNear
-    }
-    if (row.paymentStatus === "UNPAID") {
-      return styles.rowOverdue;
-    }
-
-    return "";
-  };
-
-  const calculateTotalPaid = () => {
-    return payments
-      .map(payment => parseFloat(payment.price || 0))
-      .reduce((acc, cur) => acc + cur, 0);
-  };
-
-
-  const calculateBalance = () => {
-    const total = calculateTotal();
-    const paid = calculateTotalPaid();
-
-    const balance = total - paid;
-
-    return balance > 0 ? balance : 0;
-  };
-
-
-  const handleFreightChange = (e) => {
-    const formatted = formatInputToCurrency(e.target.value);
-    setFreight(formatted);
   };
 
   const toggleDeliveryStatus = async () => {
     try {
       const response = await api.put(`/rent/${rent.id}/deliveryTool`);
-
-      // Se a API retornar o novo status atualizado:
-      const updatedStatus = response.data?.state || (stateRent === "DELIVERED" ? "PENDING" : "DELIVERED");
-
-      setStateRent(updatedStatus);
-      setSuccess(`Status alterado para ${updatedStatus === "DELIVERED" ? "ENTREGUE" : "PENDENTE"}`);
+      const updated = response.data?.state || (stateRent === 'DELIVERED' ? 'PENDING' : 'DELIVERED');
+      setStateRent(updated);
+      setSuccess(`Entrega marcada como ${updated === 'DELIVERED' ? 'CONCLUÍDA' : 'PENDENTE'}`);
     } catch (error) {
-      console.error("Erro ao atualizar status de entrega:", error);
-      alert("Erro ao atualizar o status. Tente novamente.");
+      console.error(error);
     }
   };
 
-
+  const columns = [
+    {
+      title: 'Ferramenta',
+      dataIndex: ['tool', 'name'],
+      key: 'name',
+      render: (text) => <Text strong>{text}</Text>,
+    },
+    {
+      title: 'Qtd',
+      key: 'quantity',
+      width: 80,
+      render: (_, record, index) => (
+        <InputNumber
+          min={1}
+          value={record.quantity}
+          onChange={(val) => handleUpdateItem(index, { ...record, quantity: val })}
+          style={{ width: '100%' }}
+        />
+      ),
+    },
+    {
+      title: 'Preço Unit.',
+      key: 'price',
+      width: 130,
+      render: (_, record, index) => (
+        <Input
+          value={record.price}
+          onChange={(e) =>
+            handleUpdateItem(index, {
+              ...record,
+              price: formatInputToCurrency(e.target.value),
+            })
+          }
+        />
+      ),
+    },
+    {
+      title: 'Subtotal',
+      key: 'subtotal',
+      align: 'right',
+      render: (_, record) => (
+        <Text strong>{formateNumber(record.quantity * parseCurrencyToFloat(record.price))}</Text>
+      ),
+    },
+    {
+      title: '',
+      key: 'action',
+      width: 50,
+      render: (_, __, index) => (
+        <Button
+          type='text'
+          danger
+          icon={<DeleteOutlined />}
+          onClick={() => handleDeleteItem(index)}
+        />
+      ),
+    },
+  ];
 
   return (
-    <section className={styles.section}>
-      <div className={styles.titleContainer}>
-        <h2 className={styles.title}>Atualizar Locação</h2>
-        <h3><span className={getRowClassPaymentStatus({ paymentStatus: paymentStatus })}>{getPaymentStatus(paymentStatus)}</span></h3>
-      </div>
+    <div
+      className={styles.container}
+      style={{ padding: '16px', background: '#f8fafc', minHeight: '100vh' }}
+    >
+      <header
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 24,
+          flexWrap: 'wrap',
+          gap: '16px',
+        }}
+      >
+        <Space size='large'>
+          <Button icon={<ArrowLeftOutlined />} type='text' onClick={() => navigate('/alugueis')} />
+          <div>
+            <Title level={3} style={{ margin: 0 }}>
+              Atualizar Locação
+            </Title>
+            <Text type='secondary'>
+              Contrato de <Text strong>{client.name}</Text>
+            </Text>
+          </div>
+        </Space>
 
-
+        <Space direction='vertical' align='end' style={{ minWidth: 200 }}>
+          <Text size='small' type='secondary'>
+            Progresso do Recebimento
+          </Text>
+          <Progress
+            percent={paymentsInfo.progress}
+            status={paymentsInfo.progress >= 100 ? 'success' : 'active'}
+            strokeColor={{ '0%': '#108ee9', '100%': '#87d068' }}
+            style={{ width: 180 }}
+          />
+        </Space>
+      </header>
 
       {success && (
-        <ComponentMessage
-          message={success}
-          type="success"
-          onClose={() => setSuccess(null)}
-        />
+        <Alert message={success} type='success' showIcon closable style={{ marginBottom: 24 }} />
       )}
 
-      <form className={styles.form} onSubmit={handleUpdateRent}>
-        {/* Cliente + Botão Selecionar */}
-        <div className={styles.formRow}>
-          <div className={styles.formGroup}>
-            <label htmlFor="client" className={styles.label}>Cliente</label>
-            <input
-              type="text"
-              id="client"
-              value={client.name || ''}
-              disabled
-              className={styles.input}
-            />
-          </div>
-          <button type="button" onClick={openTools} className={styles.selectButton}>
-            Selecionar
-          </button>
-        </div>
-
-        {/* Datas e Frete */}
-        <div className={styles.formRow}>
-          <div className={styles.formGroup}>
-            <label htmlFor="initialDate" className={styles.label}>Data Inicial</label>
-            <input
-              type="date"
-              id="initialDate"
-              value={initialDate || ''}
-              onChange={(e) => setInitialDate(e.target.value)}
-              className={styles.input}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="deliveryDate" className={styles.label}>Data de Entrega</label>
-            <input
-              type="date"
-              id="deliveryDate"
-              value={deliveryDate || ''}
-              onChange={(e) => setDeliveryDate(e.target.value)}
-              className={styles.input}
-            />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label className={styles.label}>Frete</label>
-            <input
-              type="text"
-              placeholder="Frete"
-              onChange={(e) => handleFreightChange(e)}
-              value={freight || ''}
-              className={styles.input}
-            />
-          </div>
-        </div>
-
-        {/* Modal Ferramentas */}
-        <Modal isOpen={isToolModalOpen} onClose={closeToolModal} height={"90vh"} overflow={"scroll"}>
-          <h3>Selecione uma Ferramenta</h3>
-          <TableTools selected={handleSelectTool} loading={loading} setLoading={() => { }} />
-          <button onClick={closeToolModal} className={styles.closeModalButton}>Fechar</button>
-        </Modal>
-
-        {/* Lista de Itens */}
-        <div className={styles.itemsSection}>
-          <div className={styles.statusContainer}>
-            <h3 className={styles.subTitle}>Itens da Locação</h3>
-
-            {/* Status de Entrega */}
-            {listItems.length > 0 && (
-              <div className={styles.deliveryStatus}>
-                {stateRent === "DELIVERED" ? (
-                  <span className={`${styles.statusTag} ${styles.statusDelivered}`}>
-                    ✅ Todos os itens foram entregues
-                  </span>
-                ) : (
-                  <span className={`${styles.statusTag} ${styles.statusPending}`}>
-                    ⏳ Entrega pendente para alguns itens
-                  </span>
-                )}
-                <button
-                  className={styles.toggleStatusButton}
-                  onClick={toggleDeliveryStatus}
-                  type="button"
-                >
-                  {stateRent === "DELIVERED" ? "Marcar como Pendente" : "Marcar como Entregue"}
-                </button>
-              </div>
-            )}
-          </div>
-
-          {listItems.length > 0 ? (
-            <ul className={styles.itemList}>
-              {listItems.map((item, index) => (
-                <li key={index} className={styles.itemCard}>
-                  <div className={styles.inputGroup}>
-                    <label className={styles.label}>Nome</label>
-                    <input type="text" value={item.tool.name || ''} readOnly className={styles.input} />
-                  </div>
-
-                  <div className={styles.inputGroup}>
-                    <label className={styles.label}>Quantidade</label>
-                    <input
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleUpdateItem(index, { ...item, quantity: e.target.value })
-                      }
-                      className={styles.input}
-                    />
-                  </div>
-
-                  <div className={styles.inputGroup}>
-                    <label className={styles.label}>Preço</label>
-                    <input
-                      type="text"
-                      value={item.price}
-                      onChange={(e) =>
-                        handleUpdateItem(index, {
-                          ...item,
-                          price: formatInputToCurrency(e.target.value),
-                        })
-                      }
-                      className={styles.input}
-                    />
-                  </div>
-
-                  <div className={styles.inputGroup}>
-                    <label className={styles.label}>Total</label>
-                    <input
-                      type="text"
-                      value={calculateItemTotal(item.quantity, item.price)}
-                      readOnly
-                      className={styles.input}
-                    />
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteItem(index)}
-                    className={styles.deleteButton}
-                  >
-                    Excluir
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className={styles.emptyMessage}>Nenhum item adicionado.</p>
-          )}
-        </div>
-
-        {/* Total Geral */}
-        <div className={styles.totalRow}>
-          <div className={styles.totalItem}>
-            <label className={styles.totalLabel}>Total Locação:</label>
-            <span className={styles.totalValue}>{formateNumber(calculateTotal())}</span>
-          </div>
-          <div className={styles.totalItem}>
-            <label className={styles.totalLabel}>Total Pago:</label>
-            <span className={styles.totalValuePaid}>{formateNumber(calculateTotalPaid())}</span>
-          </div>
-          <div className={styles.totalItem}>
-            <label className={styles.totalLabel}>Saldo Devedor:</label>
-            <span
-              className={`${styles.totalValue} ${calculateBalance() >= 0 ? styles.negativeBalance : styles.positiveBalance
-                }`}
+      <Form form={form} layout='vertical' onFinish={onFinish}>
+        <Row gutter={[24, 24]}>
+          <Col xs={24} xxl={17} xl={16}>
+            <Card
+              title={
+                <Space>
+                  <InfoCircleOutlined /> Dados da Locação
+                </Space>
+              }
+              variant='borderless'
             >
-              {formatCurrency(calculateBalance())}
-            </span>
-          </div>
-        </div>
+              <Row gutter={[16, 16]}>
+                {/* Ajuste para 1515px: xl={12} faz ficar 2 por linha, xxl={6} faz ficar 4 por linha */}
+                <Col xs={24} sm={12} xl={12} xxl={6}>
+                  <Form.Item name='initialDate' label='Data de Saída'>
+                    <DatePicker format='DD/MM/YYYY' style={{ width: '100%' }} />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={12} xl={12} xxl={6}>
+                  <Form.Item name='deliveryDate' label='Previsão de Devolução'>
+                    <DatePicker format='DD/MM/YYYY' style={{ width: '100%' }} />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={12} xl={12} xxl={6}>
+                  <Form.Item label='Frete'>
+                    <Input
+                      value={freight}
+                      onChange={(e) => setFreight(formatInputToCurrency(e.target.value))}
+                      placeholder='R$ 0,00'
+                    />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} sm={12} xl={12} xxl={6}>
+                  <Form.Item label='Desconto'>
+                    <Input
+                      value={discount}
+                      onChange={(e) => setDiscount(formatInputToCurrency(e.target.value))}
+                      placeholder='R$ 0,00'
+                      style={{ color: '#cf1322' }}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
 
+              <Row style={{ marginTop: 8 }}>
+                <Col span={24}>
+                  <Form.Item
+                    label={
+                      <Space>
+                        <FileTextOutlined /> Observações Internas
+                      </Space>
+                    }
+                  >
+                    <TextArea
+                      rows={3}
+                      value={obs}
+                      onChange={(e) => setObs(e.target.value)}
+                      placeholder='Alguma nota importante sobre esta locação...'
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Card>
 
-        {/* Submit */}
-        <div className={styles.submitRow}>
-          <button type="submit" className={styles.submitButton}>
-            Atualizar
-          </button>
-        </div>
-      </form>
-      <div>
-        <RentPaymentsTable payments={payments} setPayments={setPayments} rentId={rent.id} />
-      </div>
-    </section>
+            <Card
+              title={
+                <Space>
+                  <ShoppingCartOutlined /> Itens Selecionados
+                </Space>
+              }
+              style={{ marginTop: 24 }}
+              extra={
+                <Button type='primary' ghost icon={<PlusOutlined />} onClick={openTools}>
+                  Adicionar Ferramenta
+                </Button>
+              }
+            >
+              <Table
+                dataSource={listItems}
+                columns={columns}
+                pagination={false}
+                rowKey={(record) => record.tool.id}
+                scroll={{ x: 700 }}
+              />
+              <Divider />
+              <div style={{ textAlign: 'right' }}>
+                <Space wrap>
+                  <Text type='secondary'>Estado da Entrega:</Text>
+                  <Tag
+                    color={stateRent === 'DELIVERED' ? 'green' : 'blue'}
+                    icon={
+                      stateRent === 'DELIVERED' ? <CheckCircleOutlined /> : <SyncOutlined spin />
+                    }
+                  >
+                    {stateRent === 'DELIVERED' ? 'ENTREGUE' : 'PENDENTE'}
+                  </Tag>
+                  <Button size='small' onClick={toggleDeliveryStatus}>
+                    Mudar Status
+                  </Button>
+                </Space>
+              </div>
+            </Card>
+          </Col>
+
+          <Col xs={24} xxl={7} xl={8}>
+            <Card
+              title={
+                <Space>
+                  <WalletOutlined /> Resumo Financeiro
+                </Space>
+              }
+              style={{
+                position: 'sticky',
+                top: 16,
+                borderRadius: 10,
+                boxShadow: '0 4px 10px rgba(0,0,0,0.03)',
+              }}
+            >
+              <Statistic
+                title='Subtotal'
+                value={paymentsInfo.totalRent}
+                precision={2}
+                prefix='R$'
+              />
+              <Divider style={{ margin: '12px 0' }} />
+              <Statistic
+                title='Total Recebido'
+                value={paymentsInfo.totalPaid}
+                precision={2}
+                prefix='R$'
+                valueStyle={{ color: '#3f8600' }}
+              />
+              <Statistic
+                title='Saldo Remanescente'
+                value={paymentsInfo.remaining}
+                precision={2}
+                prefix='R$'
+                valueStyle={{
+                  color: paymentsInfo.remaining > 0 ? '#cf1322' : '#3f8600',
+                  fontWeight: 'bold',
+                }}
+                style={{ marginTop: 12 }}
+              />
+
+              <Button
+                type='primary'
+                block
+                size='large'
+                icon={<SaveOutlined />}
+                htmlType='submit'
+                loading={loading}
+                style={{ marginTop: 25, height: 50, borderRadius: 8 }}
+              >
+                Salvar Alterações
+              </Button>
+
+              {paymentsInfo.payments?.length > 0 && (
+                <div style={{ marginTop: 20 }}>
+                  <Text type='secondary' strong>
+                    Histórico:
+                  </Text>
+                  <ul style={{ paddingLeft: 20, marginTop: 8, fontSize: '12px', color: '#666' }}>
+                    {paymentsInfo.payments.map((p, i) => (
+                      <li key={i} style={{ marginBottom: 4 }}>
+                        {p.date || 'Lançamento'}: <Text strong>{formateNumber(p.value)}</Text>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </Card>
+          </Col>
+        </Row>
+      </Form>
+
+      <Modal isOpen={isToolModalOpen} onClose={closeToolModal} height={'90vh'} width={'auto'}>
+        <Title level={4}>Catálogo de Ferramentas</Title>
+        <TableTools selected={handleSelectTool} />
+      </Modal>
+    </div>
   );
 };
 

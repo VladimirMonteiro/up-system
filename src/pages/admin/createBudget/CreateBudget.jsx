@@ -105,9 +105,7 @@ const NewBudget = () => {
   const totals = calculateTotals();
 
   return (
-    <div className={styles.container}>
-      <Navbar />
-
+    <div>
       <main className={styles.mainContent}>
         <header className={styles.topBar}>
           <h2 className={styles.title}>NOVO ORÇAMENTO DE LOCAÇÃO</h2>
@@ -229,12 +227,12 @@ const NewBudget = () => {
         </div>
       </main>
 
-      <Modal isOpen={isToolModalOpen} onClose={() => setToolModalOpen(false)}>
+      <Modal isOpen={isToolModalOpen} onClose={() => setToolModalOpen(false)} width={'auto'}>
         <h2>Selecione uma Ferramenta</h2>
         <TableTools selected={handleSelectTool} />
       </Modal>
 
-      <Modal isOpen={isClientModalOpen} onClose={() => setClientModalOpen(false)}>
+      <Modal isOpen={isClientModalOpen} onClose={() => setClientModalOpen(false)} width={'auto'}>
         <h2>Selecione um Cliente</h2>
         <Table selected={handleSelectClient} />
       </Modal>

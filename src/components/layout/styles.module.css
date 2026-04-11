@@ -1,0 +1,56 @@
+/* Layout geral */
+.layout {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+/* Sidebar */
+.sider {
+  background-color: #001529; /* padrão Ant Design Pro */
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+/* Header */
+.header {
+  background-color: #ffffff;
+  height: 64px;
+  padding: 0 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  border-bottom: 1px solid #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Header right (usuário) */
+.headerRight {
+  display: flex;
+  align-items: center;
+}
+
+.user {
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.user:hover {
+  background-color: #f5f7fa;
+}
+
+.username {
+  font-weight: 500;
+  color: #262626;
+}
+
+/* Content */
+.content {
+  margin: 24px;
+  padding: 24px;
+  border-radius: 12px;
+  min-height: calc(100vh - 112px); /* header + margens */
+}
