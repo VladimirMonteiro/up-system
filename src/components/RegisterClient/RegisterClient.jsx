@@ -121,9 +121,6 @@ const RegisterClient = ({ createClient, errors, createClientPj, errorsPj }) => {
           municipalRegistration,
         };
 
-        alert(newClientPj.phones
-        )
-
         const response = await createClient(newClientPj);
 
         if (!response?.errors) {
