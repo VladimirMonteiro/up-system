@@ -1,4 +1,4 @@
-export const formatCpfCnpj = (value) => {
+export const formatCpfCnpj = (value: string) => {
   if (!value) return '';
 
   // Remove tudo que não for número

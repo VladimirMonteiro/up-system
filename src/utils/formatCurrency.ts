@@ -3,9 +3,9 @@ const BRL_CONFIG = {
   symbol: 'R$ ',
   decimal: ',',
   separator: '.',
-  precision: 2
+  precision: 2,
 };
-export const formatCurrency = (value) => {
+export const formatCurrency = (value: string) => {
   return currency(value, BRL_CONFIG).format();
 };
 
@@ -13,14 +13,14 @@ export const formatCurrency = (value) => {
  * Formata valor bruto digitado no input para formato de moeda BRL.
  * Exemplo: "1234" -> "R$ 12,34"
  */
-export const formatInputToCurrency = (rawValue) => {
+export const formatInputToCurrency = (rawValue: string) => {
   // Remove tudo que não for número
-  const numericOnly = rawValue.replace(/\D/g, "");
+  const numericOnly = rawValue.replace(/\D/g, '');
 
   // Usa currency.js com 'fromCents: true' para lidar com centavos
   return currency(numericOnly, {
     ...BRL_CONFIG,
-    fromCents: true
+    fromCents: true,
   }).format();
 };
 
@@ -28,9 +28,6 @@ export const formatInputToCurrency = (rawValue) => {
  * Converte string formatada para número (float)
  * Exemplo: "R$ 1.234,56" → 1234.56
  */
-export const parseCurrencyToFloat = (formattedValue) => {
+export const parseCurrencyToFloat = (formattedValue: string) => {
   return currency(formattedValue, BRL_CONFIG).value;
 };
-
-
-

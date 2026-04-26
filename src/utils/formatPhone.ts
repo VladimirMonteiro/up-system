@@ -1,4 +1,4 @@
-export const formatPhone = (value) => {
+export const formatPhone = (value: string) => {
   if (!value) return '';
 
   // Remove tudo que não for número
@@ -6,16 +6,12 @@ export const formatPhone = (value) => {
 
   // Celular com 11 dígitos (DDD + 9 dígitos)
   if (numericValue.length === 11) {
-    return numericValue
-      .replace(/^(\d{2})(\d)/g, '($1) $2')
-      .replace(/(\d{5})(\d{4})$/, '$1-$2');
+    return numericValue.replace(/^(\d{2})(\d)/g, '($1) $2').replace(/(\d{5})(\d{4})$/, '$1-$2');
   }
 
   // Telefone fixo com 10 dígitos
   if (numericValue.length === 10) {
-    return numericValue
-      .replace(/^(\d{2})(\d)/g, '($1) $2')
-      .replace(/(\d{4})(\d{4})$/, '$1-$2');
+    return numericValue.replace(/^(\d{2})(\d)/g, '($1) $2').replace(/(\d{4})(\d{4})$/, '$1-$2');
   }
 
   // Se ainda estiver digitando (menos de 10 dígitos)
