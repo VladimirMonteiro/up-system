@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "antd": "^5.24.0",
-    "axios": "^1.8.1",
+    "axios": "^1.15.2",
     "currency.js": "^2.0.4",
     "date-fns": "^4.1.0",
     "frontend-up-system": "file:",
@@ -19,19 +19,21 @@
     "react-dom": "^18.3.1",
     "react-icons": "^5.4.0",
     "react-router-dom": "^7.0.2",
-    "react-to-pdf": "^1.0.1",
+    "react-to-pdf": "^3.2.2",
     "recharts": "^3.1.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
+    "@types/node": "^25.6.0",
+    "@types/react": "^18.3.28",
+    "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.15.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.12.0",
+    "typescript": "^6.0.3",
     "vite": "^6.0.1"
   }
 }
