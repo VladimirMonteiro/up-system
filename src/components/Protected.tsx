@@ -1,12 +1,12 @@
-import { useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Spin, Result, Button } from 'antd';
-import { authContext } from '../context/authProvider/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 
 const Protected = () => {
-  const { token, loading } = useContext(authContext);
+  const { user, loading } = useAuth();
 
-  // Loading elegante
+  const token = user?.token;
+
   if (loading) {
     return (
       <div
@@ -22,7 +22,6 @@ const Protected = () => {
     );
   }
 
-  // Não autenticado
   if (!token) {
     return (
       <Result
@@ -38,7 +37,6 @@ const Protected = () => {
     );
   }
 
-  // Autenticado → libera as rotas filhas
   return <Outlet />;
 };
 
