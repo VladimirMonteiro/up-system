@@ -2,7 +2,11 @@ import { Col, Card, Button, Skeleton } from 'antd';
 import { PlusOutlined, UserAddOutlined, FileAddOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
-export function Actions({ loading }) {
+type ActionsProps = {
+  loading: boolean;
+};
+
+export function Actions({ loading }: ActionsProps) {
   const navigate = useNavigate();
 
   return (
@@ -31,7 +35,7 @@ export function Actions({ loading }) {
           <Button
             icon={<FileAddOutlined />}
             block
-            size='large '
+            size='large'
             onClick={() => navigate('/criar-orcamento')}
           >
             Novo orçamento

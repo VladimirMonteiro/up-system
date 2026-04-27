@@ -1,11 +1,11 @@
 import { Heading } from '../../../components/Heading';
-import { Row } from 'antd';
-import { useHomeDashboard } from '../../../modules/home/hooks/useHomeDashboard';
-import { Kpis } from '../../../modules/home/components/Kpis';
-import { Graphic } from '../../../modules/home/components/Graphic';
-import { Actions } from '../../../modules/home/components/Actions';
-import { RecentRents } from '../../../modules/home/components/RecentsRents';
-import { MostCategories } from '../../../modules/home/components/MostCategories';
+import { Row, Spin } from 'antd';
+import { Kpis } from './components/Kpis';
+import { Graphic } from './components/Graphic';
+import { Actions } from './components/Actions';
+import { RecentRents } from './components/RecentsRents';
+import { MostCategories } from './components/MostCategories';
+import { useHomeDashboard } from '../../../hooks/useHomeDashboard';
 
 export function DashboardHome() {
   const { dashboardData, loading } = useHomeDashboard();
