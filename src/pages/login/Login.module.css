@@ -21,19 +21,25 @@
 
 .brandOverlay {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: linear-gradient(135deg, rgba(0, 21, 41, 0.98) 0%, rgba(0, 21, 41, 0.8) 100%);
   z-index: 1;
 }
 
-.brandContent { position: relative; z-index: 2; }
+.brandContent {
+  position: relative;
+  z-index: 2;
+}
 
 /* LOGO AMPLIADA */
 .mainLogoLarge {
   height: 120px; /* Aumentado para dar destaque total à Up Locações */
   width: auto;
   margin-bottom: 30px;
-  filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
 }
 
 .mainTitle {
@@ -49,7 +55,7 @@
 }
 
 .clientText {
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 16px;
 }
 
@@ -61,7 +67,7 @@
 }
 
 .footerDraft {
-  color: rgba(255,255,255,0.3);
+  color: rgba(255, 255, 255, 0.3);
   font-size: 11px;
   letter-spacing: 2px;
 }
@@ -74,7 +80,7 @@
   background: #fff;
   border-radius: 40px 0 0 40px;
   z-index: 2;
-  box-shadow: -20px 0 40px rgba(0,0,0,0.05);
+  box-shadow: -20px 0 40px rgba(0, 0, 0, 0.05);
 }
 
 .loginBox {
@@ -82,7 +88,9 @@
   max-width: 380px;
 }
 
-.loginHeader { margin-bottom: 40px; }
+.loginHeader {
+  margin-bottom: 40px;
+}
 
 .label {
   font-size: 11px;

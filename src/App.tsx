@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/authProvider/AuthContext';
 
 // Pages
-import Login from './pages/login/Login';
+import { Login } from './pages/Login';
 import { DashboardHome } from './pages/admin/Home/index.jsx';
 import CreateRent from './modules/rents/pages/CreateRent';
 import Clients from './pages/admin/clients/Clients';

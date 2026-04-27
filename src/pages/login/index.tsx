@@ -1,27 +1,29 @@
-import { useContext, useState } from 'react';
-import { authContext } from '../../context/authProvider/AuthContext';
+import styles from './Login.module.css';
+
+import { useState } from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { Form, Input, Button, Typography, Alert, Badge, Avatar } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { LoginRequest } from '../../services/authService/types';
 
 import logo from '../../assets/logo_up.png';
-import outerCodeLogo from '../../assets/outer-code-logo.png'  // Caminho da imagem que você enviou
-import styles from './Login.module.css';
+import outerCodeLogo from '../../assets/outer-code-logo.png';
+import { useAuth } from '../../hooks/useAuth';
 
 const { Title, Text } = Typography;
 
-const Login = () => {
+export const Login = () => {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
-  
-  const auth = useContext(authContext);
+
+  const { authenticate } = useAuth();
   const navigate = useNavigate();
 
-  const onFinish = async (values) => {
+  const onFinish = async (values: LoginRequest) => {
     setLoading(true);
-    setErrorMsg(null);
     try {
-      const data = await auth.authenticate(values);
+      const data = await authenticate(values);
       if (data.status === 403) {
         setErrorMsg('Credenciais não autorizadas.');
       } else if (data.response) {
@@ -33,6 +35,7 @@ const Login = () => {
       setErrorMsg('Erro de comunicação com o servidor.');
     } finally {
       setLoading(false);
+      setErrorMsg(null);
     }
   };
 
@@ -42,24 +45,28 @@ const Login = () => {
         <div className={styles.brandOverlay} />
         <div className={styles.brandContent}>
           {/* Logo UP em destaque máximo */}
-          <img src={logo} alt="Up Locações" className={styles.mainLogoLarge} />
-          
+          <img src={logo} alt='Up Locações' className={styles.mainLogoLarge} />
+
           <div className={styles.badgeArea}>
-            <Badge status="processing" color="#52c41a" text={<span style={{color: '#fff'}}>Sistema Operacional Ativo</span>} />
+            <Badge
+              status='processing'
+              color='#52c41a'
+              text={<span style={{ color: '#fff' }}>Sistema Operacional Ativo</span>}
+            />
           </div>
 
           <Title level={1} className={styles.mainTitle}>
-            Gestão de  
+            Gestão de
             <span> Locações</span>
           </Title>
-          
+
           <div className={styles.clientInfo}>
             <Text className={styles.clientText}>
               Ambiente exclusivo para colaboradores e parceiros da <strong>Up Locações</strong>.
             </Text>
           </div>
         </div>
-        
+
         <div className={styles.brandFooter}>
           <Text className={styles.footerDraft}>PLATAFORMA CORPORATIVA v2.0.0</Text>
         </div>
@@ -69,31 +76,53 @@ const Login = () => {
         <div className={styles.loginBox}>
           <header className={styles.loginHeader}>
             <Title level={3}>Login Administrativo</Title>
-            <Text type="secondary">Insira suas credenciais para continuar</Text>
+            <Text type='secondary'>Insira suas credenciais para continuar</Text>
           </header>
 
           {errorMsg && (
-            <Alert message={errorMsg} type="error" showIcon closable className={styles.alert} />
+            <Alert message={errorMsg} type='error' showIcon closable className={styles.alert} />
           )}
 
-          <Form layout="vertical" onFinish={onFinish} size="large" requiredMark={false}>
+          <Form layout='vertical' onFinish={onFinish} size='large' requiredMark={false}>
             <Form.Item
-              name="login"
-              label={<Text strong className={styles.label}>NOME DE USUÁRIO</Text>}
+              name='login'
+              label={
+                <Text strong className={styles.label}>
+                  NOME DE USUÁRIO
+                </Text>
+              }
               rules={[{ required: true, message: 'O usuário é obrigatório' }]}
             >
-              <Input prefix={<UserOutlined />} placeholder="Ex: admin.up" className={styles.customInput} />
+              <Input
+                prefix={<UserOutlined />}
+                placeholder='Ex: admin.up'
+                className={styles.customInput}
+              />
             </Form.Item>
 
             <Form.Item
-              name="password"
-              label={<Text strong className={styles.label}>SENHA DE ACESSO</Text>}
+              name='password'
+              label={
+                <Text strong className={styles.label}>
+                  SENHA DE ACESSO
+                </Text>
+              }
               rules={[{ required: true, message: 'A senha é obrigatória' }]}
             >
-              <Input.Password prefix={<LockOutlined />} placeholder="••••••••" className={styles.customInput} />
+              <Input.Password
+                prefix={<LockOutlined />}
+                placeholder='••••••••'
+                className={styles.customInput}
+              />
             </Form.Item>
 
-            <Button type="primary" htmlType="submit" block loading={loading} className={styles.submitBtn}>
+            <Button
+              type='primary'
+              htmlType='submit'
+              block
+              loading={loading}
+              className={styles.submitBtn}
+            >
               ENTRAR NO SISTEMA
             </Button>
           </Form>
@@ -101,12 +130,7 @@ const Login = () => {
           {/* Assinatura Outer Code com a Foto enviada */}
           <footer className={styles.devFooter}>
             <div className={styles.devBrand}>
-              <Avatar 
-                src={outerCodeLogo} 
-                size={45} 
-                shape="square"
-                className={styles.devAvatar}
-              />
+              <Avatar src={outerCodeLogo} size={45} shape='square' className={styles.devAvatar} />
               <div className={styles.devTextContainer}>
                 <Text className={styles.devLabel}>PROJETADO E DESENVOLVIDO POR</Text>
                 <Title level={5} className={styles.devName}>
@@ -120,5 +144,3 @@ const Login = () => {
     </div>
   );
 };
-
-export default Login;
