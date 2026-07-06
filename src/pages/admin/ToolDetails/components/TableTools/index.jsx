@@ -2,10 +2,10 @@ import { MdDelete } from 'react-icons/md';
 import { FaPen } from 'react-icons/fa';
 import { GrView } from 'react-icons/gr';
 
-import ConfirmDeleteModal from '../../../../components/modalConfirmDelete/ConfirmDeleteModal';
-import ComponentMessage from '../../../../components/componentMessage/ComponentMessage';
-import Loading from '../../../../components/loading/Loading';
-import { formateNumber } from '../../../../utils/formatNumber';
+import ConfirmDeleteModal from '../../../../../components/modalConfirmDelete/ConfirmDeleteModal';
+import ComponentMessage from '../../../../../components/componentMessage/ComponentMessage';
+import Loading from '../../../../../components/loading/Loading';
+import { formateNumber } from '../../../../../utils/formatNumber';
 
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -28,19 +28,17 @@ const TableTools = ({
   const [openDelete, setOpenDelete] = useState(false);
   const [toolId, setToolId] = useState(null);
   const [toolName, setToolName] = useState('');
- 
 
   if (loading) return <Loading table />;
 
   const confirmDelete = async () => {
-  try {
-    await onDelete(toolId);
-    setOpenDelete(false);
-  } catch {
-    setOpenDelete(false);
-  }
-};
-
+    try {
+      await onDelete(toolId);
+      setOpenDelete(false);
+    } catch {
+      setOpenDelete(false);
+    }
+  };
 
   return (
     <div className={styles.tableContainer}>

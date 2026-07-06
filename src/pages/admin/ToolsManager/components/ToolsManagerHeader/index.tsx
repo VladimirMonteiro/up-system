@@ -3,9 +3,24 @@ import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 
 import styles from './styles.module.css';
-import { Heading } from '../../../../components/Heading';
+import { Heading } from '../../../../../components/Heading';
+import { ToolCategory, ToolFilterStatus } from '../../../../../services/toolService/types';
 
 const { Header } = Layout;
+
+type ToolsManagerHeaderProps = {
+  title: string;
+  description: string;
+  btnText: string;
+  inputPlaceholder: string;
+  onAddClick: () => void;
+  onSearchChange: (value: string) => void;
+  onCategoryChange: (value: ToolCategory | 'all') => void;
+  onStatusChange: (value: ToolFilterStatus | 'all') => void;
+  searchValue: string;
+  categoryFilter: ToolCategory | 'all';
+  statusFilter: ToolFilterStatus | 'all';
+};
 
 export function ToolsManagerHeader({
   title,
@@ -23,13 +38,13 @@ export function ToolsManagerHeader({
   searchValue = '',
   categoryFilter = 'all',
   statusFilter = 'all',
-}) {
+}: ToolsManagerHeaderProps) {
   /* =========================
      ESTADOS LOCAIS
   ========================== */
-  const [localSearch, setLocalSearch] = useState(searchValue);
-  const [localCategory, setLocalCategory] = useState(categoryFilter);
-  const [localStatus, setLocalStatus] = useState(statusFilter);
+  const [localSearch, setLocalSearch] = useState<string>(searchValue);
+  const [localCategory, setLocalCategory] = useState<ToolCategory | 'all'>(categoryFilter);
+  const [localStatus, setLocalStatus] = useState<ToolFilterStatus | 'all'>(statusFilter);
 
   /* =========================
      AÇÃO DO BOTÃO
@@ -73,22 +88,27 @@ export function ToolsManagerHeader({
         </Col>
 
         <Col>
-          <Select size='large' value={localCategory} onChange={setLocalCategory}>
-            <Select.Option value='all'>Todas Categorias</Select.Option>
-            <Select.Option value='SCAFFOLDING'>Andaime</Select.Option>
-            <Select.Option value='ELEVATION'>Elevação</Select.Option>
-            <Select.Option value='COMPACTION'>Compactação</Select.Option>
-            <Select.Option value='CONCRETING'>Concretagem</Select.Option>
-            <Select.Option value='GARDENING'>Jardinagem</Select.Option>
-            <Select.Option value='CLEANING'>Limpeza</Select.Option>
-            <Select.Option value='ELECTRIC'>Elétricos</Select.Option>
-            <Select.Option value='HURRICANE_DEMOLITION'>Furação e Demolição</Select.Option>
-            <Select.Option value='GENERATOR'>Gerador</Select.Option>
-            <Select.Option value='VIBRATOR'>Vibrador</Select.Option>
-            <Select.Option value='PUMP'>Bomba</Select.Option>
-            <Select.Option value='COMPRESSOR'>Compressor</Select.Option>
-            <Select.Option value='OTHERS'>Outros</Select.Option>
-          </Select>
+          <Select
+            size='large'
+            value={localCategory}
+            onChange={(value) => setLocalCategory(value)}
+            options={[
+              { value: 'all', label: 'Todas Categorias' },
+              { value: 'SCAFFOLDING', label: 'Andaime' },
+              { value: 'ELEVATION', label: 'Elevação' },
+              { value: 'COMPACTION', label: 'Compactação' },
+              { value: 'CONCRETING', label: 'Concretagem' },
+              { value: 'GARDENING', label: 'Jardinagem' },
+              { value: 'CLEANING', label: 'Limpeza' },
+              { value: 'ELECTRIC', label: 'Elétricos' },
+              { value: 'HURRICANE_DEMOLITION', label: 'Furação e Demolição' },
+              { value: 'GENERATOR', label: 'Gerador' },
+              { value: 'VIBRATOR', label: 'Vibrador' },
+              { value: 'PUMP', label: 'Bomba' },
+              { value: 'COMPRESSOR', label: 'Compressor' },
+              { value: 'OTHERS', label: 'Outros' },
+            ]}
+          />
         </Col>
 
         <Col>

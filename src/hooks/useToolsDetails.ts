@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { singleToolService } from '../services/toolDetails';
+import { findById } from '../services/toolService';
+import { ToolDetailsResponse } from '../services/toolService/types';
 
-export const useToolDetails = (id) => {
-  const [tool, setTool] = useState(null);
+export const useToolDetails = (id: number) => {
+  const [tool, setTool] = useState<ToolDetailsResponse | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const { findById } = singleToolService;
+  const [error, setError] = useState<string>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,7 +13,7 @@ export const useToolDetails = (id) => {
         setLoading(true);
 
         const toolResponse = await findById(id);
-        setTool(toolResponse.data);
+        setTool(toolResponse);
       } catch (err) {
         console.error(err);
         setError('Erro ao carregar dados.');

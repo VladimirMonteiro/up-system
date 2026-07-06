@@ -5,7 +5,7 @@ import {
   StopOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import { formateNumber } from '../../../../utils/formatNumber';
+import { formateNumber } from '../../../../../utils/formatNumber';
 
 const { Text, Title } = Typography;
 

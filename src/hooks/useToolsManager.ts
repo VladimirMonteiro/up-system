@@ -1,32 +1,29 @@
 import { useCallback, useEffect, useState } from 'react';
-import { toolService } from '../services/toolsManager';
+import { create, remove, searchTool, update } from '../services/toolService';
+import {
+  CreateToolRequest,
+  SearchParamsProps,
+  ToolCategory,
+  ToolFilterStatus,
+  ToolResponse,
+  UpdateToolRequest,
+} from '../services/toolService/types';
+import { AxiosError } from 'axios';
 
 const ROWS_PER_PAGE = 12;
 
 export function useToolsManager() {
-  /* =========================
-     ESTADOS
-  ========================== */
-
-  const [tools, setTools] = useState([]);
+  const [tools, setTools] = useState<ToolResponse[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(0);
 
-  // filtros
   const [name, setName] = useState('');
-  const [category, setCategory] = useState('all');
-  const [status, setStatus] = useState('all');
+  const [category, setCategory] = useState<ToolCategory | 'all'>('all');
+  const [status, setStatus] = useState<ToolFilterStatus | 'all'>('all');
 
-  // feedback
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(null);
-  const [error, setError] = useState(null);
-
-  const { searchTool, create, update, remove } = toolService;
-
-  /* =========================
-     FETCH
-  ========================== */
+  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState<string | string[] | null>(null);
 
   const fetchTools = useCallback(
     async (pageNumber = 0) => {
@@ -34,31 +31,22 @@ export function useToolsManager() {
         setLoading(true);
         setError(null);
 
-        const params = {
+        const params: SearchParamsProps = {
           page: pageNumber,
           size: ROWS_PER_PAGE,
+          ...(name.trim() && { name: name.trim() }),
+          ...(category !== 'all' && { category }),
+          ...(status !== 'all' && { status }),
         };
-
-        if (name.trim()) {
-          params.name = name.trim();
-        }
-
-        if (category !== 'all') {
-          params.category = category;
-        }
-
-        if (status !== 'all') {
-          params.status = status;
-        }
 
         const response = await searchTool(params);
 
-        setTools(response.data.content);
-        setTotalPages(response.data.totalPages);
+        setTools(response.content);
+        setTotalPages(response.totalPages);
         setPage(pageNumber);
       } catch (err) {
-        console.error(err);
-        setError('Erro ao carregar ferramentas');
+        const error = err as AxiosError<any>;
+        setError(error.response?.data?.message || 'Erro ao carregar ferramentas');
       } finally {
         setLoading(false);
       }
@@ -66,14 +54,10 @@ export function useToolsManager() {
     [name, category, status],
   );
 
-  /* =========================
-     CRUD
-  ========================== */
-
-  const createTool = async (tool) => {
+  const createTool = async (data: CreateToolRequest) => {
     try {
       setError(null);
-      await create(tool);
+      await create(data);
       setSuccess('Ferramenta criada com sucesso');
       fetchTools(0);
       return true;
@@ -83,7 +67,7 @@ export function useToolsManager() {
     }
   };
 
-  const updateTool = async (id, tool) => {
+  const updateTool = async (id: number, tool: UpdateToolRequest) => {
     try {
       setError(null);
       await update(id, tool);
@@ -96,7 +80,7 @@ export function useToolsManager() {
     }
   };
 
-  const deleteTool = async (id) => {
+  const deleteTool = async (id: number) => {
     try {
       setError(null);
       await remove(id);
@@ -112,17 +96,9 @@ export function useToolsManager() {
     }
   };
 
-  /* =========================
-     EFFECTS
-  ========================== */
-
   useEffect(() => {
     fetchTools(0);
   }, [fetchTools]);
-
-  /* =========================
-     API DO HOOK
-  ========================== */
 
   return {
     // dados

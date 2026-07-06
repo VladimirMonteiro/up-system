@@ -5,9 +5,16 @@ import {
   ClockCircleOutlined,
 } from '@ant-design/icons';
 import { Card, Row, Col, Typography } from 'antd';
-import { formateNumber } from '../../../../utils/formatNumber';
+import { formateNumber } from '../../../../../utils/formatNumber';
 
 const { Text } = Typography;
+
+type KpiCards = {
+  daily: number;
+  totalRevenue: number;
+  quantityTotalRent: number;
+  quantityRentActive: number;
+};
 
 export function KpiCards({ tool }) {
   return (

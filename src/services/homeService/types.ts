@@ -1,3 +1,5 @@
+import { ToolCategory } from '../toolService/types';
+
 type RevenueByMonth = {
   year: number;
   month: number;
@@ -5,7 +7,7 @@ type RevenueByMonth = {
 };
 
 export type Category = {
-  name: CategoryType;
+  name: ToolCategory;
   quantity: number;
 };
 
@@ -39,18 +41,3 @@ export type DashboardHomeResponse = {
 export type RentDeliveryStatus = 'Pendente' | 'Entregue';
 
 export type PaymentStatus = 'Pago' | 'Parc pago' | 'Não pago';
-
-export type CategoryType =
-  | 'SCAFFOLDING'
-  | 'ELEVATION'
-  | 'COMPACTION'
-  | 'CONCRETING'
-  | 'GARDENING'
-  | 'CLEANING'
-  | 'ELECTRIC'
-  | 'HURRICANE_DEMOLITION'
-  | 'GENERATOR'
-  | 'VIBRATOR'
-  | 'PUMP'
-  | 'COMPRESSOR'
-  | 'OTHERS';

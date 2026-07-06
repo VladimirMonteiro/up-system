@@ -1,6 +1,6 @@
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { Tag, Button, Typography } from 'antd';
-import { Heading } from '../../../../components/Heading';
+import { Heading } from '../../../../../components/Heading';
 import { useNavigate } from 'react-router-dom';
 
 const { Text } = Typography;

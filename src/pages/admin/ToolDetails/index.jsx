@@ -1,15 +1,15 @@
 import { useParams } from 'react-router-dom';
 import { Skeleton } from 'antd';
-import { useToolDetails } from '../../../modules/tools/hooks/useToolDetails';
-import { ToolDetailsHeader } from '../../../modules/tools/components/ToolDetailsHeader';
-import { KpiCards } from '../../../modules/tools/components/KpiCards';
-import { ToolInformations } from '../../../modules/tools/components/ToolInformations';
-import { RentHistoric } from '../../../modules/tools/components/RentHistoric';
+import { ToolDetailsHeader } from './components/ToolDetailsHeader';
+import { KpiCards } from './components/KpiCards';
+import { ToolInformations } from './components/ToolInformations';
+import { RentHistoric } from './components/RentHistoric';
+import { useToolDetails } from '../../../hooks/useToolsDetails';
 
 export function ToolDetails() {
-  const { id } = useParams();
+  const { id: number } = useParams();
 
-  const { tool, loading, error } = useToolDetails(id);
+  const { tool, loading, error } = useToolDetails();
 
   if (loading)
     return (

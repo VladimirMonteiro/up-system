@@ -1,5 +1,6 @@
-import { Modal, Form, Input, InputNumber, Select, Row, Col } from 'antd';
+import { Modal, Form, Input, InputNumber, Select, Row, Col, FormInstance } from 'antd';
 import { useEffect } from 'react';
+import { CreateToolRequest, UpdateToolRequest } from '../../../../services/toolService/types';
 
 const { Option } = Select;
 
@@ -19,8 +20,26 @@ const categories = [
   { value: 'Outros', label: 'Outros' },
 ];
 
-export function ToolForm({ open, onClose, onSubmit, form: propForm, editingTool = null }) {
-  const [internalForm] = Form.useForm();
+type ToolFormValues = CreateToolRequest & Partial<UpdateToolRequest>;
+
+type ToolFormProps = {
+  open: boolean;
+  onClose: () => void;
+
+  onSubmit: (values: ToolFormValues) => Promise<boolean> | boolean;
+
+  form?: FormInstance<ToolFormValues>;
+  editingTool?: Partial<ToolFormValues> | null;
+};
+
+export function ToolForm({
+  open,
+  onClose,
+  onSubmit,
+  form: propForm,
+  editingTool = null,
+}: ToolFormProps) {
+  const [internalForm] = Form.useForm<ToolFormValues>();
   const form = propForm || internalForm;
 
   useEffect(() => {
@@ -33,7 +52,7 @@ export function ToolForm({ open, onClose, onSubmit, form: propForm, editingTool 
     }
   }, [open, editingTool, form]);
 
-  const handleFinish = async (values) => {
+  const handleFinish = async (values: ToolFormValues) => {
     const ok = await onSubmit(values);
     if (ok) {
       form.resetFields();
@@ -45,11 +64,10 @@ export function ToolForm({ open, onClose, onSubmit, form: propForm, editingTool 
    * FORMATTER (Inspirado na sua lógica)
    * Transforma o valor numérico em máscara: 1250.50 -> R$ 1.250,50
    */
-  const currencyFormatter = (value) => {
+  const currencyFormatter = (value?: number | string): string => {
     if (!value) return 'R$ 0,00';
 
-    // Converte para string garantindo 2 casas decimais (10 -> "1000" para a lógica de máscara)
-    const amount = parseFloat(value).toFixed(2).replace(/\D/g, '');
+    const amount = parseFloat(String(value)).toFixed(2).replace(/\D/g, '');
 
     const decimalPart = amount.slice(-2);
     const integerPart = amount.slice(0, -2);
@@ -63,9 +81,9 @@ export function ToolForm({ open, onClose, onSubmit, form: propForm, editingTool 
    * PARSER
    * Remove tudo que não é número e divide por 100 para manter o valor real (decimal)
    */
-  const currencyParser = (value) => {
+  const currencyParser = (value?: string): number => {
     if (!value) return 0;
-    // Remove R$, pontos e outros caracteres, sobrando apenas os dígitos
+
     const cleanValue = value.replace(/\D/g, '');
     return parseFloat(cleanValue) / 100;
   };
@@ -102,13 +120,7 @@ export function ToolForm({ open, onClose, onSubmit, form: propForm, editingTool 
           name='category'
           rules={[{ required: true, message: 'Selecione a categoria' }]}
         >
-          <Select placeholder='Selecione'>
-            {categories.map((cat) => (
-              <Option key={cat.value} value={cat.value}>
-                {cat.label}
-              </Option>
-            ))}
-          </Select>
+          <Select placeholder='Selecione' options={categories} />
         </Form.Item>
 
         <Row gutter={16}>

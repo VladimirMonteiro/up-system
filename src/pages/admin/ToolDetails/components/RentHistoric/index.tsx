@@ -3,7 +3,8 @@ import { Card, Table, Space, Tag } from 'antd';
 
 import { Input } from 'antd';
 import { useMemo, useState } from 'react';
-import { formateNumber } from '../../../../utils/formatNumber';
+import { formateNumber } from '../../../../../utils/formatNumber';
+import { ToolDetailsResponse } from '../../../../../services/toolService/types';
 
 const columns = [
   {
@@ -66,8 +67,12 @@ const columns = [
   },
 ];
 
-export function RentHistoric({ tool }) {
-  const [search, setSearch] = useState('');
+type RentHistoricProps = {
+  tool: ToolDetailsResponse;
+};
+
+export function RentHistoric({ tool }: RentHistoricProps) {
+  const [search, setSearch] = useState<string>('');
 
   const filteredRents = useMemo(() => {
     if (!search) return tool?.rents || [];

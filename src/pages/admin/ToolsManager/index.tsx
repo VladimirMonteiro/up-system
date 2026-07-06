@@ -1,11 +1,15 @@
 import { Layout, Form, message, Pagination } from 'antd';
 import { useEffect, useState } from 'react';
 
-import { ToolsManagerHeader } from '../../../modules/tools/components/ToolsManagerHeader';
-import { ToolCard } from '../../../modules/tools/components/ToolCard';
-import { ToolForm } from '../../../modules/tools/components/ToolForm';
-
-import { useToolsManager } from '../../../modules/tools/hooks/useToolsManager';
+import { ToolsManagerHeader } from './components/ToolsManagerHeader';
+import { ToolCard } from './components/ToolCard';
+import { ToolForm } from './components/ToolForm';
+import { useToolsManager } from '../../../hooks/useToolsManager';
+import {
+  CreateToolRequest,
+  ToolResponse,
+  UpdateToolRequest,
+} from '../../../services/toolService/types';
 
 const { Content } = Layout;
 
@@ -46,9 +50,9 @@ export function ToolsManager() {
      MODAL
   ========================== */
   const [open, setOpen] = useState(false);
-  const [editingTool, setEditingTool] = useState(null);
+  const [editingTool, setEditingTool] = useState<ToolResponse | null>(null);
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<CreateToolRequest>();
 
   const openCreateModal = () => {
     setEditingTool(null);
@@ -56,9 +60,14 @@ export function ToolsManager() {
     setOpen(true);
   };
 
-  const openEditModal = (tool) => {
+  const openEditModal = (tool: ToolResponse) => {
     setEditingTool(tool);
-    form.setFieldsValue(tool);
+
+    // garante compatibilidade com o form
+    form.setFieldsValue({
+      ...tool,
+    });
+
     setOpen(true);
   };
 
@@ -76,21 +85,25 @@ export function ToolsManager() {
       setSuccess(null);
       closeModal();
     }
-  }, [success]);
+  }, [success, setSuccess]);
 
   useEffect(() => {
     if (error) {
-      message.error(error);
+      if (Array.isArray(error)) {
+        error.forEach((e) => message.error(e));
+      } else {
+        message.error(error);
+      }
       setError(null);
     }
-  }, [error]);
+  }, [error, setError]);
 
   /* =========================
      SUBMIT
   ========================== */
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: CreateToolRequest) => {
     if (editingTool) {
-      return await updateTool(editingTool.id, values);
+      return await updateTool(editingTool.id, values as UpdateToolRequest);
     }
     return await createTool(values);
   };
@@ -98,12 +111,11 @@ export function ToolsManager() {
   /* =========================
      PAGINAÇÃO
   ========================== */
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = (pageNumber: number) => {
     // AntD começa em 1, backend em 0
     fetchTools(pageNumber - 1);
   };
 
-  console.log(tools);
   /* =========================
      RENDER
   ========================== */
@@ -133,7 +145,7 @@ export function ToolsManager() {
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: 24 }}>
             <Pagination
               current={page + 1}
-              total={totalPages * PAGE_SIZE}
+              total={totalPages * PAGE_SIZE} // fallback até ter totalElements
               pageSize={PAGE_SIZE}
               onChange={handlePageChange}
               showSizeChanger={false}
