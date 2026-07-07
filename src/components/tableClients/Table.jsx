@@ -155,7 +155,7 @@ const Table = forwardRef(({ selected, loading, setLoadingClients, isOpen }, ref)
       setLoadingTable(true);
 
       const response = await api.get(
-        `/clients/search?name=${encodeURIComponent(searchTerm)}&page=${page}&size=${rowsPerPage}`,
+        `/clients/search?search=${encodeURIComponent(searchTerm)}&page=${page}&size=${rowsPerPage}`,
       );
 
       setData(response.data || { content: [], totalPages: 0 });
